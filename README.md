@@ -1,6 +1,5 @@
 # devops-netology<br>
- - [x]**Hello world!**
-
+ - [x] **Hello world**
  - [x] **Terraform**
 
 --Исключить все файлы в подкаталоге .terraform
