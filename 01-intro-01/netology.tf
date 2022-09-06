@@ -8,3 +8,7 @@ resource "aws_cloudwatch_log_group" "lambda" {
 
   retention_in_days = 1
 }
+creds "author" {
+  fname = "Pavel"
+  lname = "Yakushin"
+}

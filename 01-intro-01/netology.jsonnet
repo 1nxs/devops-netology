@@ -17,3 +17,7 @@ local k = (import 'ksonnet-util/kausal.libsonnet');
     serviceAccount.new($._config.name) +
     serviceAccount.mixin.metadata.withNamespace($._config.namespace),
 }
+
+#  Author:
+#    - fname: Pavel
+#    - lname: Yakushin

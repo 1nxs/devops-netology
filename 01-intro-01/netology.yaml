@@ -1,4 +1,4 @@
-apiVersion: v1
+DapiVersion: v1
 kind: Service
 metadata:
   name: myservice
@@ -9,3 +9,7 @@ spec:
       port: 9093
       targetPort: 9093
   selector: {}
+Creds:
+  Author:
+    - fname: Pavel
+    - lname: Yakushin
