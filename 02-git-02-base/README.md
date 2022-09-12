@@ -23,7 +23,7 @@
 
 2.  
 
-    $ git tag v0.1 -m "annotation version 01"
+    $ git tag -a v0.1 -m "annotation version 01"
     $ git show v0.1
     tag v0.1
     Tagger: Pavel Yakushin <yakushin.pavel+netology@gmail.com>
