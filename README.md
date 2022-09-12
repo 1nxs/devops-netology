@@ -47,3 +47,4 @@ override.tf.json
 terraform.rc
 -- игнорировать файлы настроек CLI
 
+ - [x] *modded for 02-git-02-base*
