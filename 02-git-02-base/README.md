@@ -34,3 +34,21 @@
     commit b294dd29758a04529c941bfc5bcecd8027991d2d (HEAD -> main, tag: v0.1, tag: v0.0, origin/main, origin/HEAD, gitlab/main)
     Author: Pavel Yakushin <yakushin.pavel+netology@gmail.com>
     Date:   Tue Sep 6 20:47:34 2022 +0300
+
+
+## Задание №3 – Ветки
+1-6:
+
+    $ git log
+    commit 6b28469068f53406969355596505432cc74d5418
+    Author: pavel.yakushin <yakushin.pavel@gmail.com>
+    Date:   Sat Sep 3 23:20:22 2022 +0300
+
+        Prepare to delete and move
+    $ git checkout 6b28469068f53406969355596505432cc74d5418
+    $ git switch -c fix
+    $ git push -u origin fix
+7-8: Network pics 
+ - Прямая ![line](img/line.png)
+ - Ветка ![tree](img/tree.png)
+
