@@ -52,3 +52,7 @@
  - Прямая ![line](img/line.png)
  - Ветка ![tree](img/tree.png)
 
+## Задание №4 – Упрощаем себе жизнь
+
+1-4
+ - done commit with PyCharm ![py](img/pycharm.png) 
