@@ -82,6 +82,7 @@ diff --git a/provider_source.go b/provider_source.go
 # Вот тут видно, что файл появился
 ```
 В коммите `8c928e8358`
+
 6. Найдите все коммиты в которых была изменена функция `globalPluginDirs`.
 ```bash
 # Смотрим где объявили функцию
@@ -95,6 +96,7 @@ $ git log -s -L :globalPluginDirs:plugins.go --oneline
 66ebff90cd move some more plugin search path logic to command
 8364383c35 Push plugin discovery down into command package
 ```
+
 7. Кто автор функции `synchronizedWriters`?
 ```bash
 $ git log -S"func synchronizedWriters(" --oneline
