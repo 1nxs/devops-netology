@@ -82,4 +82,32 @@ diff --git a/provider_source.go b/provider_source.go
 ```
 В коммите `8c928e8358`
 6. Найдите все коммиты в которых была изменена функция `globalPluginDirs`.
+```bash
+# Смотрим где объявили функцию
+$ git grep "func globalPluginDirs("
+plugins.go:func globalPluginDirs() []string {
+# Отбираем коммиты с изменениями
+$ git log -s -L :globalPluginDirs:plugins.go --oneline
+78b1220558 Remove config.go and update things using its aliases
+52dbf94834 keep .terraform.d/plugins for discovery
+41ab0aef7a Add missing OS_ARCH dir to global plugin paths
+66ebff90cd move some more plugin search path logic to command
+8364383c35 Push plugin discovery down into command package
+```
 7. Кто автор функции `synchronizedWriters`?
+```bash
+$ git log -S"func synchronizedWriters(" --oneline
+bdfea50cc8 remove unused
+5ac311e2a9 main: synchronize writes to VT100-faker on Windows
+$ git show 5ac311e2a9 # Нашли нужный
+commit 5ac311e2a91e381e2f52234668b49ba670aa0fe5
+Author: Martin Atkins <mart@degeneration.co.uk>
+Date:   Wed May 3 16:25:41 2017 -0700
+$ git show bdfea50cc8 # тут удаляли файл..не то
+
+# Проверяем 
+$ git log -S'func synchronizedWriters' --pretty=format:'%h - %an %ae'
+bdfea50cc8 - James Bardin j.bardin@gmail.com
+5ac311e2a9 - Martin Atkins mart@degeneration.co.uk
+```
+Наш пациент `Martin Atkins mart@degeneration.co.uk`
