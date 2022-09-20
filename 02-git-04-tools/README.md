@@ -23,7 +23,7 @@ commit 85024d3100126de36331c6982bfaac02cdab9e76 (tag: v0.12.23)
 
 3. Сколько родителей у коммита `b8d720`? Напишите их хеши.
 ```bash
-#Вариант поиска через merge
+# Вариант поиска через merge
 $ git show b8d720
 commit b8d720f8340221f2146e4e4870bf2ee0bc48f2d5
 Merge: 56cd7859e0 9ea88f22fc
@@ -33,7 +33,7 @@ $ git show 9ea88f22fc
 commit 9ea88f22fc6269854151c571162c5bcf958bee2b
 ```
 ```bash
-#Вариант поиска без расследований
+# Вариант поиска без расследований
 $ git show --pretty=%P b8d720
 56cd7859e05c36c06b56d013b55a252d0bb7e158 9ea88f22fc6269854151c571162c5bcf958bee2b
 ```
@@ -53,7 +53,33 @@ dd01a35078 Update CHANGELOG.md
 225466bc3e Cleanup after v0.12.23 release
 ```
 5. Найдите коммит в котором была создана функция `func providerSource`, ее определение в коде выглядит
-
 так `func providerSource(...)` (вместо троеточего перечислены аргументы).
+```bash
+# Можно посмотреть лог со скобкой
+$ git log -S'func providerSource(' --oneline
+8c928e8358 main: Consult local directories as potential mirrors of providers
+
+# А можно покопаться в коде :)
+$ git log -S'func providerSource' --oneline
+5af1e6234a main: Honor explicit provider_installation CLI config when present
+8c928e8358 main: Consult local directories as potential mirrors of providers
+# Пытаемся убедиться где создание, а где изменение
+$ git show 5af1e6234a
+$ git show 8c928e8358
+$ git grep "func providerSource"
+provider_source.go:func providerSource(configs []*cliconfig.ProviderInstallation, services *disco.Disco) (getproviders.Source, tfdiags.Diagnostics) {
+provider_source.go:func providerSourceForCLIConfigLocation(loc cliconfig.ProviderInstallationLocation, services *disco.Disco) (getproviders.Source, tfdiags.Diagnostics) {
+$ git log -L :'func providerSource':provider_source.go
+~
+commit 8c928e83589d90a031f811fae52a81be7153e82f
+Author: Martin Atkins <mart@degeneration.co.uk>
+Date:   Thu Apr 2 18:04:39 2020 -0700
+~
+diff --git a/provider_source.go b/provider_source.go
+--- /dev/null
++++ b/provider_source.go
+# Вот тут видно, что файл появился
+```
+В коммите `8c928e8358`
 6. Найдите все коммиты в которых была изменена функция `globalPluginDirs`.
 7. Кто автор функции `synchronizedWriters`?
