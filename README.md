@@ -18,3 +18,19 @@
 
 3.1. [x] [Работа в терминале (лекция 1)](03-sysadmin-01-terminal/README.md)
 
+3.2. [In Progress] [Работа в терминале (лекция 2)](03-sysadmin-02-terminal/README.md)
+
+3.3. [-] [Операционные системы (лекция 1)](03-sysadmin-03-os/README.md)
+
+3.4. [-] [Операционные системы (лекция 2)](03-sysadmin-04-os/README.md)
+
+3.5. [-] [Файловые системы](03-sysadmin-05-fs/README.md)
+
+3.6. [-] [Компьютерные сети (лекция 1)](03-sysadmin-06-net/README.md)
+
+3.7. [-] [Компьютерные сети (лекция 2)](03-sysadmin-07-net/README.md)
+
+3.8. [-] [Компьютерные сети (лекция 3)](03-sysadmin-08-net/README.md)
+
+3.9. [-] [Элементы безопасности информационных систем](03-sysadmin-09-security/README.md)
+
