@@ -110,7 +110,12 @@ $ mkdir /tmp/new-folder ; cd /tmp/new-folder
 
 Оператор `&&` является управляющим оператором. Если в командной строке стоит `command1 && command2`, то `command2` выполняется в том случае, если статус выхода из команды `command1` имеет нулевой статус, что говорит об успешном ее завершении.   
 
-`set -e` установка или снятие значений параметров оболочки. Использование с && не имеет смысла, т.к. с `-e` произойдет немедленный выход, если команда завершается с ненулевым статусом.
+`set -e` установка или снятие значений параметров оболочки.
+* `set -e` имеет смысл использовать для команд разделенных &&, так как выход из скрипта в этом случае произойдет по последней команде, если она завершилась с ошибкой.
+В man это поведение описано:
+    > `The shell does not exit if the command that fails is` part of the command list immediately following a while or until keyword,
+    > part of the test in an if statement, `part of any command executed in a &&` or || list except the command following the final && or ||,
+    > any command in a pipeline but the last, or if the command’s return status is being inverted with !. If a compound command other than a subshell returns a non-zero status because a command failed while -e was being ignored, the shell does not exit. A trap on ERR, if set, is executed before the shell exits.
 
 8. Из каких опций состоит режим bash `set -euxo pipefail` и почему его хорошо было бы использовать в сценариях?
 
