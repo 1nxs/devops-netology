@@ -6,7 +6,41 @@
     * предусмотрите возможность добавления опций к запускаемому процессу через внешний файл (посмотрите, например, на `systemctl cat cron`),
     * удостоверьтесь, что с помощью systemctl процесс корректно стартует, завершается, а после перезагрузки автоматически поднимается.
 
+```bash
+# Устанавливаем
+cd /opt/ && sudo wget https://github.com/prometheus/node_exporter/releases/download/v1.4.0/node_exporter-1.4.0.linux-amd64.tar.gz
+sudo tar xzf node_exporter-*
+sudo touch /usr/local/lib/systemd/system/node_exporter.service
 
+# Создаем UNIT
+sudo nano /usr/local/lib/systemd/system/node_exporter.service
+[Unit]
+Description="Netology course node_exporer service file"
+
+[Service]
+EnvironmentFile=/opt/node_exporter-1.2.2.linux-amd64/node_exporter.env
+ExecStart=/opt/node_exporter-1.2.2.linux-amd64/node_exporter $EXTRA_OPTS
+StandardOutput=file:/var/log/node_explorer.log
+StandardError=file:/var/log/node_explorer.log
+
+[Install]
+WantedBy=multi-user.target
+
+# Прививаем автостарт
+sudo systemctl status node_exporter.service
+sudo systemctl daemon-reload
+sudo systemctl enable node_exporter.service
+```
+* Проверка старта по перезагрузке
+```bash
+vagrant@vagrant:~$ journalctl -u node_exporter.service
+Oct 05 13:55:08 vagrant systemd[1]: Started "Netology course node_exporer service file".
+Oct 05 13:56:25 vagrant systemd[1]: Stopping "Netology course node_exporer service file"...
+Oct 05 13:56:25 vagrant systemd[1]: node_exporter.service: Deactivated successfully.
+Oct 05 13:56:25 vagrant systemd[1]: Stopped "Netology course node_exporer service file".
+-- Boot 6f6e0ec964d44f93b7859a77c786601d --
+Oct 05 13:56:28 vagrant systemd[1]: Started "Netology course node_exporer service file".
+```
 
 2. Ознакомьтесь с опциями node_exporter и выводом `/metrics` по-умолчанию. Приведите несколько опций, которые вы бы выбрали для базового мониторинга хоста по CPU, памяти, диску и сети.
 
