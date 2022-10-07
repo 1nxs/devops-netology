@@ -24,7 +24,7 @@
 
 3.4. [on check] [Операционные системы (лекция 2)](03-sysadmin-04-os/README.md)
 
-3.5. [on check [Файловые системы](03-sysadmin-05-fs/README.md)
+3.5. [on check] [Файловые системы](03-sysadmin-05-fs/README.md)
 
 3.6. [in progress] [Компьютерные сети (лекция 1)](03-sysadmin-06-net/README.md)
 
