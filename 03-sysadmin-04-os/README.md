@@ -189,7 +189,7 @@ bomb() {
 
 - thread #1  
 
-*в файле `/usr/lib/systemd/system/user-.slice.d/10-defaults.conf` можно изменить параметр TasksMax на больший процент, конкретное число или infinity, чтобы убрать лимит совсем.*
+в файле `/usr/lib/systemd/system/user-.slice.d/10-defaults.conf` можно изменить параметр TasksMax на больший процент, конкретное число или infinity, чтобы убрать лимит совсем.
 ```bash
 vagrant@vagrant:~$ more /usr/lib/systemd/system/user-.slice.d/10-defaults.conf
 [Unit]
