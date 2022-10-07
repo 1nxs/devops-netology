@@ -203,17 +203,17 @@ StopWhenUnneeded=yes
 TasksMax=60%
 vagrant@vagrant:~$
 ```
-- thread 2
+- thread #2
 
-*Максимальное количество процессов для пользователя можно изменить командой `ulimit -u <число>` или в файле cat `etc/security/limits.conf`*
+Максимальное количество процессов для пользователя можно изменить командой `ulimit -u <число>` или в файле cat `etc/security/limits.conf`
 ```bash
 vagrant@vagrant:~$ ulimit -u
 3434
 vagrant@vagrant:~$ ulimit -u 50
 ```
-*Изменить максимальное количество PID можно посредством команд `sysctl -w kernel.pid_max=<число>`,`echo <число> > /proc/sys/kernel/pid_max` или задать переменную `kernel.pid_max` в файле  `/etc/sysctl.conf`*
+Изменить максимальное количество PID можно посредством команд `sysctl -w kernel.pid_max=<число>`,`echo <число> > /proc/sys/kernel/pid_max` или задать переменную `kernel.pid_max` в файле  `/etc/sysctl.conf`
 
-*Ограничение на максимальное число процессов на уровне системы установлено в переменной DefaultTasksMax: `systemctl show --property DefaultTasksMax` изменить данную переменную можно в файле `/etc/systemd/system.conf`*
+Ограничение на максимальное число процессов на уровне системы установлено в переменной DefaultTasksMax: `systemctl show --property DefaultTasksMax` изменить данную переменную можно в файле `/etc/systemd/system.conf`
 
-*Переменная `UserTasksMax` в файле `/etc/systemd/logind.conf` позволяет установить ограничение по максимальному количеству процессов на уровне пользователей* 
+Переменная `UserTasksMax` в файле `/etc/systemd/logind.conf` позволяет установить ограничение по максимальному количеству процессов на уровне пользователей 
 
