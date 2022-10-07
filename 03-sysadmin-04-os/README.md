@@ -151,8 +151,69 @@ $ ulimit -Hn
 ```
 
 6. Запустите любой долгоживущий процесс (не `ls`, который отработает мгновенно, а, например, `sleep 1h`) в отдельном неймспейсе процессов; покажите, что ваш процесс работает под PID 1 через `nsenter`. Для простоты работайте в данном задании под root (`sudo -i`). Под обычным пользователем требуются дополнительные опции (`--map-root-user`) и т.д.
+```bash
+$ sudo unshare -f --pid --mount-proc /bin/bash
+root@vagrant:/home/vagrant# ps aux
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.4   7632  4080 pts/1    S    07:22   0:00 /bin/bash
+root           7  0.0  0.1  10068  1596 pts/1    R+   07:22   0:00 ps aux
+---
+root        1602  0.0  0.4   7632  4188 pts/1    S    07:22   0:00 /bin/bash
+root        2317  0.0  0.1   5768  1112 pts/1    S+   07:23   0:00 sleep 1h
+vagrant     2607  0.0  0.1  10068  1592 pts/2    R+   07:24   0:00 ps aux
 
+$ sudo nsenter --target 2317 --pid --mount
+root@vagrant:/home/vagrant# ps aux
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root           1  0.0  0.4   7632  4188 pts/1    S    07:22   0:00 /bin/bash
+root           8  0.0  0.1   5768  1112 pts/1    S+   07:23   0:00 sleep 1h
+root           9  0.0  0.5   8656  5452 pts/3    S    07:28   0:00 -bash
+root          19  0.0  0.1  10068  1604 pts/3    R+   07:28   0:00 ps aux
+```
 
+7. Найдите информацию о том, что такое `:(){ :|:& };:`. Запустите эту команду в своей виртуальной машине Vagrant с Ubuntu 20.04 (**это важно, поведение в других ОС не проверялось**). Некоторое время все будет "плохо", после чего (минуты) – ОС должна стабилизироваться. Вызов `dmesg` расскажет, какой механизм помог автоматической стабилизации. Как настроен этот механизм по-умолчанию, и как изменить число процессов, которое можно создать в сессии?\
+![default_task_pid_max](img/forkbomb.png)
+- Линк на [педивикию](https://en.wikipedia.org/wiki/Fork_bomb)
+```Bash
+# Можно переписать следующим образом:
+:(){
+ :|:&
+};:
+# или ещё:
+bomb() { 
+ bomb | bomb &
+}; bomb
+```
+Данная функция рекурсивно вызывает себя и передается через пайп другому вызову этой же функции (в фоне).
+По сути запускаются 2 фоновых процесса, каждый из которых вызывает еще два фоновых процесса и тд, пока не закончатся ресурсы. \
 
-7. Найдите информацию о том, что такое `:(){ :|:& };:`. Запустите эту команду в своей виртуальной машине Vagrant с Ubuntu 20.04 (**это важно, поведение в других ОС не проверялось**). Некоторое время все будет "плохо", после чего (минуты) – ОС должна стабилизироваться. Вызов `dmesg` расскажет, какой механизм помог автоматической стабилизации. Как настроен этот механизм по-умолчанию, и как изменить число процессов, которое можно создать в сессии?
+- thread #1  
+
+*в файле `/usr/lib/systemd/system/user-.slice.d/10-defaults.conf` можно изменить параметр TasksMax на больший процент, конкретное число или infinity, чтобы убрать лимит совсем.*
+```bash
+vagrant@vagrant:~$ more /usr/lib/systemd/system/user-.slice.d/10-defaults.conf
+[Unit]
+Description=User Slice of UID %j
+Documentation=man:user@.service(5)
+After=systemd-user-sessions.service
+StopWhenUnneeded=yes
+
+[Slice]
+# TasksMax=33%
+TasksMax=60%
+vagrant@vagrant:~$
+```
+- thread 2
+
+*Максимальное количество процессов для пользователя можно изменить командой `ulimit -u <число>` или в файле cat `etc/security/limits.conf`*
+```bash
+vagrant@vagrant:~$ ulimit -u
+3434
+vagrant@vagrant:~$ ulimit -u 50
+```
+*Изменить максимальное количество PID можно посредством команд `sysctl -w kernel.pid_max=<число>`,`echo <число> > /proc/sys/kernel/pid_max` или задать переменную `kernel.pid_max` в файле  `/etc/sysctl.conf`*
+
+*Ограничение на максимальное число процессов на уровне системы установлено в переменной DefaultTasksMax: `systemctl show --property DefaultTasksMax` изменить данную переменную можно в файле `/etc/systemd/system.conf`*
+
+*Переменная `UserTasksMax` в файле `/etc/systemd/logind.conf` позволяет установить ограничение по максимальному количеству процессов на уровне пользователей* 
 
