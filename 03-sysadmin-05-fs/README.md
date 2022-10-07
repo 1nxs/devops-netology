@@ -229,7 +229,27 @@ Saving to: ‘/tmp/new/test.gz’
 
 14. Прикрепите вывод `lsblk`.
 
-
+```bash
+root@vagrant:/tmp/new# lsblk
+NAME                      MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda                         8:0    0   64G  0 disk
+├─sda1                      8:1    0    1M  0 part
+├─sda2                      8:2    0  1.5G  0 part  /boot
+└─sda3                      8:3    0 62.5G  0 part
+  └─ubuntu--vg-ubuntu--lv 253:0    0 31.3G  0 lvm   /
+sdb                         8:16   0  2.5G  0 disk
+├─sdb1                      8:17   0    2G  0 part
+│ └─md0                     9:0    0    2G  0 raid1
+└─sdb2                      8:18   0  511M  0 part
+  └─md1                     9:1    0 1018M  0 raid0
+    └─vg35-lv35--100      253:1    0  100M  0 lvm   /tmp/new
+sdc                         8:32   0  2.5G  0 disk
+├─sdc1                      8:33   0    2G  0 part
+│ └─md0                     9:0    0    2G  0 raid1
+└─sdc2                      8:34   0  511M  0 part
+  └─md1                     9:1    0 1018M  0 raid0
+    └─vg35-lv35--100      253:1    0  100M  0 lvm   /tmp/new
+```
 
 15. Протестируйте целостность файла:
 
@@ -238,21 +258,40 @@ Saving to: ‘/tmp/new/test.gz’
     root@vagrant:~# echo $?
     0
     ```
-
-
-
+```bash
+# Test ok
+root@vagrant:/tmp/new# gzip -t test.gz
+root@vagrant:/tmp/new# echo $?
+0
+```
 
 16. Используя pvmove, переместите содержимое PV с RAID0 на RAID1.
 
+```bash
+root@vagrant:/tmp/new# pvmove -n lv35-100 /dev/md1 /dev/md0
+/dev/md1: Moved: 28.00%
+/dev/md1: Moved: 100.00%
 
+root@vagrant:/tmp/new# lvs -o +devices
+  LV        VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert Devices
+  ubuntu-lv ubuntu-vg -wi-ao---- <31.25g                                                     /dev/sda3(0)
+  lv35-100  vg35      -wi-ao---- 100.00m                                                     /dev/md0(0)
+```
 
 17. Сделайте `--fail` на устройство в вашем RAID1 md.
 
-
+```shell
+root@vagrant:/tmp/new# mdadm --fail /dev/md0 /dev/sdb1
+mdadm: set /dev/sdb1 faulty in /dev/md0
+```
 
 18. Подтвердите выводом `dmesg`, что RAID1 работает в деградированном состоянии.
 
-
+```bash
+root@vagrant:/tmp/new# dmesg | grep md0 | tail -n 2
+[ 6449.720068] md/raid1:md0: Disk failure on sdb1, disabling device.
+               md/raid1:md0: Operation continuing on 1 devices.
+```
 
 19. Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:
 
@@ -261,8 +300,11 @@ Saving to: ‘/tmp/new/test.gz’
     root@vagrant:~# echo $?
     0
     ```
-
-
-
+```bash
+# Файл всё еще ок
+root@vagrant:/tmp/new# gzip -t test.gz
+root@vagrant:/tmp/new# echo $?
+0
+```
 20. Погасите тестовый хост, `vagrant destroy`.
-
+- [x] Печеньки захвачены, мой генерал (с)!
