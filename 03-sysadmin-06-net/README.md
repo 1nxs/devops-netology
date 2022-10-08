@@ -66,9 +66,9 @@ vagrant@vagrant:~$ curl ifconfig.me
 4. Какому провайдеру принадлежит ваш IP адрес? Какой автономной системе AS? Воспользуйтесь утилитой `whois`
 
 ```shell
-vagrant@vagrant:~$ whois 185.13.xxx.xxx  | grep ^org-name
+vagrant@vagrant:~$ whois 185.13.112.xxx  | grep ^org-name
 org-name:       Morton-Telekom Ltd
-vagrant@vagrant:~$ whois 185.13.xxx.xxx  | grep ^origin
+vagrant@vagrant:~$ whois 185.13.112.xxx  | grep ^origin
 origin:         AS29069
 ```
 5. Через какие сети проходит пакет, отправленный с вашего компьютера на адрес 8.8.8.8? Через какие AS? Воспользуйтесь утилитой `traceroute`
