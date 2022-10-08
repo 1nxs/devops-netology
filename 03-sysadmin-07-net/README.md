@@ -136,12 +136,12 @@ Unused:
 `100.64.0.0/26`
 7. Как проверить ARP таблицу в Linux, Windows? Как очистить ARP кеш полностью? Как из ARP таблицы удалить только один нужный IP?
 
-Ubuntu \
+- Ubuntu \
 `ip neighbour show` - показать ARP таблицу \
 `ip neighbour del [ip address] dev [interface]` - удалить из ARP таблицы конкретный адрес \
 `ip neighbour flush all` - очищает таблицу ARP
 
-Windows \
+- Windows \
 `arp -a` - показать ARP таблицу \
 `arp -d *` - очистить таблицу ARP \
 `arp -d [ip address]` - удалить из ARP таблицы конкретный адрес \
