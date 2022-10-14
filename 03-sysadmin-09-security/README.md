@@ -116,7 +116,8 @@ tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), snapshot length 26214
 0 packets dropped by kernel
 ```
 
-можно посмотреть на icmp пакет\
+можно посмотреть на icmp пакет
+
 ![wsharsk](img/wshark.png)
  ---
 ## Задание для самостоятельной отработки (необязательно к выполнению)
