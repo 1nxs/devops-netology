@@ -1,9 +1,9 @@
 # Домашнее задание к занятию "3.9. Элементы безопасности информационных систем"
 
-1. Установите Bitwarden плагин для браузера. Зарегестрируйтесь и сохраните несколько паролей.
-
-2. Установите Google authenticator на мобильный телефон. Настройте вход в Bitwarden акаунт через Google authenticator OTP.
-
+1. Установите Bitwarden плагин для браузера. Зарегестрируйтесь и сохраните несколько паролей.\
+![bw](img/bw-edge.png)
+2. Установите Google authenticator на мобильный телефон. Настройте вход в Bitwarden акаунт через Google authenticator OTP.\
+![2fa](img/2fa-enabled.png)
 3. Установите apache2, сгенерируйте самоподписанный сертификат, настройте тестовый сайт для работы по HTTPS.
 ```shell
 vagrant@vagrant:~$ sudo apt install apache2
@@ -42,12 +42,16 @@ AH00558: apache2: Could not reliably determine the server fully qualified domain
 Syntax OK
 root@vagrant:# systemctl restart apache2
 ```
+
+![ssl](img/ssl-selfsigned.png)
+
 4. Проверьте на TLS уязвимости произвольный сайт в интернете (кроме сайтов МВД, ФСБ, МинОбр, НацБанк, РосКосмос, РосАтом, РосНАНО и любых госкомпаний, объектов КИИ, ВПК ... и тому подобное).
 ```shell
 vagrant@vagrant:~$ git clone --depth 1 https://github.com/drwetter/testssl.sh.git
 vagrant@vagrant:~$ cd testssl.sh
 vagrant@vagrant:~/testssl.sh$  ./testssl.sh https://www.google.com/
 ```
+![pentest](img/pentest.png)
 
 5. Установите на Ubuntu ssh сервер, сгенерируйте новый приватный ключ. Скопируйте свой публичный ключ на другой сервер. Подключитесь к серверу по SSH-ключу.
 ```shell
@@ -104,14 +108,54 @@ vagrant@vagrant:~$
 ```
 
 7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
-
+```shell
+vagrant@vagrant:~$ sudo tcpdump -c 100 -w trash.pcap
+tcpdump: listening on enp0s3, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+100 packets captured
+102 packets received by filter
+0 packets dropped by kernel
+```
+можно посмотреть на icmp пакет\
+![wsharsk](img/wshark.png)
  ---
 ## Задание для самостоятельной отработки (необязательно к выполнению)
 
 8*. Просканируйте хост scanme.nmap.org. Какие сервисы запущены?
+```shell
+vagrant@vagrant:~$ nmap scanme.nmap.org
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-10-14 20:55 UTC
+Nmap scan report for scanme.nmap.org (45.33.32.156)
+Host is up (0.19s latency).
+Other addresses for scanme.nmap.org (not scanned): 2600:3c01::f03c:91ff:fe18:bb2f
+Not shown: 996 closed ports
+PORT      STATE SERVICE
+22/tcp    open  ssh
+80/tcp    open  http
+9929/tcp  open  nping-echo
+31337/tcp open  Elite
+
+Nmap done: 1 IP address (1 host up) scanned in 17.98 seconds
+```
+Соответсвенно - запущен sshd, веб-сервер, сервер nping и вишенка `H4XØR`
+<details>
+«1»=«l», «3»=«e», «7»=«t». Отсылка в прошлое и слэнг..<br>
+Надпись «31337» = слово «eleet» и символизирует принадлежность к хакерской элите.
+</details>
 
 9*. Установите и настройте фаервол ufw на web-сервер из задания 3. Откройте доступ снаружи только к портам 22,80,443
 
+```shell
+root@vagrant:# ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere
+80,443/tcp (Apache Full)   ALLOW IN    Anywhere
+```
 
  ---
 
