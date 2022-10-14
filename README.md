@@ -26,11 +26,11 @@
 
 3.5. [x] [Файловые системы](03-sysadmin-05-fs/README.md)
 
-3.6. [on check] [Компьютерные сети (лекция 1)](03-sysadmin-06-net/README.md)
+3.6. [x] [Компьютерные сети (лекция 1)](03-sysadmin-06-net/README.md)
 
-3.7. [in progress] [Компьютерные сети (лекция 2)](03-sysadmin-07-net/README.md)
+3.7. [x] [Компьютерные сети (лекция 2)](03-sysadmin-07-net/README.md)
 
-3.8. [-] [Компьютерные сети (лекция 3)](03-sysadmin-08-net/README.md)
+3.8. [on check] [Компьютерные сети (лекция 3)](03-sysadmin-08-net/README.md)
 
-3.9. [-] [Элементы безопасности информационных систем](03-sysadmin-09-security/README.md)
+3.9. [in progress] [Элементы безопасности информационных систем](03-sysadmin-09-security/README.md)
 
