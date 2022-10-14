@@ -32,5 +32,5 @@
 
 3.8. [on check] [Компьютерные сети (лекция 3)](03-sysadmin-08-net/README.md)
 
-3.9. [in progress] [Элементы безопасности информационных систем](03-sysadmin-09-security/README.md)
+3.9. [on check] [Элементы безопасности информационных систем](03-sysadmin-09-security/README.md)
 
