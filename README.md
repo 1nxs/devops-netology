@@ -34,3 +34,10 @@
 
 3.9. [on check] [Элементы безопасности информационных систем](03-sysadmin-09-security/README.md)
 
+## Блок 4. Скриптовые языки и языки разметки: Python, Bash, YAML, JSON
+
+4.1. [х] [Командная оболочка Bash: практические навыки](04-script-01-bash/README.md)
+
+4.2. [x] [Использование Python для решения типовых DevOps задач](04-script-02-py/README.md)
+
+4.3. [x] [Языки разметки JSON и YAML](04-script-03-yaml/README.md)
