@@ -36,7 +36,7 @@
 
 ## Блок 4. Скриптовые языки и языки разметки: Python, Bash, YAML, JSON
 
-4.1. [х] [Командная оболочка Bash: практические навыки](04-script-01-bash/README.md)
+4.1. [in progress] [Командная оболочка Bash: практические навыки](04-script-01-bash/README.md)
 
 4.2. [x] [Использование Python для решения типовых DevOps задач](04-script-02-py/README.md)
 
