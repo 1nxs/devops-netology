@@ -62,7 +62,18 @@ done
 
 ### Ваш скрипт:
 ```bash
-???
+hosts=(192.168.0.1 173.194.222.113 87.250.250.242)
+declare -i br=1
+while (($br<=5))
+do
+date >>result.log
+    for h in ${hosts[@]}
+    do
+        nc -zw1 $h 80 > /dev/null
+        echo "check" $h status=$? >> result.log
+    done
+    br+=1
+done
 ```
 
 ## Обязательная задача 4
@@ -70,7 +81,24 @@ done
 
 ### Ваш скрипт:
 ```bash
-???
+hosts=(192.168.0.1 173.194.222.113 87.250.250.242)
+declare -i br=1
+while (($br==1))
+do
+date >>result.log
+    for h in ${hosts[@]}
+    do
+        nc -zw1 $h 80 > /dev/null
+        if (($?==0))
+          then
+            echo "check" $h status=$? >>result.log
+          else
+            echo "error" $h status=$? >>error.log
+            br=0
+        fi
+    done
+done
+
 ```
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
