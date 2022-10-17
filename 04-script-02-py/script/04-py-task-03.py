@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+#==task 3==
+
+# + используется текущая директория если не указан путь явным образом
+# + добавлена провера на несуществующую директорию
+# - убран мусор
+# - убрана проверка new file - в целом текущая перекрывает этот тред
+# * добавлено чуть раскраски
+# ==task 2 ==
 # * исправлен стоковый путь (windows)
 # - лишняя логическая переменная is_change
 # - команда brake прерывает обработку при первом же найденом вхождении
@@ -23,12 +31,14 @@ bash_command = ["cd "+target, "git status 2>&1"]
 result_os = os.popen(' && '.join(bash_command)).read()
 if result_os.find('not a git') != -1:
     sys.exit("but it's not a git repository :( " "\033[31m" + target +"\033[0m")
-#is_change = False
+# Получаем верхний уровень GIT репозитория
+git_command = ["git rev-parse --show-toplevel"]
+git_top_level = (os.popen(' && '.join(git_command)).read()).replace('\n', '/')
+print(f"Yours GIT directory is: ===> \033[32m {git_top_level}" "\033[0m")
 for result in result_os.split('\n'):
     if result.find('modified') != -1:
         prepare_result = result.replace('\tmodified:   ', '').replace('#','')
         print(os.path.join(target,prepare_result))
-        #break
-    elif result.find('new file') != -1:
-        prepare_result = result.replace('\tnew file:   ', '').replace('#','')
-        print(os.path.join(target, prepare_result))
+#    elif result.find('new file') != -1:
+#       prepare_result = result.replace('\tnew file:   ', '').replace('#','')
+#        print(os.path.join(target, prepare_result))
