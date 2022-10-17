@@ -44,11 +44,10 @@ for result in result_os.split('\n'):
 ### Ваш скрипт:
 ```python
 #!/usr/bin/env python3
-# * исправлен стоковый путь (windows)
-# - лишняя логическая переменная is_change
-# - команда breake прерывает обработку при первом же найденом вхождении
-# + введена переменная пути к папке
-# + добавлена проверка на новые файлы
+#
+# 04-script-02-py\script
+# подробное описание
+
 import os
 
 target="C:\\GIT\\devops-netology"
@@ -68,12 +67,12 @@ for result in result_os.split('\n'):
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-C:\GIT\devops-netology\venv\Scripts\python.exe C:\GIT\devops-netology\04-script-02-py\script\04-py-task-02.py 
+PS C:\GIT\devops-netology\04-script-02-py\script> py.exe .\04-py-task-02.py                                            
 Target path: C:\GIT\devops-netology
+C:\GIT\devops-netology\04-script-02-py/script/README.md
 C:\GIT\devops-netology\04-script-02-py/README.md
-C:\GIT\devops-netology\04-script-02-py/script/04-py-task-02.py
-
-Process finished with exit code 0
+C:\GIT\devops-netology\04-script-02-py/script/README.md
+PS C:\GIT\devops-netology\04-script-02-py\script>
 ```
 
 ## Обязательная задача 3
@@ -81,12 +80,48 @@ Process finished with exit code 0
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+#
+# 04-script-02-py\script
+# подробное описание
+
+import os
+import sys
+
+target = "./"
+if len(sys.argv) >= 2:
+    target = sys.argv[1]
+    print(f"Requested target path ===> \033[32m {target}" "\033[0m")
+    if not os.path.isdir(target):
+        sys.exit("Target path doesn't exist ===>  " "\033[31m" + target +"\033[0m")
+
+bash_command = ["cd "+target, "git status 2>&1"]
+result_os = os.popen(' && '.join(bash_command)).read()
+if result_os.find('not a git') != -1:
+    sys.exit("but it's not a git repository :( " "\033[31m" + target +"\033[0m")
+git_command = ["git rev-parse --show-toplevel"]
+git_top_level = (os.popen(' && '.join(git_command)).read()).replace('\n', '/')
+print(f"Yours GIT directory is: ===> \033[32m {git_top_level}" "\033[0m")
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:   ', '').replace('#','')
+        print(os.path.join(target,prepare_result))
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+PS C:\GIT\devops-netology\04-script-02-py\script> py.exe .\04-py-task-03.py                                                 
+Yours GIT directory is: ===>  C:/GIT/devops-netology/
+./../README.md                                       
+
+PS C:\GIT\devops-netology\04-script-02-py\script> py.exe .\04-py-task-03.py "C:/GIT/devops-netology/04-script-01-py/"
+Requested target path ===>  C:/GIT/devops-netology/04-script-01-py/
+Target path doesn't exist ===>  C:/GIT/devops-netology/04-script-01-py/
+
+PS C:\GIT\devops-netology\04-script-02-py\script> py.exe .\04-py-task-03.py "C:/GIT/devops-netology/04-script-01-bash/"
+Requested target path ===>  C:/GIT/devops-netology/04-script-01-bash/
+Yours GIT directory is: ===>  C:/GIT/devops-netology/                
+C:/GIT/devops-netology/04-script-01-bash/../04-script-02-py/README.md
 ```
 
 ## Обязательная задача 4
