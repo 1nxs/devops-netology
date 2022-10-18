@@ -113,3 +113,5 @@ while True:
         print(host + " - " + service_host[host])
     time.sleep(10)
 ```
+- вывод теста:<br>
+![04](../img/04-py-task-04.png)
