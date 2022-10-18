@@ -17,11 +17,11 @@ c = a + b
 ```
 
 ### Вопросы:
-| Вопрос  | Ответ |
-| ------------- | ------------- |
-| Какое значение будет присвоено переменной `c`?  | ???  |
-| Как получить для переменной `c` значение 12?  | ???  |
-| Как получить для переменной `c` значение 3?  | ???  |
+| Вопрос  | Ответ                                                                                                              |
+| ------------- |--------------------------------------------------------------------------------------------------------------------|
+| Какое значение будет присвоено переменной `c`?  | `unsupported operand type(s) for +: 'int' and 'str'`, так как переменные `a` и `b` имеют разные типы `int` и `str` |
+| Как получить для переменной `c` значение 12?  | `c = str(a) + b`                                                                                                                |
+| Как получить для переменной `c` значение 3?  | `c = a + int(b)`                                                                                                                |
 
 ## Обязательная задача 2
 Мы устроились на работу в компанию, где раньше уже был DevOps Engineer. Он написал скрипт, позволяющий узнать, какие файлы модифицированы в репозитории, относительно локальных изменений. Этим скриптом недовольно начальство, потому что в его выводе есть не все изменённые файлы, а также непонятен полный путь к директории, где они находятся. Как можно доработать скрипт ниже, чтобы он исполнял требования вашего руководителя?
@@ -82,7 +82,7 @@ PS C:\GIT\devops-netology\04-script-02-py\script>
 ```python
 #!/usr/bin/env python3
 #
-# 04-script-02-py\script
+# 04-script-03-py\script
 # подробное описание
 
 import os
@@ -129,12 +129,54 @@ C:/GIT/devops-netology/04-script-01-bash/../04-script-02-py/README.md
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+#
+
+# 04-script-04-py\script
+# подробное описание
+
+from datetime import datetime
+import socket
+import time
+
+service_host = {
+    'drive.google.com': '0',
+    'mail.google.com': '0',
+    'google.com': '0'
+}
+for host in service_host:
+    initial_ip = socket.gethostbyname(host)
+    service_host[host] = initial_ip
+
+while True:
+    dt = datetime.now()
+    print("'-..-''-..-'  ", dt)
+    for host in service_host:
+        old_ip = service_host[host]
+        new_ip = socket.gethostbyname(host)
+        if new_ip != old_ip:
+            service_host[host] = new_ip
+            print("[ERROR] "+host+" IP changed: old IP "+old_ip+", new IP "+new_ip)
+            print("[ERROR] Shit happens at >>>>>>", dt)
+        print(host + " - " + service_host[host])
+    time.sleep(10)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+drive.google.com - 108.177.14.194
+mail.google.com - 64.233.165.83
+google.com - 74.125.131.139
+'-..-''-..-'   2022-10-18 16:30:46.293986
+drive.google.com - 108.177.14.194
+[ERROR] mail.google.com IP changed: old IP 64.233.165.83, new IP 142.251.1.18
+[ERROR] Shit happens at >>>>>> 2022-10-18 16:30:46.293986
+mail.google.com - 142.251.1.18
+google.com - 74.125.131.139
+'-..-''-..-'   2022-10-18 16:31:01.342686
+drive.google.com - 108.177.14.194
+mail.google.com - 142.251.1.18
+google.com - 74.125.131.139
 ```
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
