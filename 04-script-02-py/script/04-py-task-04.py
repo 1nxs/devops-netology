@@ -18,7 +18,7 @@ while True:
         new_ip = socket.gethostbyname(host)
         if new_ip != old_ip:
             service_host[host] = new_ip
-
+            print("[ERROR] "+host+" IP changed: old IP "+old_ip+", new IP "+new_ip)
 
         print(host + " - " + service_host[host])
     time.sleep(10)
