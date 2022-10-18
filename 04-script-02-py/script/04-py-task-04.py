@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
+import time
+print (time.ctime())
 
-message = '!false'
+from datetime import datetime
+dt = datetime.now()
+print(dt)
+# выберу метод позже
 
-print(message)
+import socket
+
+service_addr = {
+    'drive.google.com': '0',
+    'mail.google.com': '0',
+    'google.com': '0'
+}
