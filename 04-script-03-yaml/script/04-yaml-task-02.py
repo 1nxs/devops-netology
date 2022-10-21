@@ -45,9 +45,9 @@ while True:
         # Проверяем значение, если не совпадает то записываем в словарь и ругаемся ошибкой
         if new_ip != old_ip:
             service_host[host] = new_ip
-#            print(d+" [ERROR] "+host+" IP changed: old IP "+old_ip+", new IP "+new_ip)
-            print(d+ " - " +host+ " : " +new_ip+ " <<< [IP changed] - old IP >>> "+old_ip+"")
+            #print(d+" [ERROR] "+host+" IP changed: old IP "+old_ip+", new IP "+new_ip)
+            print(d + " - " +host + " : " +new_ip + " <<< [IP changed] - old IP >>> "+old_ip +"")
             #print("[ERROR] Shit happens at >>>>>>", d)
-        print(d+ " - "+host+ " : " +service_host[host])
+        print(d + " - "+host + " : " +service_host[host])
         wr_json_yaml(service_host)
     time.sleep(10)
