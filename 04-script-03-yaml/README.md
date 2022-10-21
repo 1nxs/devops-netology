@@ -64,22 +64,72 @@
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+import datetime
+import socket
+import time
+import json
+import yaml
+
+service_host = {
+    'drive.google.com': '0',
+    'mail.google.com': '0',
+    'google.com': '0'
+}
+
+for host in service_host:
+    initial_ip = socket.gethostbyname(host)
+    service_host[host] = initial_ip
+
+def wr_json_yaml(y):
+    with open('service_host.json', 'w') as jtmp:
+        jtmp.write(str(json.dumps(y)))
+    with open('service_hosts.yaml', 'w') as ytmp:
+        ytmp.write(yaml.dump(y))
+    return
+
+while True:
+    dtn = datetime.datetime.now()
+    d = dtn.strftime('%H:%M:%S')
+    print("-")
+    for host in service_host:
+        old_ip = service_host[host]
+        new_ip = socket.gethostbyname(host)
+        if new_ip != old_ip:
+            service_host[host] = new_ip
+            print(d + " - " +host + " : " +new_ip + " <<< [IP changed] - old IP >>> "+old_ip +"")
+        print(d + " - "+host + " : " +service_host[host])
+        wr_json_yaml(service_host)
+    time.sleep(10)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+16:21:02 - drive.google.com : 209.85.233.194
+16:21:02 - mail.google.com : 74.125.205.83
+16:21:02 - google.com : 209.85.233.138
+-
+16:21:12 - drive.google.com : 173.194.221.194 <<< [IP changed] - old IP >>> 209.85.233.194
+16:21:12 - drive.google.com : 173.194.221.194
+16:21:12 - mail.google.com : 74.125.205.83
+16:21:12 - google.com : 209.85.233.138
+-
+16:21:22 - drive.google.com : 173.194.221.194
+16:21:22 - mail.google.com : 74.125.205.83
+16:21:22 - google.com : 209.85.233.138
+
 ```
 
 ### json-файл(ы), который(е) записал ваш скрипт:
 ```json
-???
+{"drive.google.com": "173.194.221.194", "mail.google.com": "74.125.205.83", "google.com": "209.85.233.138"}
 ```
 
 ### yml-файл(ы), который(е) записал ваш скрипт:
 ```yaml
-???
+drive.google.com: 173.194.221.194
+google.com: 209.85.233.138
+mail.google.com: 74.125.205.83
 ```
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
