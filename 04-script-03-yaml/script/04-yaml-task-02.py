@@ -13,13 +13,6 @@ service_host = {
     'google.com': '0'
 }
 
-# Функция заполнения словаря Актуальными IP адресами
-def fill_tlist(x):
-    for node in x:
-        ipaddres = socket.gethostbyname(node)
-        x[node] = ipaddres
-    return x
-
 # Получаем текущие значения
 for host in service_host:
     initial_ip = socket.gethostbyname(host)

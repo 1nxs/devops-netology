@@ -1,4 +1,44 @@
 ### [Задание 2](04-yaml-task-02.py)
+В целом, можно использовать несколько разных подходов к конструкции
+#### вариант 1
+Модифицировать цикл для записи результата.
+Минус в том, что создастся много файлов, что при использовании в проде дало бы бОльшую нагрузку.
+Но задачу учебную он всё равно решает.
+<details>
+
+```python
+while True:
+    # Пишем время старта цикла
+    dt = datetime.datetime.now()
+    dd = dt.strftime('%d-%m-%Y %H:%M:%S')
+    print("'-..-''-..-'  ", dd)
+    # Перебираем хосты из словаря
+    for host in service_host:
+        old_ip = service_host[host]
+        new_ip = socket.gethostbyname(host)
+        # Проверяем значение, если не совпадает то записываем в словарь и ругаемся ошибкой
+        if new_ip != old_ip:
+            service_host[host] = new_ip
+            print("[ERROR] "+host+" IP changed: old IP "+old_ip+", new IP "+new_ip)
+            print("[ERROR] Shit happens at >>>>>>", dd)
+            with open(host + '.json', 'w') as output_json:
+                # Формируем json
+                data_json = json.dumps({host: service_host[host]})
+                # Записываем его в файл
+                output_json.write(data_json)
+            # Записываем полученные данные в виде yaml файла
+            with open(host + '.yaml', 'w') as output_yaml:
+                # Формируем yaml
+                data_yaml = yaml.dump([{host: service_host[host]}])
+                # Записываем его в файл
+                output_yaml.write(data_yaml)
+        print(host + " - " + service_host[host])
+    time.sleep(10)
+```
+</details>
+
+#### вариант 2
+Сделать функцию записи в файл
 ```python
 #!/usr/bin/env python3
 # * изменена обработка времени
@@ -17,14 +57,6 @@ service_host = {
     'mail.google.com': '0',
     'google.com': '0'
 }
-
-# Функция заполнения словаря Актуальными IP адресами
-def fill_tlist(x):
-    for node in x:
-        ipaddres = socket.gethostbyname(node)
-        x[node] = ipaddres
-    return x
-
 # Получаем текущие значения
 for host in service_host:
     initial_ip = socket.gethostbyname(host)
@@ -56,7 +88,7 @@ while True:
     time.sleep(10)
 ```
 - вывод теста:<br>
-![02](img/04-yaml-task-02)
+![02](../img/04-yaml-task-02.png)
 
 - вывод в файл в формате [json](service_host.json)
 ```json
