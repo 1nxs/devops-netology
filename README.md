@@ -1,4 +1,4 @@
-devops-netology
+devops-netology | DevOps-инженер
 ===============
 ## [DevOps и системное администрирование]()
 * 10 августа — 17 
