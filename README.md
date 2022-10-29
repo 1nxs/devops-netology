@@ -6,7 +6,7 @@ devops-netology
 <details>
 
 # Домашние задания по курсу «DevOps и системное администрирование»
-
+- actual branch: **devsys10**
 ## Модуль 1. Введение в DevOps
 
 1.1. [x] [Введение в DevOps](01-intro-01/README.md)
