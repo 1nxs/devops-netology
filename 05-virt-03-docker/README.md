@@ -177,11 +177,16 @@ ultimate question of life, the universe, and everything
 
 Соберите Docker образ с Ansible, загрузите на Docker Hub и пришлите ссылку вместе с остальными ответами к задачам.
 
+### Ответ
 
----
+[Dockerfile](src/build/ansible/mydockerfile) загружен в репозиторий
 
-### Как cдавать задание
+```shell
+$ touch Dockerfile
+$ nano Dockerfile 
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
 
----
+
+
+
+```
