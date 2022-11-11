@@ -118,6 +118,26 @@ $  docker push 1nxs/nginx:1.0
 - MongoDB, как основное хранилище данных для java-приложения;
 - Gitlab сервер для реализации CI/CD процессов и приватный (закрытый) Docker Registry.
 
+### Ответ
+- Высоконагруженное монолитное java веб-приложение;
+  - Ну монолитное java - это ключевое, Java будет юзать JVM. Так что контейнеры тут лишние, просто виртуалка будет правильнее.
+- Nodejs веб-приложение;
+  - Вот тут как раз обратная ситуация. Docker даст удобство для разработки - быстро много копий, возможность масштабироваться и переноса.
+- Мобильное приложение c версиями для Android и iOS;
+  - Ну для Дроида есть что-то похожее на докер, для IOS нет его.
+- Шина данных на базе Apache Kafka;
+  - Подходит, можно использовать для масштабирования. Для среды тестировки еще, чтоб шина прода "не страдала" :)
+- Elasticsearch кластер для реализации логирования продуктивного веб-приложения - три ноды elasticsearch, два logstash и две ноды kibana;
+  - Вендор рекомендует, да и в целом можно, накладные расходы не большие от контейнеров
+- Мониторинг-стек на базе Prometheus и Grafana;
+  - Так-же, подходит. Удобно пока идёт активная настройка в т.ч.
+- MongoDB, как основное хранилище данных для java-приложения;
+  - Ну, в целом для db не рекомендуется в прод, но для маленьких или тестовых подходит.
+- Gitlab сервер для реализации CI/CD процессов и приватный (закрытый) Docker Registry.
+  - А зачем? Изменения в таких машинах минимальны, а вот данных там обычно много, в случае Registry - там еще и файлики могут быть крайне жирными.\
+  - В контейнер тоже можно, а вот данные с него нужно мапить.
+
+
 ## Задача 3
 
 - Запустите первый контейнер из образа ***centos*** c любым тэгом в фоновом режиме, подключив папку ```/data``` из текущей рабочей директории на хостовой машине в ```/data``` контейнера;
@@ -125,6 +145,31 @@ $  docker push 1nxs/nginx:1.0
 - Подключитесь к первому контейнеру с помощью ```docker exec``` и создайте текстовый файл любого содержания в ```/data```;
 - Добавьте еще один файл в папку ```/data``` на хостовой машине;
 - Подключитесь во второй контейнер и отобразите листинг и содержание файлов в ```/data``` контейнера.
+
+### Ответ
+```shell
+$ sudo mkdir data
+$ docker run -it -d --name centos --mount type=bind,source=/data,target=/data centos
+$ docker run -it -d --name debian --mount type=bind,source=/data,target=/data debian
+$ docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED          STATUS          PORTS                                   NAMES
+132df8fb3e01   debian              "bash"                   51 seconds ago   Up 49 seconds                                           debian
+75d0324c4ea1   centos              "/bin/bash"              2 minutes ago    Up 2 minutes                                            centos
+$ docker exec -it centos bash
+[root@75d0324c4ea1 /]# touch /data/42_centos.txt
+[root@75d0324c4ea1 /]# vi /data/42_centos.txt
+$ docker exec -it debian bash     
+root@132df8fb3e01:/# touch /data/42_debian.txt
+root@132df8fb3e01:/# ls -la /data/
+total 16
+drwxr-xr-x 2 root root 4096 Nov 11 18:08 .
+drwxr-xr-x 1 root root 4096 Nov 11 17:58 ..
+-rw-r--r-- 1 root root   56 Nov 11 18:04 42.txt
+-rw-r--r-- 1 root root   56 Nov 11 18:07 42_centos.txt
+-rw-r--r-- 1 root root    0 Nov 11 18:08 42_debian.txt
+root@132df8fb3e01:/# cat /data/42_centos.txt 
+ultimate question of life, the universe, and everything
+```
 
 ## Задача 4 (*)
 
