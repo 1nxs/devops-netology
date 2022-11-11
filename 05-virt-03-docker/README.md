@@ -83,7 +83,7 @@ Hey, Netology
 
 # Prepare to deploy
 # Add tag
-$ docker tag 1nxs/nginx 1nxs/nginx:1.0.1
+$ docker tag 1nxs/nginx 1nxs/nginx:1.0
 $ docker images -a
 REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
 1nxs/nginx   1.0       083518b0b543   2 hours ago   142MB
@@ -179,14 +179,7 @@ ultimate question of life, the universe, and everything
 
 ### Ответ
 
-[Dockerfile](src/build/ansible/mydockerfile) загружен в репозиторий
-
-```shell
-$ touch Dockerfile
-$ nano Dockerfile 
-
-
-
-
-
-```
+- https://hub.docker.com/repository/docker/1nxs/ansible
+> сделал dockerfile
+> собрал образ, выставил тэг
+> закинул в hub.docker
