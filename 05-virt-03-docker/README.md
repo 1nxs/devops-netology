@@ -1,28 +1,6 @@
 
 # Домашнее задание к занятию "3. Введение. Экосистема. Архитектура. Жизненный цикл Docker контейнера"
 
-## Как сдавать задания
-
-Обязательными к выполнению являются задачи без указания звездочки. Их выполнение необходимо для получения зачета и диплома о профессиональной переподготовке.
-
-Задачи со звездочкой (*) являются дополнительными задачами и/или задачами повышенной сложности. Они не являются обязательными к выполнению, но помогут вам глубже понять тему.
-
-Домашнее задание выполните в файле readme.md в github репозитории. В личном кабинете отправьте на проверку ссылку на .md-файл в вашем репозитории.
-
-Любые вопросы по решению задач задавайте в чате учебной группы.
-
----
-
-
-## Важно!
-
-Перед отправкой работы на проверку удаляйте неиспользуемые ресурсы.
-Это важно для того, чтоб предупредить неконтролируемый расход средств, полученных в результате использования промокода.
-
-Подробные рекомендации [здесь](https://github.com/netology-code/virt-homeworks/blob/virt-11/r/README.md)
-
----
-
 ## Задача 1
 
 Сценарий выполения задачи:
@@ -32,7 +10,7 @@
 - создайте свой fork образа;
 - реализуйте функциональность:
 запуск веб-сервера в фоне с индекс-страницей, содержащей HTML-код ниже:
-```
+```html
 <html>
 <head>
 Hey, Netology
@@ -43,6 +21,82 @@ Hey, Netology
 </html>
 ```
 Опубликуйте созданный форк в своем репозитории и предоставьте ответ в виде ссылки на https://hub.docker.com/username_repo.
+
+### Ответ
+<details>
+
+```shell
+vagrant@server1:~/nginx$
+# Prepare Dockerfile 4 build
+$ touch Dockerfile
+$ nano Dockerfile 
+$ cat Dockerfile 
+FROM nginx:latest
+COPY ./index.html /usr/share/nginx/html/index.html
+# Prepare index.html 4 nginx
+$ touch index.html
+$ nano index.html 
+$ cat index.html 
+<html>
+<head>
+Hey, Netology
+</head>
+<body>
+<h1>I’m DevOps Engineer!</h1>
+</body>
+</html>
+# Docker build
+$ docker build -t 1nxs/nginx .
+Sending build context to Docker daemon  3.072kB
+Step 1/2 : FROM nginx:latest
+latest: Pulling from library/nginx
+e9995326b091: Pull complete 
+71689475aec2: Pull complete 
+f88a23025338: Pull complete 
+0df440342e26: Pull complete 
+eef26ceb3309: Pull complete 
+8e3ed6a9e43a: Pull complete 
+Digest: sha256:943c25b4b66b332184d5ba6bb18234273551593016c0e0ae906bab111548239f
+Status: Downloaded newer image for nginx:latest
+ ---> 76c69feac34e
+Step 2/2 : COPY ./index.html /usr/share/nginx/html/index.html
+ ---> 083518b0b543
+Successfully built 083518b0b543
+Successfully tagged 1nxs/nginx:latest
+# Run to test
+$ docker run -it -d -p 8080:80 --name nginx 1nxs/nginx:latest
+9bcfd0d2020b15eb7697620b082246e73363ba5feb67bd4364fd82cec455a762
+
+$ docker ps
+CONTAINER ID   IMAGE               COMMAND                  CREATED       STATUS       PORTS                                   NAMES
+9bcfd0d2020b   1nxs/nginx:latest   "/docker-entrypoint.…"   2 hours ago   Up 2 hours   0.0.0.0:8080->80/tcp, :::8080->80/tcp   nginx
+# It's alive :)
+$ curl 0.0.0.0:8080
+<html>
+<head>
+Hey, Netology
+</head>
+<body>
+<h1>I’m DevOps Engineer!</h1>
+</body>
+</html>
+
+# Prepare to deploy
+# Add tag
+$ docker tag 1nxs/nginx 1nxs/nginx:1.0.1
+$ docker images -a
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+1nxs/nginx   1.0       083518b0b543   2 hours ago   142MB
+1nxs/nginx   latest    083518b0b543   2 hours ago   142MB
+nginx        latest    76c69feac34e   2 weeks ago   142MB
+
+# Push to hub.docker.com
+$  docker login -u 1nxs
+$  docker push 1nxs/nginx:1.0
+```
+</details>
+
+- https://hub.docker.com/repository/docker/1nxs/nginx
 
 ## Задача 2
 
