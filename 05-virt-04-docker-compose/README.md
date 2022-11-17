@@ -8,42 +8,43 @@
 - Скриншот страницы, как на слайде из презентации (слайд 37).
 
 ### Ответ
-1. Слайда 37 не существует. В прочем, как и нинфы о необходимости packer'a
-2. Предварительные танцы вокруг YC
+Танцы вокруг YC
 <details>
 
 - Поставил себе zsh на хостмашину (Mint 21 Cinnamon)<br> 
 - Оставил пока на ней git ansible vagrant vbox<br>
 - docker + compose поднимаются внутри vbox, ибо нет уверенности, что далее "вот-это-всё" потребуется на хостмашине.
 - опять на хост. установить packer методом репозитория не вышло.  установил бинарник.
+- опять на хост. установить terraform методом репозитория не вышло.  установил бинарник.
+- сделать так чтоб не ругалось при ините
+```json
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+}
+```
 
-
+нужно создать `nano ~/.terraformrc` <br>
+про подробности в [избе читальне](https://cloud.yandex.com/en/docs/tutorials/infrastructure-management/terraform-quickstart)
 ```shell
-❯ yc init
-❯ yc vpc network create --name vmdefnet --labels my-label=netology --description "Netology test net"
-id: enp19a7vh----0d46n0k
-folder_id: b1gprhi----91tp8b54f
-created_at: "2022-11-14T19:22:30Z"
-name: vmdefnet
-description: Netology test net
-labels:
-  my-label: netology
-
-❯ yc vpc subnet create --name vmsubnet-01 --zone ru-central1-a --range 10.87.0.0/24 --network-name=vmdefnet --description "Netology test subnet"
-id: e9bf1unlvhc----kts6n6
-folder_id: b1gprhi8----1tp8b54f
-created_at: "2022-11-14T19:30:39Z"
-name: vmsubnet-01
-description: Netology test subnet
-network_id: enp19a7vh----0d46n0k
-zone_id: ru-central1-a
-v4_cidr_blocks:
-  - 10.87.0.0/24
-
+provider_installation {
+  network_mirror {
+    url = "https://terraform-mirror.yandexcloud.net/"
+    include = ["registry.terraform.io/*/*"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/*/*"]
+  }
+}
 ```
 </details>
 
-3. [Искомый скриншот](img/packer-image.png)
+1. Слайда 37 не существует.
+
+2. [Искомый скриншот](img/packer-image.png)
 
 ```shell
 ❯ yc compute image list
@@ -59,11 +60,10 @@ v4_cidr_blocks:
 Создать вашу первую виртуальную машину в Яндекс.Облаке.
 
 Для получения зачета, вам необходимо предоставить:
-- Скриншот страницы свойств созданной ВМ, как на примере ниже:
+- Скриншот страницы свойств созданной ВМ, как на [примере](assets/yc_01.png):
 
-<p align="center">
-  <img width="1200" height="600" src="./assets/yc_01.png">
-</p>
+### Ответ
+![скриншот](./img/vm.png)
 
 ## Задача 3
 
