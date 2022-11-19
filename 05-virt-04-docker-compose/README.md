@@ -8,48 +8,6 @@
 - Скриншот страницы, как на слайде из презентации (слайд 37).
 
 ### Ответ
-Танцы вокруг YC
-<details>
-
-- Поставил себе zsh на хостмашину (Mint 21 Cinnamon)<br> 
-- Оставил пока на ней git ansible vagrant vbox<br>
-- docker + compose поднимаются внутри vbox, ибо нет уверенности, что далее "вот-это-всё" потребуется на хостмашине.
-- опять на хост. установить packer методом репозитория не вышло.  установил бинарник.
-- опять на хост. установить terraform методом репозитория не вышло.  установил бинарник.
-- сделать так чтоб не ругалось при ините
-```json
-terraform {
-  required_providers {
-    yandex = {
-      source = "yandex-cloud/yandex"
-    }
-  }
-}
-```
-
-нужно создать `nano ~/.terraformrc` <br>
-про подробности в [избе читальне](https://cloud.yandex.com/en/docs/tutorials/infrastructure-management/terraform-quickstart)
-```shell
-provider_installation {
-  network_mirror {
-    url = "https://terraform-mirror.yandexcloud.net/"
-    include = ["registry.terraform.io/*/*"]
-  }
-  direct {
-    exclude = ["registry.terraform.io/*/*"]
-  }
-}
-```
-
-- вот где-то тут сдох пк вместе с пачкой невыполненных пушей
-- делаем всё заново
-- Ansible - не будет работать пока мы форсированно не укажем на кфг
-```shell
-export ANSIBLE_CONFIG=/mnt/hgfs/GIT/devops-netology/05-virt-04-docker-compose/worker/ansible/ansible.cfg
-```
-
-</details>
-
 1. Слайда 37 не существует.
 
 2. [Искомый скриншот](img/packer-image.png)
@@ -83,6 +41,51 @@ export ANSIBLE_CONFIG=/mnt/hgfs/GIT/devops-netology/05-virt-04-docker-compose/wo
 ### Ответ
 ![скриншот](./img/node1.png)
 ![скриншот](./img/web.png)
+
+---
+`worklog` под сопйлером, дабы не смущать.
+<details>
+
+- Поставил себе zsh на хостмашину (Mint 21 Cinnamon)<br> 
+- Оставил пока на ней git ansible vagrant vbox<br>
+- docker + compose поднимаются внутри vbox, ибо нет уверенности, что далее "вот-это-всё" потребуется на хостмашине.
+- опять на хост. установить packer методом репозитория не вышло.  установил бинарник.
+- опять на хост. установить terraform методом репозитория не вышло.  установил бинарник.
+  - сделать так чтоб не ругалось при ините
+```
+terraform {
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+  }
+}
+```
+
+и еще нужно создать `nano ~/.terraformrc` <br>
+про подробности в [избе читальне](https://cloud.yandex.com/en/docs/tutorials/infrastructure-management/terraform-quickstart)
+```shell
+provider_installation {
+  network_mirror {
+    url = "https://terraform-mirror.yandexcloud.net/"
+    include = ["registry.terraform.io/*/*"]
+  }
+  direct {
+    exclude = ["registry.terraform.io/*/*"]
+  }
+}
+```
+
+- вот где-то тут сдох пк вместе с пачкой невыполненных пушей
+- делаем всё заново
+- Ansible - не будет работать пока мы форсированно не укажем на кфг
+```shell
+export ANSIBLE_CONFIG=/mnt/hgfs/GIT/devops-netology/05-virt-04-docker-compose/worker/ansible/ansible.cfg
+```
+
+</details>
+
+---
 
 ## Задача 4 (*)
 
