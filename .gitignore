@@ -1,2 +1,3 @@
 /.idea/
 /05-virt-04-docker-compose/worker/
+/05-virt-05-docker-swarm/worker/

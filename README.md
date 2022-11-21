@@ -60,15 +60,15 @@ devops-netology | DevOps-инженер
 - actual branch: **virt-11**
 ## Блок 5. Виртуализация
 
-5.1. [on check] [Введение в виртуализацию.](05-virt-01-basics/README.md)
+5.1. [x] [Введение в виртуализацию.](05-virt-01-basics/README.md)
 
-5.2. [in progress] [Применение принципов IaaC в работе с виртуальными машинами](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-02-iaac)
+5.2. [x] [Применение принципов IaaC в работе с виртуальными машинами](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-02-iaac)
 
-5.3. [-] [Введение в Docker](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-03-docker)
+5.3. [x] [Введение в Docker](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-03-docker)
 
-5.4. [-] [Оркестрация группой Docker контейнеров на примере Docker Compose.](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-04-docker-compose)
+5.4. [x] [Оркестрация группой Docker контейнеров на примере Docker Compose.](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-04-docker-compose)
 
-5.5. [-] [ Оркестрация кластером Docker контейнеров на примере Docker Swarm.](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-05-docker-swarm)
+5.5. [in progress] [ Оркестрация кластером Docker контейнеров на примере Docker Swarm.](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-05-docker-swarm)
 
 ## Блок 6. Администрирование баз данных
 
