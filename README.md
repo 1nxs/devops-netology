@@ -68,11 +68,11 @@ devops-netology | DevOps-инженер
 
 5.4. [x] [Оркестрация группой Docker контейнеров на примере Docker Compose.](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-04-docker-compose)
 
-5.5. [in progress] [ Оркестрация кластером Docker контейнеров на примере Docker Swarm.](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-05-docker-swarm)
+5.5. [on check] [ Оркестрация кластером Docker контейнеров на примере Docker Swarm.](https://github.com/netology-code/virt-homeworks/tree/virt-11/05-virt-05-docker-swarm)
 
 ## Блок 6. Администрирование баз данных
 
-6.1. [-] [Типы и структура СУБД](06-db-01-basics)
+6.1. [on check] [Типы и структура СУБД](06-db-01-basics)
 
 6.2. [-] [SQL](06-db-02-sql)
 
