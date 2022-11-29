@@ -1,0 +1,23 @@
+version: '3.5'
+services:
+  postgres:
+    image: postgres:12
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./backup:/data/backup/postgres
+    ports:
+      - "5432:5432"
+    restart: always
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - ./pgAdmin:/var/lib/pgadmin
+    ports:
+      - "80:80"
+    restart: always

@@ -1,14 +1,12 @@
-# -*- mode: ruby -*-
-
 ISO = "bento/centos-7"
 NET = "192.168.56."
-DOMAIN = ".netology"
+DOMAIN = ".lab"
 HOST_PREFIX = "server"
 INVENTORY_PATH = "../ansible/inventory"
 
 servers = [
   {
-    :hostname => HOST_PREFIX + "1" + DOMAIN,
+    :hostname => HOST_PREFIX + "01" + DOMAIN,
     :ip => NET + "11",
     :ssh_host => "20011",
     :ssh_vm => "22",
@@ -19,6 +17,7 @@ servers = [
 
 Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: false
+  config.ssh.insert_key = false
   servers.each do |machine|
     config.vm.define machine[:hostname] do |node|
       node.vm.box = ISO
