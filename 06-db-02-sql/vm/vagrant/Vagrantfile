@@ -1,6 +1,6 @@
 # -*- mode: ruby -*-
 
-ISO = "bento/ubuntu-20.04"
+ISO = "bento/centos-7"
 NET = "192.168.56."
 DOMAIN = ".netology"
 HOST_PREFIX = "server"
@@ -12,8 +12,8 @@ servers = [
     :ip => NET + "11",
     :ssh_host => "20011",
     :ssh_vm => "22",
-    :ram => 1024,
-    :core => 1
+    :ram => 2048,
+    :core => 2
   }
 ]
 
