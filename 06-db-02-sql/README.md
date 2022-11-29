@@ -12,6 +12,14 @@
 
 Приведите получившуюся команду или docker-compose манифест.
 
+### Ответ
+[docker-compose.yaml](vm/ansible/stack/docker-compose.yaml)
+
+В каталоге [vm](vm) реализован следующий вариант:
+- поднимаем виртуалку на bento/centos-7
+- деплоим туда docker+compose
+- на поднятой подсистеме уже играем в PostgreSQL + pgadmin согласно ТЗ<br>
+
 ## Задача 2
 
 В БД из задачи 1: 
