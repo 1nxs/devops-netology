@@ -144,8 +144,36 @@ Foreign-key constraints:
 test_db=# 
 ```
 - SQL-запрос для выдачи списка пользователей с правами над таблицами test_db
-- 
+```postgres-sql
+SELECT table_name, array_agg(privilege_type), grantee
+FROM information_schema.table_privileges
+WHERE table_name = 'orders' OR table_name = 'clients'
+GROUP BY table_name, grantee;
+```
+```shell
+test_db=# 
+ table_name |                         array_agg                         |     grantee      
+------------+-----------------------------------------------------------+------------------
+ clients    | {INSERT,TRIGGER,REFERENCES,TRUNCATE,DELETE,UPDATE,SELECT} | postgres
+ clients    | {INSERT,TRIGGER,REFERENCES,TRUNCATE,DELETE,UPDATE,SELECT} | test-admin-user
+ clients    | {DELETE,INSERT,SELECT,UPDATE}                             | test-simple-user
+ orders     | {INSERT,TRIGGER,REFERENCES,TRUNCATE,DELETE,UPDATE,SELECT} | postgres
+ orders     | {INSERT,TRIGGER,REFERENCES,TRUNCATE,DELETE,UPDATE,SELECT} | test-admin-user
+ orders     | {DELETE,SELECT,UPDATE,INSERT}                             | test-simple-user
+(6 rows)
+test_db=# 
+```
 - список пользователей с правами над таблицами test_db
+```shell
+test_db=# \du
+                                       List of roles
+    Role name     |                         Attributes                         | Member of 
+------------------+------------------------------------------------------------+-----------
+ postgres         | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+ test-admin-user  | Superuser, No inheritance                                  | {}
+ test-simple-user |                                                            | {}
+test_db=#
+```
 
 ## Задача 3
 
