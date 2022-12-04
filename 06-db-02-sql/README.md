@@ -88,6 +88,55 @@ CREATE TABLE clients (
 	"заказ" INT REFERENCES orders (id)
 );
 ```
+Приведите:
+- итоговый список БД после выполнения пунктов выше,
+```shell
+test_db=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
+-----------+----------+----------+------------+------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ test_db   | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+(4 rows)
+```
+- описание таблиц (describe)
+```shell
+test_db=# \d clients
+                                  Table "public.clients"
+      Column       |  Type   | Collation | Nullable |               Default               
+-------------------+---------+-----------+----------+-------------------------------------
+ id                | integer |           | not null | nextval('clients_id_seq'::regclass)
+ фамилия           | text    |           |          | 
+ cтрана проживания | text    |           |          | 
+ заказ             | integer |           |          | 
+Indexes:
+    "clients_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "clients_заказ_fkey" FOREIGN KEY ("заказ") REFERENCES orders(id)
+test_db=# 
+```
+```shell
+test_db=# \d clients
+                                  Table "public.clients"
+      Column       |  Type   | Collation | Nullable |               Default               
+-------------------+---------+-----------+----------+-------------------------------------
+ id                | integer |           | not null | nextval('clients_id_seq'::regclass)
+ фамилия           | text    |           |          | 
+ cтрана проживания | text    |           |          | 
+ заказ             | integer |           |          | 
+Indexes:
+    "clients_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "clients_заказ_fkey" FOREIGN KEY ("заказ") REFERENCES orders(id)
+test_db=# 
+```
+- SQL-запрос для выдачи списка пользователей с правами над таблицами test_db
+- 
+- список пользователей с правами над таблицами test_db
 
 ## Задача 3
 
