@@ -66,7 +66,7 @@ CREATE DATABASE test_db;
 Опираясь на доку https://postgrespro.ru/docs/postgresql/12/datatype-numeric <br>
 выбран тип `SERIAL` - в основе лежит тип INTEGER, однако значением по умолчанию для величин этого типа является не NULL, а следующее целое число.\
 Это удобно для создания столбцов с уникальными идентификаторами.
-```postgres-psql
+```sql
 CREATE TABLE orders (
 	id serial PRIMARY KEY, 
 	"наименование" TEXT, 
@@ -80,7 +80,7 @@ CREATE TABLE orders (
 - страна проживания (string, **index**)
 - заказ (foreign key orders)
 
-```postgres-psql
+```sql
 CREATE TABLE clients (
 	id serial PRIMARY KEY, 
 	"фамилия" TEXT, 
@@ -91,7 +91,7 @@ CREATE TABLE clients (
 - предоставьте привилегии на все операции пользователю test-admin-user на таблицы БД test_db
 - создайте пользователя test-simple-user  
 - предоставьте пользователю test-simple-user права на SELECT/INSERT/UPDATE/DELETE данных таблиц БД test_db
-```postgres-sql
+```sql
 GRANT ALL ON TABLE clients, orders TO "test-admin-user";
 CREATE USER "test-simple-user" WITH LOGIN;
 GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE clients,orders TO "test-simple-user";
@@ -146,7 +146,7 @@ test_db=#
 
 ```
 - SQL-запрос для выдачи списка пользователей с правами над таблицами test_db
-```postgres-sql
+```sql
 SELECT table_name, array_agg(privilege_type), grantee
 FROM information_schema.table_privileges
 WHERE table_name = 'orders' OR table_name = 'clients'
@@ -209,13 +209,13 @@ test_db=#
 
 ### Ответ
 
-```postgres-sql
+```sql
 INSERT INTO orders ("наименование", "цена" ) VALUES ('Шоколад', '10'), ('Принтер', '3000'), ('Книга', '500'), ('Монитор', '7000'), ('Гитара', '4000');
 INSERT INTO clients ("фамилия", "cтрана проживания") VALUES ('Иванов Иван Иванович', 'USA'), ('Петров Петр Петрович', 'Canada'), ('Иоганн Себастьян Бах', 'Japan'), ('Ронни Джеймс Дио', 'Russia'), ('Ritchie Blackmore', 'Russia');
 ```
 про кол-во записей -  можно было бы `select * from XXX` но если записей много то это как-то "криво"\
 запросы объединяем через `union all` https://postgrespro.ru/docs/postgresql/12/typeconv-union-case
-```postgres-sql
+```sql
 SELECT 'clients' AS name_table,  COUNT(*) AS number_rows  FROM clients
 union all
 SELECT 'orders' AS name_table,  COUNT(*) AS number_rows  FROM orders;
@@ -248,7 +248,7 @@ SELECT 'orders' AS name_table,  COUNT(*) AS number_rows  FROM orders;
 
 ### Ответ
 
-```postgres-sql
+```sql
 update clients set "заказ"=13 where фамилия='Иванов Иван Иванович';
 UPDATE clients SET "заказ"=14 WHERE id=2;
 UPDATE clients SET "заказ"=15 WHERE id=3;
