@@ -114,34 +114,36 @@ test_db=# \l
 ```
 - описание таблиц (describe)
 ```shell
-test_db=# \d clients
-                                  Table "public.clients"
-      Column       |  Type   | Collation | Nullable |               Default               
--------------------+---------+-----------+----------+-------------------------------------
- id                | integer |           | not null | nextval('clients_id_seq'::regclass)
- фамилия           | text    |           |          | 
- cтрана проживания | text    |           |          | 
- заказ             | integer |           |          | 
+test_db=# \d+ orders
+                                                   Table "public.orders"
+    Column    |  Type   | Collation | Nullable |              Default               | Storage  | Stats target | Description 
+--------------+---------+-----------+----------+------------------------------------+----------+--------------+-------------
+ id           | integer |           | not null | nextval('orders_id_seq'::regclass) | plain    |              | 
+ наименование | text    |           |          |                                    | extended |              | 
+ цена         | integer |           |          |                                    | plain    |              | 
 Indexes:
-    "clients_pkey" PRIMARY KEY, btree (id)
-Foreign-key constraints:
-    "clients_заказ_fkey" FOREIGN KEY ("заказ") REFERENCES orders(id)
+    "orders_pkey" PRIMARY KEY, btree (id)
+Referenced by:
+    TABLE "clients" CONSTRAINT "clients_заказ_fkey" FOREIGN KEY ("заказ") REFERENCES orders(id)
+Access method: heap
 test_db=# 
 ```
 ```shell
-test_db=# \d clients
-                                  Table "public.clients"
-      Column       |  Type   | Collation | Nullable |               Default               
--------------------+---------+-----------+----------+-------------------------------------
- id                | integer |           | not null | nextval('clients_id_seq'::regclass)
- фамилия           | text    |           |          | 
- cтрана проживания | text    |           |          | 
- заказ             | integer |           |          | 
+test_db=# \d+ clients
+                                                      Table "public.clients"
+      Column       |  Type   | Collation | Nullable |               Default               | Storage  | Stats target | Description 
+-------------------+---------+-----------+----------+-------------------------------------+----------+--------------+-------------
+ id                | integer |           | not null | nextval('clients_id_seq'::regclass) | plain    |              | 
+ фамилия           | text    |           |          |                                     | extended |              | 
+ cтрана проживания | text    |           |          |                                     | extended |              | 
+ заказ             | integer |           |          |                                     | plain    |              | 
 Indexes:
     "clients_pkey" PRIMARY KEY, btree (id)
 Foreign-key constraints:
     "clients_заказ_fkey" FOREIGN KEY ("заказ") REFERENCES orders(id)
+Access method: heap
 test_db=# 
+
 ```
 - SQL-запрос для выдачи списка пользователей с правами над таблицами test_db
 ```postgres-sql
@@ -205,6 +207,27 @@ test_db=#
     - запросы 
     - результаты их выполнения.
 
+### Ответ
+
+```postgres-sql
+INSERT INTO orders ("наименование", "цена" ) VALUES ('Шоколад', '10'), ('Принтер', '3000'), ('Книга', '500'), ('Монитор', '7000'), ('Гитара', '4000');
+INSERT INTO clients ("фамилия", "cтрана проживания") VALUES ('Иванов Иван Иванович', 'USA'), ('Петров Петр Петрович', 'Canada'), ('Иоганн Себастьян Бах', 'Japan'), ('Ронни Джеймс Дио', 'Russia'), ('Ritchie Blackmore', 'Russia');
+```
+про кол-во записей -  можно было бы `select * from XXX` но если записей много то это как-то "криво"\
+запросы объединяем через `union all` https://postgrespro.ru/docs/postgresql/12/typeconv-union-case
+```postgres-sql
+SELECT 'clients' AS name_table,  COUNT(*) AS number_rows  FROM clients
+union all
+SELECT 'orders' AS name_table,  COUNT(*) AS number_rows  FROM orders;
+
+ name_table | number_rows 
+------------+-------------
+ clients    |           5
+ orders     |           5
+(2 rows)
+
+```
+
 ## Задача 4
 
 Часть пользователей из таблицы clients решили оформить заказы из таблицы orders.
@@ -221,7 +244,24 @@ test_db=#
 
 Приведите SQL-запрос для выдачи всех пользователей, которые совершили заказ, а также вывод данного запроса.
  
-Подсказк - используйте директиву `UPDATE`.
+Подсказка - используйте директиву `UPDATE`.
+
+### Ответ
+
+```postgres-sql
+update clients set "заказ"=13 where фамилия='Иванов Иван Иванович';
+UPDATE clients SET "заказ"=14 WHERE id=2;
+UPDATE clients SET "заказ"=15 WHERE id=3;
+```
+```shell
+test_db=# select * from clients where "заказ" is not null;
+ id |       фамилия        | cтрана проживания | заказ 
+----+----------------------+-------------------+-------
+  2 | Петров Петр Петрович | Canada            |    14
+  3 | Иоганн Себастьян Бах | Japan             |    15
+  1 | Иванов Иван Иванович | USA               |    13
+(3 rows)
+```
 
 ## Задача 5
 
@@ -229,6 +269,7 @@ test_db=#
 (используя директиву EXPLAIN).
 
 Приведите получившийся результат и объясните что значат полученные значения.
+
 
 ## Задача 6
 
