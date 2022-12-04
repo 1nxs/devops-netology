@@ -45,6 +45,49 @@
 - описание таблиц (describe)
 - SQL-запрос для выдачи списка пользователей с правами над таблицами test_db
 - список пользователей с правами над таблицами test_db
+### Ответ
+Step 1
+- создайте пользователя test-admin-user и БД test_db
+- в БД test_db создайте таблицу orders и clients (спeцификация таблиц ниже)
+- предоставьте привилегии на все операции пользователю test-admin-user на таблицы БД test_db
+- создайте пользователя test-simple-user  
+- предоставьте пользователю test-simple-user права на SELECT/INSERT/UPDATE/DELETE данных таблиц БД test_db
+```shell
+sudo docker exec -it 5979b78de63f psql -U postgres
+CREATE USER "test-admin-user" WITH LOGIN;
+CREATE DATABASE test_db;
+\c test_db 
+```
+Таблица orders:
+- id (serial primary key)
+- наименование (string)
+- цена (integer)
+
+Опираясь на доку https://postgrespro.ru/docs/postgresql/12/datatype-numeric <br>
+выбран тип `SERIAL` - в основе лежит тип INTEGER, однако значением по умолчанию для величин этого типа является не NULL, а следующее целое число.\
+Это удобно для создания столбцов с уникальными идентификаторами.
+```postgres-psql
+CREATE TABLE orders (
+	id serial PRIMARY KEY, 
+	"наименование" TEXT, 
+	"цена" INT
+);
+```
+
+Таблица clients:
+- id (serial primary key)
+- фамилия (string)
+- страна проживания (string, **index**)
+- заказ (foreign key orders)
+
+```postgres-psql
+CREATE TABLE clients (
+	id serial PRIMARY KEY, 
+	"фамилия" TEXT, 
+	"cтрана проживания" TEXT, 
+	"заказ" INT REFERENCES orders (id)
+);
+```
 
 ## Задача 3
 

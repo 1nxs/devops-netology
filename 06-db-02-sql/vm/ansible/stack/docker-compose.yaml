@@ -11,13 +11,8 @@ services:
     ports:
       - "5432:5432"
     restart: always
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=yakushin.pavel@gmail.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-    volumes:
-      - ./pgAdmin:/var/lib/pgadmin
-    ports:
-      - "8080:80"
+  adminer:
+    image: adminer
     restart: always
+    ports:
+      - "8080:8080"
