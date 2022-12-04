@@ -311,12 +311,74 @@ test_db=# explain analyze select * from clients where "заказ" is not null;
 
 Восстановите БД test_db в новом контейнере.
 
-Приведите список операций, который вы применяли для бэкапа данных и восстановления. 
+Приведите список операций, который вы применяли для бэкапа данных и восстановления.
 
----
+### Ответ
 
-### Как cдавать задание
+* Создайте бэкап БД test_db и поместите его в volume, предназначенный для бэкапов (см. Задачу 1).
+* Остановите контейнер с PostgreSQL (но не удаляйте volumes).
+```shell
+[vagrant@server01 ~]$ sudo docker exec -it 6b84086517ad bash
+root@6b84086517ad:/# pg_dump -U postgres -F t test_db > /data/backup/postgres/test_db.tar
+[vagrant@server01 stack]$ cd backup/
+[vagrant@server01 backup]$ ll
+итого 16
+-rw-r--r--. 1 root root 14848 дек  4 20:54 test_db.tar
+[vagrant@server01 stack]$ sudo docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED        STATUS       PORTS                                       NAMES
+39c107c6084a   adminer       "entrypoint.sh docke…"   24 hours ago   Up 4 hours   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   stack_adminer_1
+6b84086517ad   postgres:12   "docker-entrypoint.s…"   24 hours ago   Up 4 hours   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   stack_postgres_1
+[vagrant@server01 stack]$ sudo docker stop 6b84086517ad
+6b84086517ad
+[vagrant@server01 stack]$ sudo docker ps -a
+CONTAINER ID   IMAGE         COMMAND                  CREATED        STATUS                      PORTS                                       NAMES
+39c107c6084a   adminer       "entrypoint.sh docke…"   24 hours ago   Up 4 hours                  0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   stack_adminer_1
+6b84086517ad   postgres:12   "docker-entrypoint.s…"   24 hours ago   Exited (0) 59 seconds ago                                               stack_postgres_1
+```
+* Поднимите новый пустой контейнер с PostgreSQL.
+```shell
+[vagrant@server01 stack]$ sudo docker rm 6b84086517ad
+6b84086517ad
+[vagrant@server01 stack]$ sudo docker-compose up -d
+stack_adminer_1 is up-to-date
+Creating stack_postgres_1 ... done
+[vagrant@server01 stack]$ sudo docker ps
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+095048d1fad0   postgres:12   "docker-entrypoint.s…"   14 seconds ago   Up 11 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   stack_postgres_1
+39c107c6084a   adminer       "entrypoint.sh docke…"   25 hours ago     Up 4 hours      0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   stack_adminer_1
+```
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+Восстановите БД test_db в новом контейнере.
 
----
+```shell
+[vagrant@server01 stack]$ sudo docker exec -it 095048d1fad0 bash
+root@095048d1fad0:/# pg_restore -U postgres --verbose -C -d postgres /data/backup/postgres/test_db.tar
+[vagrant@server01 stack]$ sudo docker exec -it 095048d1fad0 psql -U postgres
+postgres=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |   Access privileges   
+-----------+----------+----------+------------+------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+           |          |          |            |            | postgres=CTc/postgres
+ test_db   | postgres | UTF8     | en_US.utf8 | en_US.utf8 | 
+(4 rows)
+
+postgres=#
+postgres=# CREATE USER "test-admin-user" WITH LOGIN;
+postgres=# CREATE USER "test-simple-user" WITH LOGIN;
+postgres=# \c test_db 
+
+test_db=# explain analyze select * from clients where "заказ" is not null;
+                                             QUERY PLAN                                              
+-----------------------------------------------------------------------------------------------------
+ Seq Scan on clients  (cost=0.00..18.10 rows=806 width=72) (actual time=0.070..0.073 rows=3 loops=1)
+   Filter: ("заказ" IS NOT NULL)
+   Rows Removed by Filter: 2
+ Planning Time: 1.437 ms
+ Execution Time: 2.198 ms
+(5 rows)
+test_db=#
+```
