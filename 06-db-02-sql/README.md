@@ -88,6 +88,15 @@ CREATE TABLE clients (
 	"заказ" INT REFERENCES orders (id)
 );
 ```
+- предоставьте привилегии на все операции пользователю test-admin-user на таблицы БД test_db
+- создайте пользователя test-simple-user  
+- предоставьте пользователю test-simple-user права на SELECT/INSERT/UPDATE/DELETE данных таблиц БД test_db
+```postgres-sql
+GRANT ALL ON TABLE clients, orders TO "test-admin-user";
+CREATE USER "test-simple-user" WITH LOGIN;
+GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE clients,orders TO "test-simple-user";
+```
+
 Приведите:
 - итоговый список БД после выполнения пунктов выше,
 ```shell
