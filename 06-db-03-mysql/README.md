@@ -281,7 +281,7 @@ innodb_file_per_table = 1
 # Размер буфера (с одной 'ф') с незакомиченными транзакциями 1 Мб
 # https://dev.mysql.com/doc/refman/8.0/en/innodb-redo-log-buffer.html
 innodb_log_buffer_size = 1M
-# Буффер кеширования 30% от ОЗУ (а я отдавал 2GB машине)
+# Буфер кеширования 30% от ОЗУ (а я отдавал 2GB машине)
 # https://dev.mysql.com/doc/refman/8.0/en/innodb-buffer-pool-resize.html
 innodb_buffer_pool_size = 640M
 # Размер файла логов операций 100 Мб
