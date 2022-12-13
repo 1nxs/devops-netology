@@ -264,9 +264,43 @@ mysql> SHOW PROFILES;
 Приведите в ответе измененный файл `my.cnf`.
 
 ---
+### Ответ
+В докерной MySQL `my.cnf` лежит прям в `/etc`<br>
+файлики "на почитать" добавлю в конфиг:
 
-### Как оформить ДЗ?
+```properties
+[mysqld]
+# >> тз <<
+# Скорость IO важнее сохранности данных, ок
+# https://dev.mysql.com/doc/refman/8.0/en/optimizing-innodb-diskio.html
+innodb_flush_method = O_DSYNC
+innodb_flush_log_at_trx_commit = 1
+# Нужна компрессия таблиц для экономии места на диске
+# https://dev.mysql.com/doc/refman/8.0/en/innodb-table-compression.html
+innodb_file_per_table = 1
+# Размер буфера (с одной 'ф') с незакомиченными транзакциями 1 Мб
+# https://dev.mysql.com/doc/refman/8.0/en/innodb-redo-log-buffer.html
+innodb_log_buffer_size = 1M
+# Буффер кеширования 30% от ОЗУ (а я отдавал 2GB машине)
+# https://dev.mysql.com/doc/refman/8.0/en/innodb-buffer-pool-resize.html
+innodb_buffer_pool_size = 640M
+# Размер файла логов операций 100 Мб
+# https://dev.mysql.com/doc/refman/8.0/en/innodb-redo-log.html
+# там кстати написано, что всё это тлен и умерло с MySQL 8.0.30
+# и кошек нужно готовить с innodb_redo_log_capacity
+innodb_log_file_size = 100M
+# >>endof тз <<
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+skip-host-cache
+skip-name-resolve
+datadir=/var/lib/mysql
+socket=/var/run/mysqld/mysqld.sock
+secure-file-priv=/var/lib/mysql-files
+user=mysql
 
----
+pid-file=/var/run/mysqld/mysqld.pid
+[client]
+socket=/var/run/mysqld/mysqld.sock
+
+!includedir /etc/mysql/conf.d/
+```
