@@ -179,6 +179,77 @@ mysql> select * from information_schema.user_attributes;
 - на `MyISAM`
 - на `InnoDB`
 
+### Ответ
+Установите профилирование `SET profiling = 1`.
+```shell
+mysql> use test_db
+Database changed
+mysql>  SET profiling = 1;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+```
+
+Изучите вывод профилирования команд `SHOW PROFILES;`.
+```shell
+mysql> SHOW PROFILES;
++----------+------------+-------------------+
+| Query_ID | Duration   | Query             |
++----------+------------+-------------------+
+|        1 | 0.00044950 | SELECT DATABASE() |
+|        2 | 0.00213200 | show databases    |
+|        3 | 0.00318375 | show tables       |
++----------+------------+-------------------+
+3 rows in set, 1 warning (0.00 sec)
+```
+
+Исследуйте, какой `engine` используется в таблице БД `test_db` и **приведите в ответе**.
+```shell
+mysql> show table status;
++--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+--------------------+----------+----------------+---------+
+| Name   | Engine | Version | Row_format | Rows | Avg_row_length | Data_length | Max_data_length | Index_length | Data_free | Auto_increment | Create_time         | Update_time         | Check_time | Collation          | Checksum | Create_options | Comment |
++--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+--------------------+----------+----------------+---------+
+| orders | InnoDB |      10 | Dynamic    |    5 |           3276 |       16384 |               0 |            0 |         0 |              6 | 2022-12-13 18:02:49 | 2022-12-13 18:02:49 | NULL       | utf8mb4_0900_ai_ci |     NULL |                |         |
++--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+---------------------+------------+--------------------+----------+----------------+---------+
+1 row in set (0.01 sec)
+```
+
+Измените `engine` и **приведите время выполнения и запрос на изменения из профайлера в ответе**:
+- на `MyISAM`
+```shell
+mysql> ALTER TABLE orders ENGINE = MyISAM;
+Query OK, 5 rows affected (0.14 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+```
+- на `InnoDB`
+```shell
+mysql> ALTER TABLE orders ENGINE = InnoDB;
+Query OK, 5 rows affected (0.25 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+```
+
+```shell
+mysql> SHOW PROFILES;
++----------+------------+-----------------------------------------------------+
+| Query_ID | Duration   | Query                                               |
++----------+------------+-----------------------------------------------------+
+|        1 | 0.00014800 | SELECT DATABASE()                                   |
+|        2 | 0.00044950 | SELECT DATABASE()                                   |
+|        3 | 0.00213200 | show databases                                      |
+|        4 | 0.00318375 | show tables                                         |
+|        5 | 0.00853150 | show table status                                   |
+|        6 | 0.18098675 | ALTER TABLE orders ENGINE = MyISAM                  |
+|        7 | 0.25250200 | ALTER TABLE orders ENGINE = InnoDB                  |
+|        8 | 0.00034200 | SELECT * FROM `orders` WHERE `price` > '300'        |
+|        9 | 0.00133625 | SELECT * FROM `orders` WHERE `price` < '300'        |
+|       10 | 0.00104100 | SELECT COUNT(*) FROM `orders` WHERE `price` = '300' |
+|       11 | 0.13748625 | ALTER TABLE orders ENGINE = MyISAM                  |
+|       12 | 0.00055075 | SELECT * FROM `orders` WHERE `price` > '300'        |
+|       13 | 0.00156500 | SELECT * FROM `orders` WHERE `price` < '300'        |
+|       14 | 0.00090550 | SELECT COUNT(*) FROM `orders` WHERE `price` = '300' |
+|       15 | 0.25434875 | ALTER TABLE orders ENGINE = InnoDB                  |
++----------+------------+-----------------------------------------------------+
+15 rows in set, 1 warning (0.00 sec)
+```
+
 ## Задача 4 
 
 Изучите файл `my.cnf` в директории /etc/mysql.
