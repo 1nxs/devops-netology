@@ -2,3 +2,5 @@
 /05-virt-04-docker-compose/worker/
 /05-virt-05-docker-swarm/worker/
 /06-db-02-sql/vm/vagrant/.vagrant/
+/06-db-03-mysql/vm/vagrant/.vagrant/
+/06-db-04-postgresql/vm/vagrant/.vagrant/
