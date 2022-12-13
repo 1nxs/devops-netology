@@ -1,4 +1,4 @@
-# Домашнее задание к занятию "6.3. MySQL"
+ # Домашнее задание к занятию "6.3. MySQL"
 
 ## Введение
 
@@ -24,6 +24,95 @@
 
 В следующих заданиях мы будем продолжать работу с данным контейнером.
 
+### Ответ
+[docker-compose.yaml](vm/ansible/stack/docker-compose.yaml)
+
+> В каталоге [vm](vm) реализован следующий вариант:
+> - поднимаем виртуалку на bento/centos-7
+> - деплоим туда docker+compose
+> - на поднятой подсистеме уже играем в MySQL + adminer согласно ТЗ<br>
+
+
+- Используя docker поднимите инстанс MySQL (версию 8). Данные БД сохраните в volume.
+
+- Изучите [бэкап БД](https://github.com/netology-code/virt-homeworks/tree/virt-11/06-db-03-mysql/test_data) и 
+восстановитесь из него.
+
+```shell
+[vagrant@server01 stack]$ sudo docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                                                  NAMES
+fa5eeb387327   adminer   "entrypoint.sh docke…"   12 seconds ago   Up 10 seconds   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp              stack_adminer_1
+13b896a5dd4c   mysql:8   "docker-entrypoint.s…"   12 seconds ago   Up 10 seconds   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   stack_mysql_1
+[vagrant@server01 stack]$ sudo docker exec -it 13b896a5dd4c bash
+bash-4.4# mysql -u root -p test_db < /data/backup/mysql/test_dump.sql 
+Enter password: 
+```
+
+- Перейдите в управляющую консоль `mysql` внутри контейнера.
+- Используя команду `\h` получите список управляющих команд.
+- Найдите команду для выдачи статуса БД и **приведите в ответе** из ее вывода версию сервера БД.
+```shell
+bash-4.4# mysql -u root -p
+Enter password: 
+mysql> \s
+--------------
+mysql  Ver 8.0.31 for Linux on x86_64 (MySQL Community Server - GPL)
+
+Connection id:		13
+Current database:	
+Current user:		root@localhost
+SSL:			Not in use
+Current pager:		stdout
+Using outfile:		''
+Using delimiter:	;
+Server version:		8.0.31 MySQL Community Server - GPL
+Protocol version:	10
+Connection:		Localhost via UNIX socket
+Server characterset:	utf8mb4
+Db     characterset:	utf8mb4
+Client characterset:	latin1
+Conn.  characterset:	latin1
+UNIX socket:		/var/run/mysqld/mysqld.sock
+Binary data as:		Hexadecimal
+Uptime:			26 min 44 sec
+
+Threads: 2  Questions: 134  Slow queries: 0  Opens: 367  Flush tables: 3  Open tables: 285  Queries per second avg: 0.083
+--------------
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| test_db            |
++--------------------+
+5 rows in set (0.01 sec)
+```
+- Подключитесь к восстановленной БД и получите список таблиц из этой БД.
+- **Приведите в ответе** количество записей с `price` > 300.
+```shell
+mysql> \u test_db
+Database changed
+# формирование синтаксиса сначала было проверено в adminer :)
+mysql> SELECT * FROM `orders` WHERE `price` > '300';
++----+----------------+-------+
+| id | title          | price |
++----+----------------+-------+
+|  2 | My little pony |   500 |
++----+----------------+-------+
+1 row in set (0.00 sec)
+# ну а тут уже не было, ковычки имеют значение, исправлено до рабочего..
+mysql> SELECT COUNT(*) FROM `orders` WHERE `price` > '300';
++----------+
+| COUNT(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.00 sec)
+```
+
 ## Задача 2
 
 Создайте пользователя test в БД c паролем test-pass, используя:
@@ -39,6 +128,45 @@
     
 Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES получите данные по пользователю `test` и 
 **приведите в ответе к задаче**.
+
+### Ответ
+- Часть 1, про "создайте"
+```shell
+mysql> 
+CREATE USER 'test'@'localhost' IDENTIFIED BY 'test-pass';
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> 
+ALTER USER 'test'@'localhost' 
+WITH MAX_QUERIES_PER_HOUR 100
+PASSWORD EXPIRE INTERVAL 180 DAY
+FAILED_LOGIN_ATTEMPTS 3 PASSWORD_LOCK_TIME 2;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>
+ALTER USER 'test'@'localhost' ATTRIBUTE '{"f-name":"James", "l-name":"Pretty"}';
+Query OK, 0 rows affected (0.02 sec)
+```
+- Предоставьте привелегии пользователю `test` на операции SELECT базы `test_db`.
+- Используя таблицу INFORMATION_SCHEMA.USER_ATTRIBUTES получите данные по пользователю `test`
+```shell
+mysql> GRANT SELECT ON test_db.* TO 'test'@'localhost';
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+mysql> select * from information_schema.user_attributes;
++------------------+-----------+-----------------------------------------+
+| USER             | HOST      | ATTRIBUTE                               |
++------------------+-----------+-----------------------------------------+
+| root             | %         | NULL                                    |
+| mysql.infoschema | localhost | NULL                                    |
+| mysql.session    | localhost | NULL                                    |
+| mysql.sys        | localhost | NULL                                    |
+| root             | localhost | NULL                                    |
+| test             | localhost | {"f-name": "James", "l-name": "Pretty"} |
++------------------+-----------+-----------------------------------------+
+6 rows in set (0.00 sec)
+```
 
 ## Задача 3
 
