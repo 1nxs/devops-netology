@@ -16,7 +16,8 @@
 - выхода из psql
 
 ### Ответ
-Часть 1, поднимите, подключитесь\
+Часть 1\
+поднимите, подключитесь:\
 [docker-compose.yaml](vm/ansible/stack/docker-compose.yaml)
 <details>
 
@@ -155,7 +156,7 @@ ANALYZE
 ```
 ```sql
 SELECT
-    \\ attname from pg_stats - этого достаточно, как пример запроса, но хочется лучше
+    -- attname from pg_stats - этого достаточно, как пример запроса, но хочется лучше
     tablename, attname, avg_width from pg_stats 
 where 
     tablename = 'orders' 
@@ -173,12 +174,174 @@ and avg_width in (select max(avg_width) from pg_stats where tablename = 'orders'
 поиск по ней занимает долгое время. Вам, как успешному выпускнику курсов DevOps в нетологии предложили
 провести разбиение таблицы на 2 (шардировать на orders_1 - price>499 и orders_2 - price<=499).
 
+
+
 Предложите SQL-транзакцию для проведения данной операции.
 
 Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?
 
 ### Ответ
-Штожж
+Интересный кусок, тот что с `COPY`. При шардировании данные перенесены не будут. Надо будет это сделать отдельно.
+
+https://www.postgresql.org/docs/13/sql-copy.html
+> COPY FROM will invoke any triggers and check constraints on the destination table. However, it will not invoke rules.
+
+```postgres-sql
+begin;
+  -- Переименование "старой" orders
+  alter table orders rename to orders_old;
+  -- Создаём новую orders с шардированием, 
+  create table orders (
+      like orders_old
+      including defaults
+      including constraints
+      including indexes
+  );
+  
+-- Создаем две таблицы, наследуемся от orders, вешаем ограничения на price
+-- Партиция orders_1 с  price>499
+  create table orders_1 (
+      check ( price > 499 )
+  ) inherits (orders);
+
+-- Партиция orders_2 с price<=499
+  create table orders_2 (
+     check ( price <= 499 )
+  ) inherits (orders);
+
+-- Добавляем индексы на price
+  create index orders_1_price ON orders_1 (price);
+  create index orders_2_price ON orders_2 (price);
+
+-- Правило > для сортировки по ключу price
+  create rule ins_over_price as
+  on insert to orders where 
+    (price>499)
+  do instead
+    insert into orders_1 values(NEW.*);
+
+
+
+```
+
+<details>
+
+```sql
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.9 (Debian 13.9-1.pgdg110+1)
+-- Dumped by pg_dump version 13.9 (Debian 13.9-1.pgdg110+1)
+
+-- Started on 2022-12-16 18:50:24 UTC
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 200 (class 1259 OID 16385)
+-- Name: orders; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.orders (
+    id integer NOT NULL,
+    title character varying(80) NOT NULL,
+    price integer DEFAULT 0
+);
+
+
+ALTER TABLE public.orders OWNER TO postgres;
+
+--
+-- TOC entry 201 (class 1259 OID 16389)
+-- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.orders_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2994 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
+
+
+--
+-- TOC entry 2854 (class 2604 OID 16391)
+-- Name: orders id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.orders_id_seq'::regclass);
+
+
+--
+-- TOC entry 2987 (class 0 OID 16385)
+-- Dependencies: 200
+-- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.orders (id, title, price) FROM stdin;
+1       War and peace   100
+2       My little database      500
+3       Adventure psql time     300
+4       Server gravity falls    300
+5       Log gossips     123
+6       WAL never lies  900
+7       Me and my bash-pet      499
+8       Dbiezdmin       501
+\.
+
+
+--
+-- TOC entry 2995 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.orders_id_seq', 8, true);
+
+
+--
+-- TOC entry 2856 (class 2606 OID 16393)
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
+
+
+-- Completed on 2022-12-16 18:50:24 UTC
+
+--
+-- PostgreSQL database dump complete
+--
+```
+
+</details>
 
 ## Задача 4
 
@@ -211,16 +374,17 @@ https://www.postgresql.org/docs/13/ddl-constraints.html
 >`index` (индексы) — скорость доступа к данным.<br>
 > Это две абсолютно не связанные сущности. Первое — часть SQL стандарта, второе нет (тк ни как не связанно с функциональностью языка)<br>
 > Разработчик сам решает, в каких случаях применить эти механизмы и использование одного вовсе не требует использование другого.<br>
-> `unique` (уникальности) - при добавлении ограничения уникальности (unique constraint) Postgresql сам навешивает на указанное поле индекс.
+> `unique` (уникальности) - при добавлении ограничения уникальности (unique constraint) PostgreSQL сам навешивает на указанное поле индекс.
 
-Итого:
+**Итого:**\
 Из выше сказанного следует что, можно сделать индекс или ключ для столбика, или ввести ограничение уникальности данных.
 ```sql
 CREATE INDEX ON orders_simple ((lower(title)));
 ```
+update - пока изучал вопросы по шардированию, выяснил что индекс для `orders` работать перестанет тк табличка `partitioned`
 ```sql
-\\ просто unique
+-- просто unique
 ALTER TABLE public.orders ADD UNIQUE (title);
-\\ добавим ограничение
+-- добавим ограничение
 ALTER TABLE public.orders ADD CONSTRAINT title_unique UNIQUE (title);
 ```
