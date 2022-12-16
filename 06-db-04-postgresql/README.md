@@ -19,6 +19,7 @@
 Часть 1, поднимите, подключитесь\
 [docker-compose.yaml](vm/ansible/stack/docker-compose.yaml)
 <details>
+
 В каталоге [vm](vm) реализован следующий вариант:
 - поднимаем виртуалку на bento/centos-7
 - деплоим туда docker+compose
@@ -113,6 +114,7 @@ postgres=# \q
 [vagrant@server64 ~]$ 
 ```
 </details>
+
 ## Задача 2
 
 Используя `psql` создайте БД `test_database`.
