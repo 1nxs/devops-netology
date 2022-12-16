@@ -228,7 +228,11 @@ begin;
     (price<=499)
   do instead
     insert into orders_2 values(NEW.*);
- 
+    
+    -- Копируем данные из "старых" заказов
+  insert into orders
+  select * from orders_old;
+end;
 
 ```
 
