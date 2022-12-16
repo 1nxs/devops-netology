@@ -181,12 +181,13 @@ and avg_width in (select max(avg_width) from pg_stats where tablename = 'orders'
 Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?
 
 ### Ответ
-Интересный кусок, тот что с `COPY`. При шардировании данные перенесены не будут. Надо будет это сделать отдельно.
+- Предложите SQL-транзакцию для проведения данной операции.
 
-https://www.postgresql.org/docs/13/sql-copy.html
+Интересный кусок, тот что с `COPY`. При шардировании данные перенесены не будут. Надо будет это сделать отдельно.
+> https://www.postgresql.org/docs/13/sql-copy.html <br>
 > COPY FROM will invoke any triggers and check constraints on the destination table. However, it will not invoke rules.
 
-```postgres-sql
+```sql
 begin;
     -- Переименование "старой" orders
   alter table orders rename to orders_old;
@@ -232,128 +233,72 @@ begin;
     -- Копируем данные из "старых" заказов
   insert into orders
   select * from orders_old;
+  
+    -- Упс1. перепривязка последовательности
+  alter table orders_old alter id drop default;
+  alter sequence public.orders_id_seq OWNED BY public.orders.id;
 end;
+```
+```shell
+# Было
+test_database=# \d
+              List of relations
+ Schema |     Name      |   Type   |  Owner   
+--------+---------------+----------+----------
+ public | orders        | table    | postgres
+ public | orders_id_seq | sequence | postgres
+(2 rows)
 
+# Cтало
+test_database=# \d+
+                                   List of relations
+ Schema |     Name      |   Type   |  Owner   | Persistence |    Size    | Description 
+--------+---------------+----------+----------+-------------+------------+-------------
+ public | orders        | table    | postgres | permanent   | 0 bytes    | 
+ public | orders_1      | table    | postgres | permanent   | 8192 bytes | 
+ public | orders_2      | table    | postgres | permanent   | 8192 bytes | 
+ public | orders_id_seq | sequence | postgres | permanent   | 8192 bytes | 
+ public | orders_old    | table    | postgres | permanent   | 8192 bytes | 
+(5 rows)
+# Упс1 - последовательность - красоты ради стоит перепривязать
+
+test_database=# TABLE orders_1;
+ id |       title        | price 
+----+--------------------+-------
+  2 | My little database |   500
+  6 | WAL never lies     |   900
+  8 | Dbiezdmin          |   501
+(3 rows)
+
+test_database=# TABLE orders_2;
+ id |        title         | price 
+----+----------------------+-------
+  1 | War and peace        |   100
+  3 | Adventure psql time  |   300
+  4 | Server gravity falls |   300
+  5 | Log gossips          |   123
+  7 | Me and my bash-pet   |   499
+(5 rows)
+
+test_database=# TABLE orders;
+ id |        title         | price 
+----+----------------------+-------
+  2 | My little database   |   500
+  6 | WAL never lies       |   900
+  8 | Dbiezdmin            |   501
+  1 | War and peace        |   100
+  3 | Adventure psql time  |   300
+  4 | Server gravity falls |   300
+  5 | Log gossips          |   123
+  7 | Me and my bash-pet   |   499
+(8 rows)
+
+test_database=# 
 ```
 
-<details>
-
-```sql
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 13.9 (Debian 13.9-1.pgdg110+1)
--- Dumped by pg_dump version 13.9 (Debian 13.9-1.pgdg110+1)
-
--- Started on 2022-12-16 18:50:24 UTC
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
-SET default_tablespace = '';
-
-SET default_table_access_method = heap;
-
---
--- TOC entry 200 (class 1259 OID 16385)
--- Name: orders; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.orders (
-    id integer NOT NULL,
-    title character varying(80) NOT NULL,
-    price integer DEFAULT 0
-);
-
-
-ALTER TABLE public.orders OWNER TO postgres;
-
---
--- TOC entry 201 (class 1259 OID 16389)
--- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.orders_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.orders_id_seq OWNER TO postgres;
-
---
--- TOC entry 2994 (class 0 OID 0)
--- Dependencies: 201
--- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
-
-
---
--- TOC entry 2854 (class 2604 OID 16391)
--- Name: orders id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.orders_id_seq'::regclass);
-
-
---
--- TOC entry 2987 (class 0 OID 16385)
--- Dependencies: 200
--- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.orders (id, title, price) FROM stdin;
-1       War and peace   100
-2       My little database      500
-3       Adventure psql time     300
-4       Server gravity falls    300
-5       Log gossips     123
-6       WAL never lies  900
-7       Me and my bash-pet      499
-8       Dbiezdmin       501
-\.
-
-
---
--- TOC entry 2995 (class 0 OID 0)
--- Dependencies: 201
--- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.orders_id_seq', 8, true);
-
-
---
--- TOC entry 2856 (class 2606 OID 16393)
--- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.orders
-    ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
-
-
--- Completed on 2022-12-16 18:50:24 UTC
-
---
--- PostgreSQL database dump complete
---
-```
-
-</details>
+- Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?\
+Можно. При создании таблицы и шардировать и навесить правила сразу, всё что выше описано по сути...\
+Данные из бэкапа из-за метода copy не попадут в партиции (тк правила не отработают).. о чем выше и в доках.
 
 ## Задача 4
 
@@ -394,6 +339,32 @@ https://www.postgresql.org/docs/13/ddl-constraints.html
 CREATE INDEX ON orders_simple ((lower(title)));
 ```
 update - пока изучал вопросы по шардированию, выяснил что индекс для `orders` работать перестанет тк табличка `partitioned`
+```shell
+test_database=# \d+ orders
+                                                       Table "public.orders"
+ Column |         Type          | Collation | Nullable |              Default               | Storage  | Stats target | Description 
+--------+-----------------------+-----------+----------+------------------------------------+----------+--------------+-------------
+ id     | integer               |           | not null | nextval('orders_id_seq'::regclass) | plain    |              | 
+ title  | character varying(80) |           | not null |                                    | extended |              | 
+ price  | integer               |           |          | 0                                  | plain    |              | 
+Indexes:
+    "orders_pkey1" PRIMARY KEY, btree (id)
+Rules:
+    ins_lower_price AS
+    ON INSERT TO orders
+   WHERE new.price <= 499 DO INSTEAD  INSERT INTO orders_2 (id, title, price)
+  VALUES (new.id, new.title, new.price)
+    ins_over_price AS
+    ON INSERT TO orders
+   WHERE new.price > 499 DO INSTEAD  INSERT INTO orders_1 (id, title, price)
+  VALUES (new.id, new.title, new.price)
+Child tables: orders_1,
+              orders_2
+Access method: heap
+
+test_database=# 
+```
+
 ```sql
 -- просто unique
 ALTER TABLE public.orders ADD UNIQUE (title);
