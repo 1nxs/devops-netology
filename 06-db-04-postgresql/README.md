@@ -42,7 +42,7 @@ postgres=#
 - вывода списка БД - `\l` или `\l+`
 - подключения к БД - `\с`
 - вывода списка таблиц - `\dt` или `\dt+` (S параметр для системных объектов )
-- вывода описания содержимого таблиц -`\d`
+- вывода описания содержимого таблиц -`\d` или `\d+`
 - выхода из psql - `\q` 
 
 **CLI под катом:**
@@ -130,6 +130,41 @@ postgres=# \q
 
 **Приведите в ответе** команду, которую вы использовали для вычисления и полученный результат.
 
+```shell
+postgres=# CREATE DATABASE test_database;
+CREATE DATABASE
+[vagrant@server64 stack]$ sudo docker exec -it stack_postgres_1 bash
+root@1c49f20100a7:/# psql -U postgres test_database < /data/backup/postgres/test_dump.sql 
+
+test_database=# \d+
+                                   List of relations
+ Schema |     Name      |   Type   |  Owner   | Persistence |    Size    | Description 
+--------+---------------+----------+----------+-------------+------------+-------------
+ public | orders        | table    | postgres | permanent   | 8192 bytes | 
+ public | orders_id_seq | sequence | postgres | permanent   | 8192 bytes | 
+(2 rows)
+
+test_database=# ANALYZE;
+ANALYZE
+test_database=# ANALYZE VERBOSE public.orders;
+INFO:  analyzing "public.orders"
+INFO:  "orders": scanned 1 of 1 pages, containing 8 live rows and 0 dead rows; 8 rows in sample, 8 estimated total rows
+ANALYZE
+```
+```sql
+SELECT
+    \\ attname from pg_stats - этого достаточно, как пример запроса, но хочется лучше
+    tablename, attname, avg_width from pg_stats 
+where 
+    tablename = 'orders' 
+and avg_width in (select max(avg_width) from pg_stats where tablename = 'orders');
+
+ tablename | attname | avg_width 
+-----------+---------+-----------
+ orders    | title   |        16
+(1 row)
+```
+
 ## Задача 3
 
 Архитектор и администратор БД выяснили, что ваша таблица orders разрослась до невиданных размеров и
@@ -140,16 +175,50 @@ postgres=# \q
 
 Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?
 
+### Ответ
+Штожж
+
 ## Задача 4
 
-Используя утилиту `pg_dump` создайте бекап БД `test_database`.
+- Используя утилиту `pg_dump` создайте бекап БД `test_database`.
 
-Как бы вы доработали бэкап-файл, чтобы добавить уникальность значения столбца `title` для таблиц `test_database`?
+- Как бы вы доработали бэкап-файл, чтобы добавить уникальность значения столбца `title` для таблиц `test_database`?
 
----
 
-### Как cдавать задание
+### Ответ
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+- Используя утилиту `pg_dump` создайте бекап БД `test_database`.\
+```shell
+#Бэкапов обычно больше одного, значит стоит сразу облегчить себе жизнь:
+root@1c49f20100a7:/# pg_dump -U postgres test_database -v -f /data/backup/postgres/test_database_$(date +"%Y%m%d-%H%M").sql
+[vagrant@server64 backup]$ ll
+итого 12
+-rw-r--r--. 1 root root 2493 дек 16 21:49 test_database_20221216-1849.sql
+-rw-r--r--. 1 root root 2493 дек 16 21:50 test_database_20221216-1850.sql
+```
+- Как бы вы доработали бэкап-файл, чтобы добавить уникальность значения столбца `title` для таблиц `test_database`?
 
----
+Для начала ~~покурить~~ почитать доки:
+
+https://www.postgresql.org/docs/13/sql-createindex.html
+
+https://www.postgresql.org/docs/13/ddl-constraints.html
+
+**Выводы:**
+>`сonstraints` (ограничения) - они для обеспечения целостности данных<br>
+>`index` (индексы) — скорость доступа к данным.<br>
+> Это две абсолютно не связанные сущности. Первое — часть SQL стандарта, второе нет (тк ни как не связанно с функциональностью языка)<br>
+> Разработчик сам решает, в каких случаях применить эти механизмы и использование одного вовсе не требует использование другого.<br>
+> `unique` (уникальности) - при добавлении ограничения уникальности (unique constraint) Postgresql сам навешивает на указанное поле индекс.
+
+Итого:
+Из выше сказанного следует что, можно сделать индекс или ключ для столбика, или ввести ограничение уникальности данных.
+```sql
+CREATE INDEX ON orders_simple ((lower(title)));
+```
+```sql
+\\ просто unique
+ALTER TABLE public.orders ADD UNIQUE (title);
+\\ добавим ограничение
+ALTER TABLE public.orders ADD CONSTRAINT title_unique UNIQUE (title);
+```
