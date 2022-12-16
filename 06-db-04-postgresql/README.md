@@ -188,9 +188,9 @@ https://www.postgresql.org/docs/13/sql-copy.html
 
 ```postgres-sql
 begin;
-  -- Переименование "старой" orders
+    -- Переименование "старой" orders
   alter table orders rename to orders_old;
-  -- Создаём новую orders с шардированием, 
+    -- Создаём новую orders с шардированием, 
   create table orders (
       like orders_old
       including defaults
@@ -198,29 +198,37 @@ begin;
       including indexes
   );
   
--- Создаем две таблицы, наследуемся от orders, вешаем ограничения на price
--- Партиция orders_1 с  price>499
+    -- Создаем две таблицы, наследуемся от orders, вешаем ограничения на price
+    -- Партиция orders_1 с  price>499
   create table orders_1 (
       check ( price > 499 )
   ) inherits (orders);
-
--- Партиция orders_2 с price<=499
+  alter table orders_1 owner to postgres;
+  
+    -- Партиция orders_2 с price<=499
   create table orders_2 (
      check ( price <= 499 )
   ) inherits (orders);
+  alter table orders_2 owner to postgres;
 
--- Добавляем индексы на price
+    -- Добавляем индексы на price
   create index orders_1_price ON orders_1 (price);
   create index orders_2_price ON orders_2 (price);
 
--- Правило > для сортировки по ключу price
+    -- Правило > для сортировки по ключу price
   create rule ins_over_price as
   on insert to orders where 
     (price>499)
   do instead
     insert into orders_1 values(NEW.*);
 
-
+    -- Правило <= для сортировки по ключу price
+  create rule ins_lower_price as
+  on insert to orders where 
+    (price<=499)
+  do instead
+    insert into orders_2 values(NEW.*);
+ 
 
 ```
 
