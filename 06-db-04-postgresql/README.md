@@ -39,7 +39,7 @@ psql (13.9 (Debian 13.9-1.pgdg110+1))
 Type "help" for help.
 postgres=# 
 ```
-Часть 2\
+Часть 2 <br>
 **Найдите и приведите** управляющие команды для:
 - вывода списка БД - `\l` или `\l+`
 - подключения к БД - `\с`
@@ -132,6 +132,8 @@ postgres=# \q
 с наибольшим средним значением размера элементов в байтах.
 
 **Приведите в ответе** команду, которую вы использовали для вычисления и полученный результат.
+
+### Ответ
 
 ```shell
 postgres=# CREATE DATABASE test_database;
@@ -322,8 +324,7 @@ root@1c49f20100a7:/# pg_dump -U postgres test_database -v -f /data/backup/postgr
 
 Для начала ~~покурить~~ почитать доки:
 
-https://www.postgresql.org/docs/13/sql-createindex.html
-
+https://www.postgresql.org/docs/13/sql-createindex.html <br>
 https://www.postgresql.org/docs/13/ddl-constraints.html
 
 **Выводы:**
