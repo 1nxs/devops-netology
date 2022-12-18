@@ -180,6 +180,6 @@ ultimate question of life, the universe, and everything
 ### Ответ
 
 - https://hub.docker.com/repository/docker/1nxs/ansible
-> сделал dockerfile
-> собрал образ, выставил тэг
+> сделал dockerfile \
+> собрал образ, выставил тэг \
 > закинул в hub.docker
