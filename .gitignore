@@ -4,3 +4,4 @@
 /06-db-02-sql/vm/vagrant/.vagrant/
 /06-db-03-mysql/vm/vagrant/.vagrant/
 /06-db-04-postgresql/vm/vagrant/.vagrant/
+/06-db-05-elasticsearch/worker/
