@@ -37,7 +37,7 @@
 
 * Очень много времени ушло на попытку сборки стека
 * На версии `8.5.3` - ругается на java, пришлось брать версии младше.
-* На версии 8.2.0 спустя 100500 попыток сборки взлетело
+* На версии `8.2.0` спустя 100500 попыток сборки взлетело
 </details>
 
 - После сборки контейнера требуется задать пароли
@@ -72,7 +72,6 @@ vagrant@server65 ~]$ curl --insecure -u elastic https://localhost:9200
 [vagrant@server65 ~]$
 ``` 
 
-
 ## Задача 2
 
 В этом задании вы научитесь:
@@ -101,6 +100,155 @@ vagrant@server65 ~]$ curl --insecure -u elastic https://localhost:9200
 
 При проектировании кластера elasticsearch нужно корректно рассчитывать количество реплик и шард,
 иначе возможна потеря данных индексов, вплоть до полной, при деградации системы.
+
+### Ответ
+* Добавьте 3 индекса
+```json
+[vagrant@server65 ~]$curl -X PUT --insecure -u elastic "https://localhost:9200/ind-1?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,  
+      "number_of_replicas": 0 
+    }
+  }
+}
+'
+Enter host password for user 'elastic':
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "ind-1"
+}
+```
+```json
+[vagrant@server65 ~]$curl -X PUT --insecure -u elastic "https://localhost:9200/ind-2?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 2,  
+      "number_of_replicas": 1 
+    }
+  }
+}
+'
+Enter host password for user 'elastic':
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "ind-2"
+}
+```
+```json
+[vagrant@server65 ~]$curl -X PUT --insecure -u elastic "https://localhost:9200/ind-3?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 4,  
+      "number_of_replicas": 2 
+    }
+  }
+}
+'
+Enter host password for user 'elastic':
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "ind-3"
+}
+```
+* Получите список индексов и их статусов, используя API и приведите в ответе на задание.
+* Получите состояние кластера elasticsearch, используя API.
+```bash
+vagrant@server65 ~]$ curl -X GET --insecure -u elastic "https://localhost:9200/_cat/indices?v=true"
+Enter host password for user 'elastic':
+health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+yellow open   ind-2 lC2P7WJnQI27Esxl9ItnBw   2   1          0            0       450b           450b
+yellow open   ind-3 LLnpGgkzQJOLe8XRHiViMg   4   2          0            0       900b           900b
+green  open   ind-1 rcf2AZshRuGNH9vzqb74kw   1   0          0            0       225b           225b
+
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic "https://localhost:9200/_cluster/health/ind-1?pretty"
+Enter host password for user 'elastic':
+{
+  "cluster_name" : "elasticsearch",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 1,
+  "active_shards" : 1,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic "https://localhost:9200/_cluster/health/ind-2?pretty"
+Enter host password for user 'elastic':
+{
+  "cluster_name" : "elasticsearch",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 2,
+  "active_shards" : 2,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 2,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 47.368421052631575
+}
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic "https://localhost:9200/_cluster/health/ind-3?pretty"
+Enter host password for user 'elastic':
+{
+  "cluster_name" : "elasticsearch",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 4,
+  "active_shards" : 4,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 8,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 47.368421052631575
+}
+[vagrant@server65 ~]$ 
+```
+* Как вы думаете, почему часть индексов и кластер находится в состоянии yellow?
+
+Оранжевым по чёрному - у нас `"number_of_nodes" : 1` , а индексы у нас с репликацией, ну а делать её выходит некуда.
+
+* Удалите все индексы.
+```bash
+[vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-1?pretty"
+Enter host password for user 'elastic':
+{
+  "acknowledged" : true
+}
+[vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-2?pretty"
+Enter host password for user 'elastic':
+{
+  "acknowledged" : true
+}
+[vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-3?pretty"
+Enter host password for user 'elastic':
+{
+  "acknowledged" : true
+}
+[vagrant@server65 ~]$ 
+```
 
 ## Задача 3
 
