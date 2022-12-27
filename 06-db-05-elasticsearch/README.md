@@ -40,7 +40,10 @@
 * На версии `8.2.0` спустя 100500 попыток сборки взлетело
 </details>
 
-- После сборки контейнера требуется задать пароли
+ссылка на DockerHub `docker pull 1nxs/elk:0.6` <br> 
+https://hub.docker.com/r/1nxs/elk/tags
+
+- После сборки контейнера стоит задать пароли
 ```bash
 [vagrant@server65 ~]$ sudo docker ps
 CONTAINER ID   IMAGE          COMMAND               CREATED          STATUS          PORTS                                                                                  NAMES
