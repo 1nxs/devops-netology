@@ -31,6 +31,48 @@
 
 Далее мы будем работать с данным экземпляром elasticsearch.
 
+### Ответ
+
+<details>
+
+* Очень много времени ушло на попытку сборки стека
+* На версии `8.5.3` - ругается на java, пришлось брать версии младше.
+* На версии 8.2.0 спустя 100500 попыток сборки взлетело
+</details>
+
+- После сборки контейнера требуется задать пароли
+```bash
+[vagrant@server65 ~]$ sudo docker ps
+CONTAINER ID   IMAGE          COMMAND               CREATED          STATUS          PORTS                                                                                  NAMES
+c5ec5c199b35   1nxs/elk:0.6   "bin/elasticsearch"   28 minutes ago   Up 28 minutes   0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 0.0.0.0:9300->9300/tcp, :::9300->9300/tcp   elastic
+[vagrant@server65 ~]$ sudo docker exec -it c5ec bash
+# Директива - ./bin/elasticsearch-setup-passwords interactive
+```
+
+- Далее удастся получить ответ на запрос:
+```bash
+vagrant@server65 ~]$ curl --insecure -u elastic https://localhost:9200
+{
+  "name" : "netology_test",
+  "cluster_name" : "elasticsearch",
+  "cluster_uuid" : "2Eo54a4jToSmsq0B1vNgQg",
+  "version" : {
+    "number" : "8.2.0",
+    "build_flavor" : "default",
+    "build_type" : "tar",
+    "build_hash" : "b174af62e8dd9f4ac4d25875e9381ffe2b9282c5",
+    "build_date" : "2022-04-20T10:35:10.180408517Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.1.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+[vagrant@server65 ~]$
+``` 
+
+
 ## Задача 2
 
 В этом задании вы научитесь:
