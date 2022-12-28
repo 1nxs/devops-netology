@@ -142,8 +142,8 @@ vagrant@server65 ~]$ curl --insecure -u elastic https://localhost:9200
 
 ### Ответ
 * Добавьте 3 индекса
-```json
-[vagrant@server65 ~]$curl -X PUT --insecure -u elastic "https://localhost:9200/ind-1?pretty" -H 'Content-Type: application/json' -d'
+```shell
+[vagrant@server65 ~]$ curl -X PUT --insecure -u elastic "https://localhost:9200/ind-1?pretty" -H 'Content-Type: application/json' -d'
 {
   "settings": {
     "index": {
@@ -160,8 +160,8 @@ Enter host password for user 'elastic':
   "index" : "ind-1"
 }
 ```
-```json
-[vagrant@server65 ~]$curl -X PUT --insecure -u elastic "https://localhost:9200/ind-2?pretty" -H 'Content-Type: application/json' -d'
+```shell
+[vagrant@server65 ~]$ curl -X PUT --insecure -u elastic "https://localhost:9200/ind-2?pretty" -H 'Content-Type: application/json' -d'
 {
   "settings": {
     "index": {
@@ -178,8 +178,8 @@ Enter host password for user 'elastic':
   "index" : "ind-2"
 }
 ```
-```json
-[vagrant@server65 ~]$curl -X PUT --insecure -u elastic "https://localhost:9200/ind-3?pretty" -H 'Content-Type: application/json' -d'
+```shell
+[vagrant@server65 ~]$ curl -X PUT --insecure -u elastic "https://localhost:9200/ind-3?pretty" -H 'Content-Type: application/json' -d'
 {
   "settings": {
     "index": {
