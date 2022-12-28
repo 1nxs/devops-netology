@@ -313,10 +313,18 @@ Enter host password for user 'elastic':
 - возможно вам понадобится доработать `elasticsearch.yml` в части директивы `path.repo` и перезапустить `elasticsearch`
 
 ### Ответ
-- создавать бэкапы данных
-- восстанавливать индексы из бэкапов
+- Создайте директорию `{путь до корневой директории с elasticsearch в образе}/snapshots`.
 
 > Модифицировал [Dockerfile](./src/Dockerfile) и [elasticsearch.yml](./src/elasticsearch.yml) <br>
+
+<details>
+
+> В текущем образе, что-бы не пересобирать: <br>
+> - создал папку `/snapshots`, дал права `777`
+> - `echo "path.repo: /opt/elasticsearch-8.2.0/snapshots" >> config/elasticsearch.yml`
+> - перезапустил, конечно из образа всё стёрло, волумов не подключал :)
+> - пересобрал образ, дабы не тыкать всё руками 
+
 ```
 # Dockerfile
 && mkdir /opt/elasticsearch-8.2.0/snapshots && chmood -R 777 /opt/elasticsearch-8.2.0/snapshots \
@@ -326,14 +334,6 @@ Enter host password for user 'elastic':
 path.repo: /opt/elasticsearch-8.2.0/snapshots 
 ```
 
-<details>
-
-> В текущем образе, что-бы не пересобирать: <br>
-> - создал папку `/snapshots`, дал права `777`
-> - `echo "path.repo: /opt/elasticsearch-8.2.0/snapshots" >> config/elasticsearch.yml`
-> - перезапустил, конечно из образа всё стёрло :)
-> - пересобрал образ, дабы не тыкать всё руками 
-
 </details>
 
 ```bash
@@ -341,7 +341,8 @@ path.repo: /opt/elasticsearch-8.2.0/snapshots
 [vagrant@server65 ~]$ sudo docker run --rm --name elastic -p 9200:9200 -p 9300:9300 1nxs/elk:0.7.1
 [vagrant@server65 ~]$ sudo docker exec -it elastic bash
 ```
-
+- Используя API [зарегистрируйте](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-register-repository.html#snapshots-register-repository) 
+данную директорию как `snapshot repository` c именем `netology_backup`.
 - Приведите в ответе запрос API и результат вызова API для создания репозитория.
 ```bash
 # запрос
@@ -447,13 +448,57 @@ drwxr-xr-x. 5 elasticsearch elasticsearch    96 Dec 28 17:32 indices
 ```
 - Удалите индекс test и создайте индекс test-2. Приведите в ответе список индексов.
 ```bash
-
+[vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic:elastic "https://localhost:9200/test?pretty"
+[vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/test-2?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }
+}
+'
+# Cписок индексов
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_cat/indices?v=true"
+health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test-2 ciHi28r9Qp6U2ea_n3xqMQ   1   0          0            0       225b           225b
+[vagrant@server65 ~]$ 
 ```
 - Восстановите состояние кластера elasticsearch из snapshot, созданного ранее.
-```bash
 
+```bash
+# сделаем вид, что первый раз видим задачу и не в курсе о том что есть уже снапшоты
+# надобно посмотреть откуда восстанавливаться будем:
+curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/*?verbose=false&pretty"
+```
+```bash
+# восстанавливаем из снапшота индекс `test`
+[vagrant@server65 ~]$ curl -X POST --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/snapshot_1/_restore?wait_for_completion=true&pretty" -H 'Content-Type: application/json' -d'
+{
+  "indices": "test"
+}
+'
+# Ответ
+{
+  "snapshot" : {
+    "snapshot" : "snapshot_1",
+    "indices" : [
+      "test"
+    ],
+    "shards" : {
+      "total" : 1,
+      "failed" : 0,
+      "successful" : 1
+    }
+  }
+}
 ```
 - Приведите в ответе запрос к API восстановления и итоговый список индексов.
 ```bash
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_cat/indices?v=true"
+health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test-2 ciHi28r9Qp6U2ea_n3xqMQ   1   0          0            0       225b           225b
+green  open   test   LLFyxc45QpyVitFRaqhmhg   1   0          0            0       225b           225b
 
 ```
