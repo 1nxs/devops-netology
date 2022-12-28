@@ -245,6 +245,28 @@ Enter host password for user 'elastic':
 }
 [vagrant@server65 ~]$ 
 ```
+статус кластера:
+```bash
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic "https://localhost:9200/_cluster/health/ind-2?pretty"
+Enter host password for user 'elastic':
+{
+  "cluster_name" : "elasticsearch",
+  "status" : "yellow",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 7,
+  "active_shards" : 7,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 10,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 41.17647058823529
+}
+```
 * Как вы думаете, почему часть индексов и кластер находится в состоянии yellow?
 
 Оранжевым по чёрному - у нас `"number_of_nodes" : 1` , а индексы у нас с репликацией, ну а делать её выходит некуда.
@@ -324,16 +346,61 @@ path.repo: /opt/elasticsearch-8.2.0/snapshots
 ```bash
 # запрос
 [vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup?pretty" -H 'Content-Type: application/json' -d'
-> {
->   "type": "fs",
->   "settings": {
->     "location": "/opt/elasticsearch-8.2.0/snapshots",
->     "compress": true
->   }
-> }'
+{
+  "type": "fs",
+  "settings": {
+    "location": "/opt/elasticsearch-8.2.0/snapshots",
+    "compress": true
+  }
+}
+'
 
 # ответ
 {
   "acknowledged" : true
 }
+```
+
+- Создайте индекс test с 0 реплик и 1 шардом и приведите в ответе список индексов.
+```bash
+[vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/test?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }
+}
+'
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "test"
+}
+# Список индексов
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_cat/indices?v=true"
+health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test  OlPZnRmdSi-MnENrOLiTUQ   1   0          0            0       225b           225b
+[vagrant@server65 ~]$ 
+```
+- Создайте snapshot состояния кластера elasticsearch.
+```bash
+
+```
+- Приведите в ответе список файлов в директории со snapshotами.
+```bash
+
+```
+- Удалите индекс test и создайте индекс test-2. Приведите в ответе список индексов.
+```bash
+
+```
+- Восстановите состояние кластера elasticsearch из snapshot, созданного ранее.
+```bash
+
+```
+- Приведите в ответе запрос к API восстановления и итоговый список индексов.
+```bash
+
 ```
