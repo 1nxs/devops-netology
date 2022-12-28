@@ -1,0 +1,36 @@
+version: "3.7"
+
+volumes:
+  data: {}
+  backup: {}
+
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - data:/data/db
+      - backup:/media/backup/mongodb
+      - ./:/opt/netology66
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+  redis:
+    container_name: redis
+    image: "redis:alpine"
+    volumes:
+      - data:/data
+      - backup:/media/backup/redis
+      - ./:/opt/netology66
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8080:8080"
+    restart: always
