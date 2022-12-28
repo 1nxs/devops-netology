@@ -386,11 +386,64 @@ green  open   test  OlPZnRmdSi-MnENrOLiTUQ   1   0          0            0      
 ```
 - Создайте snapshot состояния кластера elasticsearch.
 ```bash
-
+[vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/snapshot_1?wait_for_completion=true&pretty" -H 'Content-Type: application/json' -d'
+{
+  "indices": "test"
+}
+'
+# ответ
+{
+  "snapshot" : {
+    "snapshot" : "snapshot_1",
+    "uuid" : "p-GU2kRQRJy3FKkp-GbhXA",
+    "repository" : "netology_backup",
+    "version_id" : 8020099,
+    "version" : "8.2.0",
+    "indices" : [
+      ".security-7",
+      "test",
+      ".geoip_databases"
+    ],
+    "data_streams" : [ ],
+    "include_global_state" : true,
+    "state" : "SUCCESS",
+    "start_time" : "2022-12-28T17:32:40.010Z",
+    "start_time_in_millis" : 1672248760010,
+    "end_time" : "2022-12-28T17:32:44.387Z",
+    "end_time_in_millis" : 1672248764387,
+    "duration_in_millis" : 4377,
+    "failures" : [ ],
+    "shards" : {
+      "total" : 3,
+      "failed" : 0,
+      "successful" : 3
+    },
+    "feature_states" : [
+      {
+        "feature_name" : "geoip",
+        "indices" : [
+          ".geoip_databases"
+        ]
+      },
+      {
+        "feature_name" : "security",
+        "indices" : [
+          ".security-7"
+        ]
+      }
+    ]
+  }
+}
 ```
 - Приведите в ответе список файлов в директории со snapshotами.
 ```bash
-
+[elasticsearch@d480e63dbe74 snapshots]$ ll
+total 32
+-rw-r--r--. 1 elasticsearch elasticsearch  1095 Dec 28 17:32 index-0
+-rw-r--r--. 1 elasticsearch elasticsearch     8 Dec 28 17:32 index.latest
+drwxr-xr-x. 5 elasticsearch elasticsearch    96 Dec 28 17:32 indices
+-rw-r--r--. 1 elasticsearch elasticsearch 16621 Dec 28 17:32 meta-p-GU2kRQRJy3FKkp-GbhXA.dat
+-rw-r--r--. 1 elasticsearch elasticsearch   382 Dec 28 17:32 snap-p-GU2kRQRJy3FKkp-GbhXA.dat
 ```
 - Удалите индекс test и создайте индекс test-2. Приведите в ответе список индексов.
 ```bash
