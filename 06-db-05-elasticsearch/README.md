@@ -35,11 +35,25 @@
 
 <details>
 
-* Очень много времени ушло на попытку сборки стека
+* **Очень много** времени ушло на попытку сборки стека
 * На версии `8.5.3` - ругается на java, пришлось брать версии младше.
 * На версии `8.2.0` спустя 100500 попыток сборки взлетело
+
+- Build
+```bash
+[vagrant@server65 ~]$ sudo docker login
+[vagrant@server65 ~]$ sudo docker build -t 1nxs/elk:0.6 . 
+```
+
+- Run
+```bash
+sudo docker run --rm -d --name elastic -p 9200:9200 -p 9300:9300 1nxs/elk:0.6
+sudo docker exec -it 
+```
+
 </details>
 
+[Dockerfile](./src/Dockerfile) <br>
 ссылка на DockerHub `docker pull 1nxs/elk:0.6` <br> 
 https://hub.docker.com/r/1nxs/elk/tags
 
@@ -48,8 +62,10 @@ https://hub.docker.com/r/1nxs/elk/tags
 [vagrant@server65 ~]$ sudo docker ps
 CONTAINER ID   IMAGE          COMMAND               CREATED          STATUS          PORTS                                                                                  NAMES
 c5ec5c199b35   1nxs/elk:0.6   "bin/elasticsearch"   28 minutes ago   Up 28 minutes   0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 0.0.0.0:9300->9300/tcp, :::9300->9300/tcp   elastic
-[vagrant@server65 ~]$ sudo docker exec -it c5ec bash
-# Директива - ./bin/elasticsearch-setup-passwords interactive
+[vagrant@server65 ~]$ sudo docker exec -it elastic bash
+# Директива - elasticsearch-setup-passwords interactive для нашей задачи слишком брутальна
+[elasticsearch@d480e63dbe74 elasticsearch-8.2.0]$ bin/elasticsearch-reset-password --interactive --username elastic
+
 ```
 
 - Далее удастся получить ответ на запрос:
@@ -236,21 +252,12 @@ Enter host password for user 'elastic':
 * Удалите все индексы.
 ```bash
 [vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-1?pretty"
-Enter host password for user 'elastic':
-{
-  "acknowledged" : true
-}
 [vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-2?pretty"
-Enter host password for user 'elastic':
-{
-  "acknowledged" : true
-}
 [vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-3?pretty"
-Enter host password for user 'elastic':
-{
-  "acknowledged" : true
-}
-[vagrant@server65 ~]$ 
+
+[2022-12-27T00:11:19,695][INFO ][o.e.c.m.MetadataDeleteIndexService] [netology_test] [ind-1/rcf2AZshRuGNH9vzqb74kw] deleting index
+[2022-12-27T00:11:28,011][INFO ][o.e.c.m.MetadataDeleteIndexService] [netology_test] [ind-2/lC2P7WJnQI27Esxl9ItnBw] deleting index
+[2022-12-27T00:11:37,913][INFO ][o.e.c.m.MetadataDeleteIndexService] [netology_test] [ind-3/LLnpGgkzQJOLe8XRHiViMg] deleting index
 ```
 
 ## Задача 3
@@ -283,10 +290,50 @@ Enter host password for user 'elastic':
 Подсказки:
 - возможно вам понадобится доработать `elasticsearch.yml` в части директивы `path.repo` и перезапустить `elasticsearch`
 
----
+### Ответ
+- создавать бэкапы данных
+- восстанавливать индексы из бэкапов
 
-### Как cдавать задание
+> Модифицировал [Dockerfile](./src/Dockerfile) и [elasticsearch.yml](./src/elasticsearch.yml) <br>
+```
+# Dockerfile
+&& mkdir /opt/elasticsearch-8.2.0/snapshots && chmood -R 777 /opt/elasticsearch-8.2.0/snapshots \
+&& chown -R elasticsearch:elasticsearch /opt/elasticsearch-8.2.0/snapshots \
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+# elasticsearch.yml
+path.repo: /opt/elasticsearch-8.2.0/snapshots 
+```
 
----
+<details>
+
+> В текущем образе, что-бы не пересобирать: <br>
+> - создал папку `/snapshots`, дал права `777`
+> - `echo "path.repo: /opt/elasticsearch-8.2.0/snapshots" >> config/elasticsearch.yml`
+> - перезапустил, конечно из образа всё стёрло :)
+> - пересобрал образ, дабы не тыкать всё руками 
+
+</details>
+
+```bash
+[vagrant@server65 ~]$ sudo docker build -t 1nxs/elk:0.7.1 . 
+[vagrant@server65 ~]$ sudo docker run --rm --name elastic -p 9200:9200 -p 9300:9300 1nxs/elk:0.7.1
+[vagrant@server65 ~]$ sudo docker exec -it elastic bash
+```
+
+- Приведите в ответе запрос API и результат вызова API для создания репозитория.
+```bash
+# запрос
+[vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup?pretty" -H 'Content-Type: application/json' -d'
+> {
+>   "type": "fs",
+>   "settings": {
+>     "location": "/opt/elasticsearch-8.2.0/snapshots",
+>     "compress": true
+>   }
+> }'
+
+# ответ
+{
+  "acknowledged" : true
+}
+```
