@@ -46,10 +46,30 @@
 ```
 
 - Run
+
 ```bash
-sudo docker run --rm -d --name elastic -p 9200:9200 -p 9300:9300 1nxs/elk:0.6
-sudo docker exec -it 
+# вот иначе всё падает ()
+[vagrant@server65 stack]$ sudo sysctl -w vm.max_map_count=262144
+vm.max_map_count = 262144
+
+[vagrant@server65 ~]$ sudo docker run --rm -d --name elastic -p 9200:9200 -p 9300:9300 1nxs/elk:0.6
+[vagrant@server65 ~]$ sudo docker exec -it elastic bash
 ```
+#### Ошибка нехватки памяти
+> max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+
+Вобщем-то понятно, что нужно лечить хост.
+1. смотрим, и подтверждаем свои догадки
+```Bash
+[vagrant@server65 stack]$ more /proc/sys/vm/max_map_count
+65530
+```
+2. Берем напильник
+```bash
+[vagrant@server65 stack]$ sudo sysctl -w vm.max_map_count=262144
+[vagrant@server65 stack]$ sudo sysctl -p
+```
+3. запускаем контейнер
 
 </details>
 
@@ -383,7 +403,6 @@ path.repo: /opt/elasticsearch-8.2.0/snapshots
 [vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_cat/indices?v=true"
 health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   test  OlPZnRmdSi-MnENrOLiTUQ   1   0          0            0       225b           225b
-[vagrant@server65 ~]$ 
 ```
 - Создайте snapshot состояния кластера elasticsearch.
 ```bash
@@ -463,14 +482,13 @@ drwxr-xr-x. 5 elasticsearch elasticsearch    96 Dec 28 17:32 indices
 [vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_cat/indices?v=true"
 health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   test-2 ciHi28r9Qp6U2ea_n3xqMQ   1   0          0            0       225b           225b
-[vagrant@server65 ~]$ 
 ```
 - Восстановите состояние кластера elasticsearch из snapshot, созданного ранее.
 
 ```bash
 # сделаем вид, что первый раз видим задачу и не в курсе о том что есть уже снапшоты
 # надобно посмотреть откуда восстанавливаться будем:
-curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/*?verbose=false&pretty"
+[vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/*?verbose=false&pretty"
 ```
 ```bash
 # восстанавливаем из снапшота индекс `test`
@@ -500,5 +518,9 @@ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_snapshot/neto
 health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   test-2 ciHi28r9Qp6U2ea_n3xqMQ   1   0          0            0       225b           225b
 green  open   test   LLFyxc45QpyVitFRaqhmhg   1   0          0            0       225b           225b
-
 ```
+
+_Зетс оль, май френдьс :)_
+
+---
+_Промежуточные приключения описаны в `<details>`_ 
