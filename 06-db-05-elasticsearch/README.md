@@ -40,14 +40,14 @@
 * На версии `8.2.0` спустя 100500 попыток сборки взлетело
 
 - Build
-```bash
+```shell
 [vagrant@server65 ~]$ sudo docker login
 [vagrant@server65 ~]$ sudo docker build -t 1nxs/elk:0.6 . 
 ```
 
 - Run
 
-```bash
+```shell
 # вот иначе всё падает ()
 [vagrant@server65 stack]$ sudo sysctl -w vm.max_map_count=262144
 vm.max_map_count = 262144
@@ -60,12 +60,12 @@ vm.max_map_count = 262144
 
 Вобщем-то понятно, что нужно лечить хост.
 1. смотрим, и подтверждаем свои догадки
-```Bash
+```shell
 [vagrant@server65 stack]$ more /proc/sys/vm/max_map_count
 65530
 ```
 2. Берем напильник
-```bash
+```shell
 [vagrant@server65 stack]$ sudo sysctl -w vm.max_map_count=262144
 [vagrant@server65 stack]$ sudo sysctl -p
 ```
@@ -78,7 +78,7 @@ vm.max_map_count = 262144
 https://hub.docker.com/r/1nxs/elk/tags
 
 - После сборки контейнера стоит задать пароли
-```bash
+```shell
 [vagrant@server65 ~]$ sudo docker ps
 CONTAINER ID   IMAGE          COMMAND               CREATED          STATUS          PORTS                                                                                  NAMES
 c5ec5c199b35   1nxs/elk:0.6   "bin/elasticsearch"   28 minutes ago   Up 28 minutes   0.0.0.0:9200->9200/tcp, :::9200->9200/tcp, 0.0.0.0:9300->9300/tcp, :::9300->9300/tcp   elastic
@@ -89,7 +89,7 @@ c5ec5c199b35   1nxs/elk:0.6   "bin/elasticsearch"   28 minutes ago   Up 28 minut
 ```
 
 - Далее удастся получить ответ на запрос:
-```bash
+```shell
 vagrant@server65 ~]$ curl --insecure -u elastic https://localhost:9200
 {
   "name" : "netology_test",
@@ -198,7 +198,7 @@ Enter host password for user 'elastic':
 ```
 * Получите список индексов и их статусов, используя API и приведите в ответе на задание.
 * Получите состояние кластера elasticsearch, используя API.
-```bash
+```shell
 vagrant@server65 ~]$ curl -X GET --insecure -u elastic "https://localhost:9200/_cat/indices?v=true"
 Enter host password for user 'elastic':
 health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
@@ -266,7 +266,7 @@ Enter host password for user 'elastic':
 [vagrant@server65 ~]$ 
 ```
 статус кластера:
-```bash
+```shell
 [vagrant@server65 ~]$ curl -X GET --insecure -u elastic "https://localhost:9200/_cluster/health/ind-2?pretty"
 Enter host password for user 'elastic':
 {
@@ -292,7 +292,7 @@ Enter host password for user 'elastic':
 Оранжевым по чёрному - у нас `"number_of_nodes" : 1` , а индексы у нас с репликацией, ну а делать её выходит некуда.
 
 * Удалите все индексы.
-```bash
+```shell
 [vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-1?pretty"
 [vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-2?pretty"
 [vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic "https://localhost:9200/ind-3?pretty"
@@ -356,7 +356,7 @@ path.repo: /opt/elasticsearch-8.2.0/snapshots
 
 </details>
 
-```bash
+```shell
 [vagrant@server65 ~]$ sudo docker build -t 1nxs/elk:0.7.1 . 
 [vagrant@server65 ~]$ sudo docker run --rm --name elastic -p 9200:9200 -p 9300:9300 1nxs/elk:0.7.1
 [vagrant@server65 ~]$ sudo docker exec -it elastic bash
@@ -364,7 +364,7 @@ path.repo: /opt/elasticsearch-8.2.0/snapshots
 - Используя API [зарегистрируйте](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-register-repository.html#snapshots-register-repository) 
 данную директорию как `snapshot repository` c именем `netology_backup`.
 - Приведите в ответе запрос API и результат вызова API для создания репозитория.
-```bash
+```shell
 # запрос
 [vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -383,7 +383,7 @@ path.repo: /opt/elasticsearch-8.2.0/snapshots
 ```
 
 - Создайте индекс test с 0 реплик и 1 шардом и приведите в ответе список индексов.
-```bash
+```shell
 [vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/test?pretty" -H 'Content-Type: application/json' -d'
 {
   "settings": {
@@ -405,7 +405,7 @@ health status index uuid                   pri rep docs.count docs.deleted store
 green  open   test  OlPZnRmdSi-MnENrOLiTUQ   1   0          0            0       225b           225b
 ```
 - Создайте snapshot состояния кластера elasticsearch.
-```bash
+```shell
 [vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/snapshot_1?wait_for_completion=true&pretty" -H 'Content-Type: application/json' -d'
 {
   "indices": "test"
@@ -456,7 +456,7 @@ green  open   test  OlPZnRmdSi-MnENrOLiTUQ   1   0          0            0      
 }
 ```
 - Приведите в ответе список файлов в директории со snapshotами.
-```bash
+```shell
 [elasticsearch@d480e63dbe74 snapshots]$ ll
 total 32
 -rw-r--r--. 1 elasticsearch elasticsearch  1095 Dec 28 17:32 index-0
@@ -466,7 +466,7 @@ drwxr-xr-x. 5 elasticsearch elasticsearch    96 Dec 28 17:32 indices
 -rw-r--r--. 1 elasticsearch elasticsearch   382 Dec 28 17:32 snap-p-GU2kRQRJy3FKkp-GbhXA.dat
 ```
 - Удалите индекс test и создайте индекс test-2. Приведите в ответе список индексов.
-```bash
+```shell
 [vagrant@server65 ~]$ curl -X DELETE --insecure -u elastic:elastic "https://localhost:9200/test?pretty"
 [vagrant@server65 ~]$ curl -X PUT --insecure -u elastic:elastic "https://localhost:9200/test-2?pretty" -H 'Content-Type: application/json' -d'
 {
@@ -485,12 +485,12 @@ green  open   test-2 ciHi28r9Qp6U2ea_n3xqMQ   1   0          0            0     
 ```
 - Восстановите состояние кластера elasticsearch из snapshot, созданного ранее.
 
-```bash
+```shell
 # сделаем вид, что первый раз видим задачу и не в курсе о том что есть уже снапшоты
 # надобно посмотреть откуда восстанавливаться будем:
 [vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/*?verbose=false&pretty"
 ```
-```bash
+```shell
 # восстанавливаем из снапшота индекс `test`
 [vagrant@server65 ~]$ curl -X POST --insecure -u elastic:elastic "https://localhost:9200/_snapshot/netology_backup/snapshot_1/_restore?wait_for_completion=true&pretty" -H 'Content-Type: application/json' -d'
 {
@@ -513,7 +513,7 @@ green  open   test-2 ciHi28r9Qp6U2ea_n3xqMQ   1   0          0            0     
 }
 ```
 - Приведите в ответе запрос к API восстановления и итоговый список индексов.
-```bash
+```shell
 [vagrant@server65 ~]$ curl -X GET --insecure -u elastic:elastic "https://localhost:9200/_cat/indices?v=true"
 health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   test-2 ciHi28r9Qp6U2ea_n3xqMQ   1   0          0            0       225b           225b
