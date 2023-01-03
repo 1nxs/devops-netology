@@ -80,9 +80,9 @@ devops-netology | DevOps-инженер
 
 6.4. [x] [PostgreSQL](06-db-04-postgresql)
 
-6.5. [-] [Elasticsearch](06-db-05-elasticsearch)
+6.5. [x] [Elasticsearch](06-db-05-elasticsearch)
 
-6.6. [-] [Troubleshooting](06-db-06-troobleshooting)
+6.6. [x] [Troubleshooting](06-db-06-troobleshooting)
 
 
 ## Блок 7. Облачная инфраструктура. Terraform
@@ -101,5 +101,5 @@ devops-netology | DevOps-инженер
 
 ## Дополнительные материалы
 
-1. [-] [Модуль 6. Администрирование баз данных](https://github.com/netology-code/virt-homeworks/tree/master/additional)
+1. [x] [Модуль 6. Администрирование баз данных](additional)
 </details>
