@@ -93,6 +93,15 @@ This approach is needed in order to avoid using too much memory for keys that ar
 In short: be aware that many keys expiring at the same moment can be a source of latency.
 </details>
 
+Так же стоит, наверное, еще поглядеть в сторону документации по [репликации](https://redis.io/docs/management/replication/):
+
+текущий мастер перестанет принимать запросы, если не наберется достаточное кол-во реплик со значениями не превышающими заданный `lag` (максимальное кол-во секунд с последнего опроса реплики)
+~~(полечил сейчас свой террасофт BPM на этот счёт)~~
+
+живёт оно в redis.conf:
+- min-replicas-to-write <number of replicas>
+- min-replicas-max-lag <number of seconds>
+
  
 ## Задача 3
 
