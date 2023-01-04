@@ -240,10 +240,282 @@ Changes to Outputs:
 ```
 </details>
 
----
+Отправляем Terraform работать с YC, применение конфигурации в облаке на основе образа сделанного в Packer
+<details><summary>вывод terraform apply</summary>
 
-### Как cдавать задание
+```shell
+❯ terraform apply
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
 
----
+Terraform will perform the following actions:
+
+  # yandex_compute_instance.srv72-01 will be created
+  + resource "yandex_compute_instance" "srv72-01" {
+      + allow_stopping_for_update = true
+      + created_at                = (known after apply)
+      + folder_id                 = (known after apply)
+      + fqdn                      = (known after apply)
+      + hostname                  = "srv72-01.netology.lab"
+      + id                        = (known after apply)
+      + metadata                  = {
+          + "ssh-keys" = <<-EOT
+                centos:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCWto6eDr35F0CgjCUDe/WjSrYAdXDfNOlXcjh8owYRBN9A0E7rcQuRtxvUPO4OYARO6okeKjUQ4Pg07zmrLINFHXybo6Hg1KRU43z23+jjA3HX4GFD1QFaK7c5/YO6hZK6v7GS85pAcMmCibsvgeRISJ2+/ZKy3bfpGACrbYRcaA7O+nxzTcvcKIouc0P9cne9FBOQK6bb60uzQWNCbH7zlyJcoXrugaa44kOWscuP6dCpfSEGlEY7BVSNOU1K0ereAoFfmCd6u3eLvj8LEKw/WWS2UUNW/QggbEfIcRyts0QBzltUl4NmCOEV6s+pTxgIk5KBWVHz7fmQL5afhnwrR2PjkFec1DfWpECFDIp2Vt+GfLm80foW/C/8ybM3+zc2lJW2Y83YpoMncaC4GppE5yKIqDut92dOWOvr0Ppv4teHep0D/goX/4xco+zr4m/B2nhMujqskPsIDj1XrWDnZD047f2uhy7Bkj9n+YiDWGCNPiOBJjtMDfsIDjfVCHlvr9wPPrJrNOB42/K76lKsl7sWvF3TAiOIupi7T8nJGJciRYq/hz9e4qOZdq1rCmPJOuCzdPi58pH1WFadsbambA+YG7f34phuD5mfz+geRNFkAbkeSqfARoThVR02oUVnWAIu+edPWvuxPEDLikWd6vEhGm8t6wDf61v/ZHJg5Q== yakushin.pavel@gmail.com
+            EOT
+        }
+      + name                      = "srv72-01"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v1"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "ru-central1-a"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + block_size  = (known after apply)
+              + description = (known after apply)
+              + image_id    = "fd8hu92egb4b7or9b4gh"
+              + name        = "root-srv72-01"
+              + size        = 50
+              + snapshot_id = (known after apply)
+              + type        = "network-nvme"
+            }
+        }
+
+      + metadata_options {
+          + aws_v1_http_endpoint = (known after apply)
+          + aws_v1_http_token    = (known after apply)
+          + gce_http_endpoint    = (known after apply)
+          + gce_http_token       = (known after apply)
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = true
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = (known after apply)
+        }
+
+      + placement_policy {
+          + host_affinity_rules = (known after apply)
+          + placement_group_id  = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 100
+          + cores         = 2
+          + memory        = 2
+        }
+
+      + scheduling_policy {
+          + preemptible = (known after apply)
+        }
+    }
+
+  # yandex_vpc_network.default will be created
+  + resource "yandex_vpc_network" "default" {
+      + created_at                = (known after apply)
+      + default_security_group_id = (known after apply)
+      + folder_id                 = (known after apply)
+      + id                        = (known after apply)
+      + labels                    = (known after apply)
+      + name                      = "net"
+      + subnet_ids                = (known after apply)
+    }
+
+  # yandex_vpc_subnet.default will be created
+  + resource "yandex_vpc_subnet" "default" {
+      + created_at     = (known after apply)
+      + folder_id      = (known after apply)
+      + id             = (known after apply)
+      + labels         = (known after apply)
+      + name           = "subnet"
+      + network_id     = (known after apply)
+      + v4_cidr_blocks = [
+          + "192.168.10.0/24",
+        ]
+      + v6_cidr_blocks = (known after apply)
+      + zone           = "ru-central1-a"
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + external_ip_address_srv72-01_yandex_cloud = (known after apply)
+  + internal_ip_address_srv72-01_yandex_cloud = (known after apply)
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+yandex_vpc_network.default: Creating...
+yandex_vpc_network.default: Creation complete after 2s [id=enp730m8en1e6p8h3kn1]
+yandex_vpc_subnet.default: Creating...
+yandex_vpc_subnet.default: Creation complete after 0s [id=e9b9d7konlf0lhstqom4]
+yandex_compute_instance.srv72-01: Creating...
+yandex_compute_instance.srv72-01: Still creating... [10s elapsed]
+yandex_compute_instance.srv72-01: Still creating... [20s elapsed]
+yandex_compute_instance.srv72-01: Still creating... [30s elapsed]
+yandex_compute_instance.srv72-01: Still creating... [40s elapsed]
+yandex_compute_instance.srv72-01: Still creating... [50s elapsed]
+yandex_compute_instance.srv72-01: Creation complete after 55s [id=fhmeruva9ragtrlakukt]
+
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+external_ip_address_srv72-01_yandex_cloud = "51.250.0.87"
+internal_ip_address_srv72-01_yandex_cloud = "192.168.10.16"
+```
+</details>
+
+Дабы не тратить ~~деньги в пустую~~ ресурсы облака без необходимости, прибираемся за собой
+
+<details><summary>вывод terraform destroy</summary>
+
+```shell
+❯ terraform destroy -auto-approve
+yandex_vpc_network.default: Refreshing state... [id=enp730m8en1e6p8h3kn1]
+yandex_vpc_subnet.default: Refreshing state... [id=e9b9d7konlf0lhstqom4]
+yandex_compute_instance.srv72-01: Refreshing state... [id=fhmeruva9ragtrlakukt]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # yandex_compute_instance.srv72-01 will be destroyed
+  - resource "yandex_compute_instance" "srv72-01" {
+      - allow_stopping_for_update = true -> null
+      - created_at                = "2023-01-04T19:20:44Z" -> null
+      - folder_id                 = "b1gprhi83f991tp8b54f" -> null
+      - fqdn                      = "srv72-01.netology.lab" -> null
+      - hostname                  = "srv72-01.netology.lab" -> null
+      - id                        = "fhmeruva9ragtrlakukt" -> null
+      - labels                    = {} -> null
+      - metadata                  = {
+          - "ssh-keys" = <<-EOT
+                centos:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCWto6eDr35F0CgjCUDe/WjSrYAdXDfNOlXcjh8owYRBN9A0E7rcQuRtxvUPO4OYARO6okeKjUQ4Pg07zmrLINFHXybo6Hg1KRU43z23+jjA3HX4GFD1QFaK7c5/YO6hZK6v7GS85pAcMmCibsvgeRISJ2+/ZKy3bfpGACrbYRcaA7O+nxzTcvcKIouc0P9cne9FBOQK6bb60uzQWNCbH7zlyJcoXrugaa44kOWscuP6dCpfSEGlEY7BVSNOU1K0ereAoFfmCd6u3eLvj8LEKw/WWS2UUNW/QggbEfIcRyts0QBzltUl4NmCOEV6s+pTxgIk5KBWVHz7fmQL5afhnwrR2PjkFec1DfWpECFDIp2Vt+GfLm80foW/C/8ybM3+zc2lJW2Y83YpoMncaC4GppE5yKIqDut92dOWOvr0Ppv4teHep0D/goX/4xco+zr4m/B2nhMujqskPsIDj1XrWDnZD047f2uhy7Bkj9n+YiDWGCNPiOBJjtMDfsIDjfVCHlvr9wPPrJrNOB42/K76lKsl7sWvF3TAiOIupi7T8nJGJciRYq/hz9e4qOZdq1rCmPJOuCzdPi58pH1WFadsbambA+YG7f34phuD5mfz+geRNFkAbkeSqfARoThVR02oUVnWAIu+edPWvuxPEDLikWd6vEhGm8t6wDf61v/ZHJg5Q== yakushin.pavel@gmail.com
+            EOT
+        } -> null
+      - name                      = "srv72-01" -> null
+      - network_acceleration_type = "standard" -> null
+      - platform_id               = "standard-v1" -> null
+      - status                    = "running" -> null
+      - zone                      = "ru-central1-a" -> null
+
+      - boot_disk {
+          - auto_delete = true -> null
+          - device_name = "fhmvvrcv2tts4jgjt6ic" -> null
+          - disk_id     = "fhmvvrcv2tts4jgjt6ic" -> null
+          - mode        = "READ_WRITE" -> null
+
+          - initialize_params {
+              - block_size = 4096 -> null
+              - image_id   = "fd8hu92egb4b7or9b4gh" -> null
+              - name       = "root-srv72-01" -> null
+              - size       = 50 -> null
+              - type       = "network-ssd" -> null
+            }
+        }
+
+      - metadata_options {
+          - aws_v1_http_endpoint = 1 -> null
+          - aws_v1_http_token    = 1 -> null
+          - gce_http_endpoint    = 1 -> null
+          - gce_http_token       = 1 -> null
+        }
+
+      - network_interface {
+          - index              = 0 -> null
+          - ip_address         = "192.168.10.16" -> null
+          - ipv4               = true -> null
+          - ipv6               = false -> null
+          - mac_address        = "d0:0d:ed:fb:ea:4e" -> null
+          - nat                = true -> null
+          - nat_ip_address     = "51.250.0.87" -> null
+          - nat_ip_version     = "IPV4" -> null
+          - security_group_ids = [] -> null
+          - subnet_id          = "e9b9d7konlf0lhstqom4" -> null
+        }
+
+      - placement_policy {
+          - host_affinity_rules = [] -> null
+        }
+
+      - resources {
+          - core_fraction = 100 -> null
+          - cores         = 2 -> null
+          - gpus          = 0 -> null
+          - memory        = 2 -> null
+        }
+
+      - scheduling_policy {
+          - preemptible = false -> null
+        }
+    }
+
+  # yandex_vpc_network.default will be destroyed
+  - resource "yandex_vpc_network" "default" {
+      - created_at = "2023-01-04T19:20:42Z" -> null
+      - folder_id  = "b1gprhi83f991tp8b54f" -> null
+      - id         = "enp730m8en1e6p8h3kn1" -> null
+      - labels     = {} -> null
+      - name       = "net" -> null
+      - subnet_ids = [
+          - "e9b9d7konlf0lhstqom4",
+        ] -> null
+    }
+
+  # yandex_vpc_subnet.default will be destroyed
+  - resource "yandex_vpc_subnet" "default" {
+      - created_at     = "2023-01-04T19:20:43Z" -> null
+      - folder_id      = "b1gprhi83f991tp8b54f" -> null
+      - id             = "e9b9d7konlf0lhstqom4" -> null
+      - labels         = {} -> null
+      - name           = "subnet" -> null
+      - network_id     = "enp730m8en1e6p8h3kn1" -> null
+      - v4_cidr_blocks = [
+          - "192.168.10.0/24",
+        ] -> null
+      - v6_cidr_blocks = [] -> null
+      - zone           = "ru-central1-a" -> null
+    }
+
+Plan: 0 to add, 0 to change, 3 to destroy.
+
+Changes to Outputs:
+  - external_ip_address_srv72-01_yandex_cloud = "51.250.0.87" -> null
+  - internal_ip_address_srv72-01_yandex_cloud = "192.168.10.16" -> null
+yandex_compute_instance.srv72-01: Destroying... [id=fhmeruva9ragtrlakukt]
+yandex_compute_instance.srv72-01: Still destroying... [id=fhmeruva9ragtrlakukt, 10s elapsed]
+yandex_compute_instance.srv72-01: Still destroying... [id=fhmeruva9ragtrlakukt, 20s elapsed]
+yandex_compute_instance.srv72-01: Destruction complete after 22s
+yandex_vpc_subnet.default: Destroying... [id=e9b9d7konlf0lhstqom4]
+yandex_vpc_subnet.default: Destruction complete after 3s
+yandex_vpc_network.default: Destroying... [id=enp730m8en1e6p8h3kn1]
+yandex_vpc_network.default: Destruction complete after 0s
+
+Destroy complete! Resources: 3 destroyed.
+```
+</details>
+
+Остается прибрать за собой образ Packer
+```shell
+yc compute images delete --name centos-7-base
+```
