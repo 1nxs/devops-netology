@@ -10,3 +10,4 @@
 /06-db-05-elasticsearch/vm/ansible/stack/elasticsearch-8.2.0-linux-x86_64.tar.gz.sha512
 /06-db-06-troobleshooting/vm/vagrant/.vagrant/
 /06-db-06-troobleshooting/vm/beta/
+/07-terraform-02-syntax/src/terraform/key.json
