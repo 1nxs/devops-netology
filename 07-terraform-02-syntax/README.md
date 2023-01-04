@@ -71,7 +71,7 @@ AWS предоставляет достаточно много бесплатн�
 
 
 ### Ответ
-Всё задание будет выполняться на базе Yandex.Cloud.
+Всё задание будет выполняться на базе Yandex.Cloud.\
 **Задача 1** уже была выполнена в рамках занятия "4. Оркестрация группой Docker контейнеров на примере Docker Compose"
 ```shell
 ❯ yc config list
@@ -92,8 +92,153 @@ compute-default-zone: ru-central1-a
 Образ мы будем создавать через `Packer` \
 [centos-7-base.json](./src/packer/centos-7-base-wo-key.json)
 ```shell
-❯ terraform init
+❯ packer inspect centos-7-base.json
+❯ packer build centos-7-base.json
+yandex: output will be in this color.
+
+==> yandex: Creating temporary RSA SSH key for instance...
+==> yandex: Using as source image: fd8jvcoeij6u9se84dt5 (name: "centos-7-v20221121", family: "centos-7")
+==> yandex: Creating network...
+==> yandex: Creating subnet in zone "ru-central1-a"...
+==> yandex: Creating disk...
+==> yandex: Creating instance...
+# -----
+Build 'yandex' finished after 5 minutes 529 milliseconds.
+
+==> Wait completed after 5 minutes 530 milliseconds
+
+==> Builds finished. The artifacts of successful builds are:
+--> yandex: A disk image was created: centos-7-base (id: fd8hu92egb4b7or9b4gh) with family name centos
 ```
+Теперь инициализируем провайдера
+```shell
+❯ terraform init
+Initializing the backend...
+
+Initializing provider plugins...
+- Finding latest version of yandex-cloud/yandex...
+- Installing yandex-cloud/yandex v0.84.0...
+Terraform has been successfully initialized!
+```
+Если вы выполнили первый пункт, то добейтесь того, что бы команда `terraform plan` выполнялась без ошибок
+
+<details><summary>вывод terraform plan</summary>
+
+```shell
+❯ terraform plan
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # yandex_compute_instance.srv72-01 will be created
+  + resource "yandex_compute_instance" "srv72-01" {
+      + allow_stopping_for_update = true
+      + created_at                = (known after apply)
+      + folder_id                 = (known after apply)
+      + fqdn                      = (known after apply)
+      + hostname                  = "srv72-01.netology.lab"
+      + id                        = (known after apply)
+      + metadata                  = {
+          + "ssh-keys" = <<-EOT
+                centos:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCWto6eDr35F0CgjCUDe/WjSrYAdXDfNOlXcjh8owYRBN9A0E7rcQuRtxvUPO4OYARO6okeKjUQ4Pg07zmrLINFHXybo6Hg1KRU43z23+jjA3HX4GFD1QFaK7c5/YO6hZK6v7GS85pAcMmCibsvgeRISJ2+/ZKy3bfpGACrbYRcaA7O+nxzTcvcKIouc0P9cne9FBOQK6bb60uzQWNCbH7zlyJcoXrugaa44kOWscuP6dCpfSEGlEY7BVSNOU1K0ereAoFfmCd6u3eLvj8LEKw/WWS2UUNW/QggbEfIcRyts0QBzltUl4NmCOEV6s+pTxgIk5KBWVHz7fmQL5afhnwrR2PjkFec1DfWpECFDIp2Vt+GfLm80foW/C/8ybM3+zc2lJW2Y83YpoMncaC4GppE5yKIqDut92dOWOvr0Ppv4teHep0D/goX/4xco+zr4m/B2nhMujqskPsIDj1XrWDnZD047f2uhy7Bkj9n+YiDWGCNPiOBJjtMDfsIDjfVCHlvr9wPPrJrNOB42/K76lKsl7sWvF3TAiOIupi7T8nJGJciRYq/hz9e4qOZdq1rCmPJOuCzdPi58pH1WFadsbambA+YG7f34phuD5mfz+geRNFkAbkeSqfARoThVR02oUVnWAIu+edPWvuxPEDLikWd6vEhGm8t6wDf61v/ZHJg5Q== yakushin.pavel@gmail.com
+            EOT
+        }
+      + name                      = "srv72-01"
+      + network_acceleration_type = "standard"
+      + platform_id               = "standard-v1"
+      + service_account_id        = (known after apply)
+      + status                    = (known after apply)
+      + zone                      = "ru-central1-a"
+
+      + boot_disk {
+          + auto_delete = true
+          + device_name = (known after apply)
+          + disk_id     = (known after apply)
+          + mode        = (known after apply)
+
+          + initialize_params {
+              + block_size  = (known after apply)
+              + description = (known after apply)
+              + image_id    = "fd8hu92egb4b7or9b4gh"
+              + name        = "root-srv72-01"
+              + size        = 50
+              + snapshot_id = (known after apply)
+              + type        = "network-nvme"
+            }
+        }
+
+      + metadata_options {
+          + aws_v1_http_endpoint = (known after apply)
+          + aws_v1_http_token    = (known after apply)
+          + gce_http_endpoint    = (known after apply)
+          + gce_http_token       = (known after apply)
+        }
+
+      + network_interface {
+          + index              = (known after apply)
+          + ip_address         = (known after apply)
+          + ipv4               = true
+          + ipv6               = (known after apply)
+          + ipv6_address       = (known after apply)
+          + mac_address        = (known after apply)
+          + nat                = true
+          + nat_ip_address     = (known after apply)
+          + nat_ip_version     = (known after apply)
+          + security_group_ids = (known after apply)
+          + subnet_id          = (known after apply)
+        }
+
+      + placement_policy {
+          + host_affinity_rules = (known after apply)
+          + placement_group_id  = (known after apply)
+        }
+
+      + resources {
+          + core_fraction = 100
+          + cores         = 2
+          + memory        = 2
+        }
+
+      + scheduling_policy {
+          + preemptible = (known after apply)
+        }
+    }
+
+  # yandex_vpc_network.default will be created
+  + resource "yandex_vpc_network" "default" {
+      + created_at                = (known after apply)
+      + default_security_group_id = (known after apply)
+      + folder_id                 = (known after apply)
+      + id                        = (known after apply)
+      + labels                    = (known after apply)
+      + name                      = "net"
+      + subnet_ids                = (known after apply)
+    }
+
+  # yandex_vpc_subnet.default will be created
+  + resource "yandex_vpc_subnet" "default" {
+      + created_at     = (known after apply)
+      + folder_id      = (known after apply)
+      + id             = (known after apply)
+      + labels         = (known after apply)
+      + name           = "subnet"
+      + network_id     = (known after apply)
+      + v4_cidr_blocks = [
+          + "192.168.10.0/24",
+        ]
+      + v6_cidr_blocks = (known after apply)
+      + zone           = "ru-central1-a"
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + external_ip_address_srv72-01_yandex_cloud = (known after apply)
+  + internal_ip_address_srv72-01_yandex_cloud = (known after apply)
+```
+</details>
 
 ---
 
