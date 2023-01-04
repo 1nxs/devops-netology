@@ -519,3 +519,5 @@ Destroy complete! Resources: 3 destroyed.
 ```shell
 yc compute images delete --name centos-7-base
 ```
+В качестве результата задания предоставьте [**ссылку**](./src/terraform) на репозиторий с исходной конфигурацией терраформа.
+> все материалы собраны в рамках текущего задания, каталог `src`

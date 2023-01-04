@@ -11,3 +11,4 @@
 /06-db-06-troobleshooting/vm/vagrant/.vagrant/
 /06-db-06-troobleshooting/vm/beta/
 /07-terraform-02-syntax/src/terraform/key.json
+/07-terraform-02-syntax/src/terraform/.terraform/
