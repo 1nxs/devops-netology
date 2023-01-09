@@ -30,10 +30,13 @@ dynamodb.
 * Вывод команды `terraform workspace list`.
 * Вывод команды `terraform plan` для воркспейса `prod`.  
 
----
+### Ответ
+**Задача 1.** Создадим бакет и зарегаем бэкэнд в TF проекте
 
-### Как cдавать задание
+https://cloud.yandex.ru/docs/storage/operations/buckets/create \
+https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/storage_bucket
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+![virt73-backet.png](img%2Fvirt73-backet.png)
 
----
+Пробуем воспросизвести для себя
+[yc-s3.tf](src%2Fterraform%2Fyc-s3.tf)
