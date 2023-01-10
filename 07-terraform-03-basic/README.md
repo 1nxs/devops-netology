@@ -47,6 +47,8 @@ https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/s
 - нужны статические ключи доступа для этого сервисного аккаунта, получаем идентификатор и секретный ключ [мануал](https://cloud.yandex.ru/docs/iam/operations/sa/create-access-key)
 - нужен созданный ранее бакет
 - корректно записываем все значения в [yc-s3.tf](./src/terraform/yc-s3.tf) [мануал](https://cloud.yandex.ru/docs/solutions/infrastructure-management/terraform-state-storage#configure-provider)
-- `terraform init -reconfigure` (в моём случае, тк до этого уже был многократный инит)
+- `terraform init -backend-config="access_key=<KEY>" -backend-config="secret_key=<KEY>"`\
+в моём случае, тк до этого уже был многократный инит \
+`❯ terraform init -backend-config=static.key -reconfigure`
 
 ![tfstate.png](img%2Ftfstate.png)
