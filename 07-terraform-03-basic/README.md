@@ -33,10 +33,20 @@ dynamodb.
 ### Ответ
 **Задача 1.** Создадим бакет и зарегаем бэкэнд в TF проекте
 
+Изба читальня рекомендует: \
 https://cloud.yandex.ru/docs/storage/operations/buckets/create \
 https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/storage_bucket
 
+Пробуем воспросизвести для себя \
+Создаем бакет:
 ![virt73-backet.png](img%2Fvirt73-backet.png)
 
-Пробуем воспросизвести для себя
-[yc-s3.tf](src%2Fterraform%2Fyc-s3.tf)
+Описываем хранение tfstate [yc-s3.tf](./src/terraform/yc-s3.tf) \
+Для всей процедуры нужно соблюсти следующее:
+- нужен сервис аккаунт [мануал](https://cloud.yandex.ru/docs/iam/concepts/users/service-accounts)
+- нужны статические ключи доступа для этого сервисного аккаунта, получаем идентификатор и секретный ключ [мануал](https://cloud.yandex.ru/docs/iam/operations/sa/create-access-key)
+- нужен созданный ранее бакет
+- корректно записываем все значения в [yc-s3.tf](./src/terraform/yc-s3.tf) [мануал](https://cloud.yandex.ru/docs/solutions/infrastructure-management/terraform-state-storage#configure-provider)
+- `terraform init -reconfigure` (в моём случае, тк до этого уже был многократный инит)
+
+![tfstate.png](img%2Ftfstate.png)
