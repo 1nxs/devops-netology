@@ -15,3 +15,4 @@
 /07-terraform-03-basic/src/terraform/key.json
 /07-terraform-03-basic/src/terraform/.terraform/
 /07-terraform-03-basic/src/terraform/static.key
+/07-terraform-03-basic/src/packer/key.json

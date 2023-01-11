@@ -6,8 +6,12 @@ variable "yandex_folder_id" {
   default = "b1gprhi83f991tp8b54f"
 }
 
+variable "zone" {
+  default = "ru-central1-a"
+}
+
 variable "centos-7-base" {
-  default = "fd87hrmj6opa30n655a6"
+  default = "fd8rup604h4t2gekn0ju"
 }
 
 locals {

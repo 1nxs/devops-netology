@@ -43,10 +43,10 @@ https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/s
 
 Описываем хранение tfstate [yc-s3.tf](./src/terraform/yc-s3.tf) \
 Для всей процедуры нужно соблюсти следующее:
-- нужен сервис аккаунт [мануал](https://cloud.yandex.ru/docs/iam/concepts/users/service-accounts)
-- нужны статические ключи доступа для этого сервисного аккаунта, получаем идентификатор и секретный ключ [мануал](https://cloud.yandex.ru/docs/iam/operations/sa/create-access-key)
+- нужен сервис аккаунт - [мануал](https://cloud.yandex.ru/docs/iam/concepts/users/service-accounts)
+- нужны статические ключи доступа для этого сервисного аккаунта, получаем идентификатор и секретный ключ - [мануал](https://cloud.yandex.ru/docs/iam/operations/sa/create-access-key)
 - нужен созданный ранее бакет
-- корректно записываем все значения в [yc-s3.tf](./src/terraform/yc-s3.tf) [мануал](https://cloud.yandex.ru/docs/solutions/infrastructure-management/terraform-state-storage#configure-provider)
+- корректно записываем все значения в [yc-s3.tf](./src/terraform/yc-s3.tf) - [мануал](https://cloud.yandex.ru/docs/solutions/infrastructure-management/terraform-state-storage#configure-provider)
 - `terraform init -backend-config="access_key=<KEY>" -backend-config="secret_key=<KEY>"`\
 в моём случае, тк до этого уже был многократный инит \
 `❯ terraform init -backend-config=static.key -reconfigure`
@@ -87,3 +87,8 @@ for this configuration.
 1. Что бы при изменении типа инстанса не возникло ситуации, когда не будет ни одного инстанса добавьте параметр
 жизненного цикла `create_before_destroy = true` в один из рессурсов `aws_instance`.
 1. При желании поэкспериментируйте с другими параметрами и рессурсами.
+
+в Packer подготавливаем образ Centos7
+
+---
+> все материалы собраны в рамках текущего задания, каталог `src`
