@@ -31,13 +31,14 @@ dynamodb.
 * Вывод команды `terraform plan` для воркспейса `prod`.  
 
 ### Ответ
+Пробуем воспросизвести для себя, т.к. ~~**не AWS**~~ Yandex.Cloud 
+
 **Задача 1.** Создадим бакет и зарегаем бэкэнд в TF проекте
 
 Изба читальня рекомендует: \
 https://cloud.yandex.ru/docs/storage/operations/buckets/create \
 https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/storage_bucket
 
-Пробуем воспросизвести для себя \
 Создаем бакет: \
 ![virt73-backet.png](img%2Fvirt73-backet.png)
 
