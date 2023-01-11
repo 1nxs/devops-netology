@@ -52,3 +52,38 @@ https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/s
 `❯ terraform init -backend-config=static.key -reconfigure`
 
 ![tfstate.png](img%2Ftfstate.png)
+
+**Задача 2** 
+- Часть 1
+1. Выполните `terraform init`:
+    * если был создан бэкэнд в S3, то терраформ создат файл стейтов в S3 и запись в таблице 
+dynamodb.
+    * иначе будет создан локальный файл со стейтами.  
+> Выполнено в рамках **Задачи 1**
+- Часть 2
+2. Создайте два воркспейса `stage` и `prod`.
+```shell
+❯ terraform workspace new stage
+Created and switched to workspace "stage"!
+
+You're now on a new, empty workspace. Workspaces isolate their state,
+so if you run "terraform plan" Terraform will not see any existing state
+for this configuration.
+
+❯ terraform workspace new prod
+Created and switched to workspace "prod"!
+
+You're now on a new, empty workspace. Workspaces isolate their state,
+so if you run "terraform plan" Terraform will not see any existing state
+for this configuration.
+```
+![workspace-env.png](img%2Fworkspace-env.png)
+
+- Часть 3
+3. В уже созданный `aws_instance` добавьте зависимость типа инстанса от вокспейса, что бы в разных ворскспейсах 
+использовались разные `instance_type`.
+1. Добавим `count`. Для `stage` должен создаться один экземпляр `ec2`, а для `prod` два. 
+1. Создайте рядом еще один `aws_instance`, но теперь определите их количество при помощи `for_each`, а не `count`.
+1. Что бы при изменении типа инстанса не возникло ситуации, когда не будет ни одного инстанса добавьте параметр
+жизненного цикла `create_before_destroy = true` в один из рессурсов `aws_instance`.
+1. При желании поэкспериментируйте с другими параметрами и рессурсами.
