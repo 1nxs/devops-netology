@@ -54,13 +54,13 @@ https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/s
 ![tfstate.png](img%2Ftfstate.png)
 
 **Задача 2** 
-- Часть 1
+- **Часть 1**
 1. Выполните `terraform init`:
     * если был создан бэкэнд в S3, то терраформ создат файл стейтов в S3 и запись в таблице 
 dynamodb.
     * иначе будет создан локальный файл со стейтами.  
 > Выполнено в рамках **Задачи 1**
-- Часть 2
+- **Часть 2**
 2. Создайте два воркспейса `stage` и `prod`.
 ```shell
 ❯ terraform workspace new stage
@@ -79,7 +79,7 @@ for this configuration.
 ```
 ![workspace-env.png](img%2Fworkspace-env.png)
 
-- Часть 3
+- **Часть 3**
 3. В уже созданный `aws_instance` добавьте зависимость типа инстанса от вокспейса, что бы в разных ворскспейсах 
 использовались разные `instance_type`.
 1. Добавим `count`. Для `stage` должен создаться один экземпляр `ec2`, а для `prod` два. 
@@ -88,7 +88,33 @@ for this configuration.
 жизненного цикла `create_before_destroy = true` в один из рессурсов `aws_instance`.
 1. При желании поэкспериментируйте с другими параметрами и рессурсами.
 
-в Packer подготавливаем образ Centos7
+В виде результата работы пришлите:
+* Вывод команды `terraform workspace list`.
+* Вывод команды `terraform plan` для воркспейса `prod`.  
+
+Продолжаем адаптировать задачи под Yandex.Cloud:
+
+- В Packer подготавим образ Centos7 [centos-7-base.json](src%2Fpacker%2Fcentos-7-base.json)
+```shell
+packer build centos-7-base.json
+```
+![img-build.png](img%2Fimg-build.png)
+
+- Описываем задачу в [main.tf](src%2Fterraform%2Fmain.tf)
+
+- Вывод команды `terraform workspace list`.
+```
+❯ terraform workspace list
+  default
+  prod
+* stage
+```
+- Вывод команды `terraform plan` для воркспейса `prod`. 
+```shell
+❯ terraform workspace select prod
+Switched to workspace "prod".
+❯ terraform plan >> tf-plan.log 
+```
 
 ---
 > все материалы собраны в рамках текущего задания, каталог `src`

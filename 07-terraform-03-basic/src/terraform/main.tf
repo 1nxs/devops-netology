@@ -10,7 +10,6 @@ resource "yandex_compute_instance" "vm-count" {
   boot_disk {
     initialize_params {
       image_id    = "${var.centos-7-base}"
-      name        = "root-srv73"
       type        = "network-nvme"
       size        = "20"
     }
@@ -44,7 +43,6 @@ resource "yandex_compute_instance" "vm-4each" {
   boot_disk {
     initialize_params {
       image_id    = "${var.centos-7-base}"
-      name        = "root-srv73"
       type        = "network-nvme"
       size        = "20"
     }
