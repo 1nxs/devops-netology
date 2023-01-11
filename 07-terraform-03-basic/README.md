@@ -116,5 +116,10 @@ Switched to workspace "prod".
 ❯ terraform plan >> tf-plan.log 
 ```
 
+[tf-plan.log](src%2Fterraform%2Ftf-plan.log)
+
+Ну и т.к. во многих случаях написано `known after apply`,  то ниже скриншот `after apply`
+![prod.png](img%2Fprod.png)
+
 ---
 > все материалы собраны в рамках текущего задания, каталог `src`
