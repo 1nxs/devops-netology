@@ -38,7 +38,7 @@ https://cloud.yandex.ru/docs/storage/operations/buckets/create \
 https://registry.tfpla.net/providers/yandex-cloud/yandex/latest/docs/resources/storage_bucket
 
 Пробуем воспросизвести для себя \
-Создаем бакет:
+Создаем бакет: \
 ![virt73-backet.png](img%2Fvirt73-backet.png)
 
 Описываем хранение tfstate [yc-s3.tf](./src/terraform/yc-s3.tf) \
@@ -118,7 +118,7 @@ Switched to workspace "prod".
 
 [tf-plan.log](src%2Fterraform%2Ftf-plan.log)
 
-Ну и т.к. во многих случаях написано `known after apply`,  то ниже скриншот `after apply`
+Ну и т.к. во многих случаях написано `known after apply`,  то ниже скриншот `after apply` \
 ![prod.png](img%2Fprod.png)
 
 ---
