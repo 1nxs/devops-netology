@@ -45,7 +45,7 @@
 1. Собираем стек для Atlantis
 Традиционно - `Vagrant+Ansible+Docker`
 2. Читаем доки по [деплою](https://www.runatlantis.io/docs/deployment.html#docker) \
-GitHub var
+GitHub var - [atl-var.sh](vm%2Fansible%2Fstack%2Fatl-var.sh)
  ```shell
  atlantis server \
  --atlantis-url="$URL" \
@@ -57,11 +57,13 @@ GitHub var
 3. Потребуется GH token и secret..
 - Gh токен генерим с кабинета
 - секрет для хука `echo $RANDOM | md5sum | head -c 20; echo;` копируем себе тк основная тема - чтоб потом совпал с двух сторон
-4. Запускаем Docker контейнер
+4. Запускаем Docker - [Dockerfile](vm%2Fansible%2Fstack%2FDockerfile) \
+плюс потребовались ключи `--default-tf-version` `--repo-allowlist`
 ```shell
- docker run -p 4141:4141 atlantis:latest server --config /tmp/server.yaml --repo-config /tmp/repos.yaml
+sudo docker run -p 4141:4141 1nxs/atlantis-custom:2.5 server --config /tmp/server.yaml --repo-config /tmp/atlantis.yaml --default-tf-version 1.3.6
 ```
-
+5. В качестве результата приложите ссылку на файлы [server.yaml](vm%2Fansible%2Fstack%2Fserver.yaml) и [atlantis.yaml](vm%2Fansible%2Fstack%2Fatlantis.yaml).
+> все материалы по задаче собраны в каталог [stack](vm%2Fansible%2Fstack)
 
 ## Задача 3. Знакомство с каталогом модулей. 
 
