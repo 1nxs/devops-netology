@@ -19,7 +19,7 @@
 2. Отдельный репо с файлами - https://github.com/1nxs/07-terraform-04-teamwork
 3. Создан workspace >> добавлен репо из п.2
 4. Результаты:
-**Terraform CLoud** \
+**Terraform Cloud** \
 ![tfc-plan-apply.png](img%2Ftfc-plan-apply.png)
 **Yandex Cloud** \
 ![tfc-yc-push-vm.png](img%2Ftfc-yc-push-vm.png)

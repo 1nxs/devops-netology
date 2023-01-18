@@ -6,7 +6,7 @@ INVENTORY_PATH = "../ansible/inventory"
 
 servers = [
   {
-    :hostname => HOST_PREFIX + "74" + DOMAIN,
+    :hostname => HOST_PREFIX + "64" + DOMAIN,
     :ip => NET + "11",
     :ssh_host => "20011",
     :ssh_vm => "22",
