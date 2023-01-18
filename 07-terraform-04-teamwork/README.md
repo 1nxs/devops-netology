@@ -41,6 +41,28 @@
 
 В качестве результата приложите ссылку на файлы `server.yaml` и `atlantis.yaml`.
 
+### Ответ
+1. Собираем стек для Atlantis
+Традиционно - `Vagrant+Ansible+Docker`
+2. Читаем доки по [деплою](https://www.runatlantis.io/docs/deployment.html#docker) \
+GitHub var
+ ```shell
+ atlantis server \
+ --atlantis-url="$URL" \
+ --gh-user="$USERNAME" \
+ --gh-token="$TOKEN" \
+ --gh-webhook-secret="$SECRET" \
+ --repo-allowlist="$REPO_ALLOWLIST"
+ ```
+3. Потребуется GH token и secret..
+- Gh токен генерим с кабинета
+- секрет для хука `echo $RANDOM | md5sum | head -c 20; echo;` копируем себе тк основная тема - чтоб потом совпал с двух сторон
+4. Запускаем Docker контейнер
+```shell
+ docker run -p 4141:4141 atlantis:latest server --config /tmp/server.yaml --repo-config /tmp/repos.yaml
+```
+
+
 ## Задача 3. Знакомство с каталогом модулей. 
 
 1. В [каталоге модулей](https://registry.terraform.io/browse/modules) найдите официальный модуль от aws для создания
