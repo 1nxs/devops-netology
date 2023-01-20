@@ -112,8 +112,8 @@ module "ec2_instance" {
 3. В рамках предпоследнего задания был создан ec2 при помощи ресурса `aws_instance`. 
 Создайте аналогичный инстанс при помощи найденного модуля.
 
-Собственно, в рамках предпоследнего задания уже был `yandex_compute_instance` 
-
+Собственно, в рамках предпоследнего задания уже был `yandex_compute_instance` \
+Немного фантазий, скорее всего придётся подправить еще.. но суть:
 <details><summary>AWS main.tf</summary>
 
 ```terraform
@@ -132,11 +132,18 @@ module "ec2_instance" {
   key_name               = "user1"
   vpc_security_group_ids = ["sg-12345678"]
   subnet_id              = "subnet-eddcdzz4"
-  
+ 
+  count = local.instance_count[terraform.workspace]
+ 
   tags = {
     Terraform   = "true"
-    Environment = "dev"
+    Name = "${terraform.workspace}-count-${count.index}"
+    Name = "my-comp-${count.index}"
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
+
 ```
 </details>
