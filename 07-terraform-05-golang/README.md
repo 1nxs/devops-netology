@@ -49,7 +49,7 @@ go version go1.19.5 linux/amd64
         fmt.Println(output)    
     }
     ```
- 
+
 1. Напишите программу, которая найдет наименьший элемент в любом заданном списке, например:
     ```
     x := []int{48,96,86,68,57,82,63,70,37,34,83,27,19,97,9,17,}
@@ -59,7 +59,18 @@ go version go1.19.5 linux/amd64
 В виде решения ссылку на код или сам код. 
 
 ### Ответ
+- Задача 3.1
+```go
+func task3_11() {
+	fmt.Print("Input length in meters: ")
+	var input float64
+	fmt.Scanf("%f", &input)
 
+	output := input / 0.3048
+
+	fmt.Printf("%v meters is: %4.4f feet.\n", input, output)
+}
+```
 
 
 ## Задача 4. Протестировать код (не обязательно).
