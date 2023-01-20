@@ -76,10 +76,67 @@ sudo docker run -p 4141:4141 1nxs/atlantis-custom:2.5 server --config /tmp/serve
 
 В качестве результата задания приложите ссылку на созданный блок конфигураций. 
 
----
+### Ответ
+Для Yandex Cloud модулей у Terraform нет.
+Доступа до AWS нет у меня, так что выкладка будет основываться на чтении кода *.tf
+1. В [каталоге модулей](https://registry.terraform.io/browse/modules) найдите официальный модуль от aws для создания
+`ec2` инстансов. 
+> https://github.com/terraform-aws-modules/terraform-aws-ec2-instance
 
-### Как cдавать задание
+2. Изучите как устроен модуль. Задумайтесь, будете ли в своем проекте использовать этот модуль или непосредственно 
+ресурс `aws_instance` без помощи модуля?
+```terraform
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+  name = "single-instance"
 
----
+  ami                    = "ami-ebd02392"
+  instance_type          = "t2.micro"
+  key_name               = "user1"
+  monitoring             = true
+  vpc_security_group_ids = ["sg-12345678"]
+  subnet_id              = "subnet-eddcdzz4"
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
+```
+По количеству кода - примерно одно и тоже. Для единичного проекта развертывания смысл в использовании модуля почти сводится к нулю. В случае создания\эксплуатации большой инфраструктуры - конечно использование оправдано, тк упрощает развертывание, уменьшает кол-во возможности хардкода, прощее вносить массовые изменения. \
+Лично я - стал бы, тк следую логике что если где-то можно сделать возможность "динамического" - то лучше закладывать её сразу. 
+
+
+3. В рамках предпоследнего задания был создан ec2 при помощи ресурса `aws_instance`. 
+Создайте аналогичный инстанс при помощи найденного модуля.
+
+Собственно, в рамках предпоследнего задания уже был `yandex_compute_instance` 
+
+<details><summary>AWS main.tf</summary>
+
+```terraform
+provider "aws" {
+  region = "eu-north-1"
+}
+
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  version = "~> 3.0"
+
+  name = "aws-74-lab"
+
+  ami                    = "ami-ebd02392"
+  instance_type          = "t3.micro"
+  key_name               = "user1"
+  vpc_security_group_ids = ["sg-12345678"]
+  subnet_id              = "subnet-eddcdzz4"
+  
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
+```
+</details>
