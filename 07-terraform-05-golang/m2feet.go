@@ -21,7 +21,7 @@ func task3_11() {
 
 	output := input / 0.3048
 
-	fmt.Printf("%v meters is: %v feet.\n", input, output)
+	fmt.Printf("%v meters is: %4.4f feet.\n", input, output)
 }
 
 func main() {
