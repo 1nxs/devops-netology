@@ -19,9 +19,9 @@ func task3_11() {
 	var input float64
 	fmt.Scanf("%f", &input)
 
-	output := input * 0.3048
+	output := input / 0.3048
 
-	fmt.Printf("%v feet is: %v meters.\n", input, output)
+	fmt.Printf("%v meters is: %v feet.\n", input, output)
 }
 
 func main() {
