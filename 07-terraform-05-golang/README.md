@@ -59,7 +59,8 @@ go version go1.19.5 linux/amd64
 В виде решения ссылку на код или сам код. 
 
 ### Ответ
-- Задача 3.1
+<details><summary>Задача 3.1</summary>
+
 ```go
 func task3_11() {
 	fmt.Print("Input length in meters: ")
@@ -71,7 +72,36 @@ func task3_11() {
 	fmt.Printf("%v meters is: %4.4f feet.\n", input, output)
 }
 ```
+</details>
 
+<details><summary>Задача 3.2</summary>
+
+```go
+func task3_20() {
+    // пример списка из задачи
+	x := []int{48,96,86,68,57,82,63,70,37,34,83,27,19,97,9,17,}
+	min := x[0]
+	for _,y := range x {
+		if y < min {
+			min = y
+		}
+	}
+	fmt.Println("Min integer is:",min)
+}
+```
+</details>
+
+<details><summary>Задача 3.2</summary>
+```go
+func task3_30() {
+    for i := 1; i <= 101; i++ {
+        if (i % 3) == 0 {
+        fmt.Printf( "[%v] ", i )
+        }
+    }
+}
+```
+</details>
 
 ## Задача 4. Протестировать код (не обязательно).
 
