@@ -59,6 +59,7 @@ go version go1.19.5 linux/amd64
 В виде решения ссылку на код или сам код. 
 
 ### Ответ
+[ссылка на код](task3.go)
 <details><summary>Задача 3.1</summary>
 
 ```go
@@ -92,6 +93,7 @@ func task3_20() {
 </details>
 
 <details><summary>Задача 3.2</summary>
+
 ```go
 func task3_30() {
     for i := 1; i <= 101; i++ {

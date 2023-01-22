@@ -50,6 +50,5 @@ func main() {
     //task3_10()
     //task3_11()
     //task3_20()
-    task3_30()
-
+    //task3_30()
 }
