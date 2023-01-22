@@ -92,7 +92,7 @@ func task3_20() {
 ```
 </details>
 
-<details><summary>Задача 3.2</summary>
+<details><summary>Задача 3.3</summary>
 
 ```go
 func task3_30() {
