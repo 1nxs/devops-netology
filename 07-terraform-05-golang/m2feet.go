@@ -35,9 +35,21 @@ func task3_20() {
 	fmt.Println("Min integer is:",min)
 }
 
+
+func task3_30() {
+
+  for i := 1; i < 101; i++ {
+    if (i % 3) == 0 {
+      fmt.Println(i)
+    }
+  }
+
+}
+
 func main() {
     //task3_10()
     //task3_11()
-    task3_20()
+    //task3_20()
+    task3_30()
 
 }
