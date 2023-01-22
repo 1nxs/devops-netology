@@ -1,7 +1,7 @@
 package main
 
 import "fmt"
-// Задача 3_1
+
 
 //Пример из задания
 func task3_10() {
@@ -12,14 +12,13 @@ func task3_10() {
     fmt.Println(output)
 }
 
+// Задача 3_1
 // Конвертер величины с записанным в код множителем
 func task3_11() {
 	fmt.Print("Input length in meters: ")
 	var input float64
 	fmt.Scanf("%f", &input)
-
 	output := input / 0.3048
-
 	fmt.Printf("%v meters is: %4.4f feet.\n", input, output)
 }
 
@@ -35,11 +34,11 @@ func task3_20() {
 	fmt.Println("Min integer is:",min)
 }
 
-
+// Задача 3_3
 func task3_30() {
   for i := 1; i <= 101; i++ {
     if (i % 3) == 0 {
-      fmt.Printf( "[ %v ] ", i )
+      fmt.Printf( "[%v] ", i )
     }
   }
 }
