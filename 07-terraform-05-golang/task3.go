@@ -45,10 +45,27 @@ func task3_30() {
         }
     }
 }
+// дорабатываем "Можно запросить исходные данные у пользователя"
+func task3_31() {
+    fmt.Print("Enter min integer: ")
+    var min int
+    fmt.Scanf("%d", &min)
+
+    fmt.Print("Enter max integer: ")
+    var max int
+    fmt.Scanf("%d", &max)
+
+    for i := min; i <= max; i++ {
+        if (i % 3) == 0 {
+        fmt.Printf( "[%v] ", i )
+        }
+    }
+}
 
 func main() {
     //task3_10()
     //task3_11()
     //task3_20()
     //task3_30()
+    //task3_31()
 }
