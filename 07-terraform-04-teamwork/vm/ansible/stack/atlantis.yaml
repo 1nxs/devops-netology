@@ -2,14 +2,14 @@ version: 3
 parallel_apply: true
 parallel_plan: true
 projects:
-- name: project74
+- name: project74-st
   dir: .
   workspace: stage
   delete_source_branch_on_merge: true
   autoplan:
     when_modified: ["../modules/**/*.tf", "*.tf"]
     enabled: true
-- name: project74
+- name: project74-pr
   dir: .
   workspace: prod
   terraform_version: v1.3.6
