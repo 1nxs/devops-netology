@@ -19,3 +19,4 @@
 /07-terraform-04-teamwork/vm/vagrant/.vagrant/
 /07-terraform-04-teamwork/vm/ansible/stack/terraform
 /07-terraform-04-teamwork/vm/ansible/stack/atlantis.var
+/08-ansible-01-base/src/vagrant/.vagrant/
