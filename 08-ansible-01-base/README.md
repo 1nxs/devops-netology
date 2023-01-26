@@ -38,6 +38,8 @@ ok: [localhost] => {
 ```
 3. Воспользуйтесь подготовленным (используется `docker`) или создайте собственное окружение для проведения дальнейших испытаний.
 ```shell
+vagrant@server81:/opt/stack/playbook$ sudo docker run -d --name centos7 1nxs/centos:7 sleep 10000000
+vagrant@server81:/opt/stack/playbook$ sudo docker run -d --name ubuntu 1nxs/ubuntu sleep 10000000
 vagrant@server81:/opt/stack/playbook$ sudo docker ps
 CONTAINER ID   IMAGE                 COMMAND            CREATED              STATUS              PORTS     NAMES
 c6fe4811883c   1nxs/centos:7   "sleep 10000000"   About a minute ago   Up About a minute             centos7
@@ -114,7 +116,41 @@ centos7                    : ok=3    changed=0    unreachable=0    failed=0    s
 ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
 7. При помощи `ansible-vault` зашифруйте факты в `group_vars/deb` и `group_vars/el` с паролем `netology`.
+```shell
+vagrant@server81:/opt/stack/playbook$ ansible-vault encrypt group_vars/deb/*
+vagrant@server81:/opt/stack/playbook$ ansible-vault encrypt group_vars/el/*
+```
 8. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь в работоспособности.
+```shell
+vagrant@server81:/opt/stack/playbook$ ansible-playbook -i inventory/prod.yml site.yml --ask-vault-password
+Vault password: 
+
+PLAY [Print os facts] ****************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************
+ok: [ubuntu]
+ok: [centos7]
+
+TASK [Print OS] **********************************************************************************************************
+ok: [centos7] => {
+    "msg": "CentOS"
+}
+ok: [ubuntu] => {
+    "msg": "Ubuntu"
+}
+
+TASK [Print fact] ********************************************************************************************************
+ok: [centos7] => {
+    "msg": "el default fact"
+}
+ok: [ubuntu] => {
+    "msg": "deb default fact"
+}
+
+PLAY RECAP ***************************************************************************************************************
+centos7                    : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+ubuntu                     : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
 9. Посмотрите при помощи `ansible-doc` список плагинов для подключения. Выберите подходящий для работы на `control node`.
 10. В `prod.yml` добавьте новую группу хостов с именем  `local`, в ней разместите localhost с необходимым типом подключения.
 11. Запустите playbook на окружении `prod.yml`. При запуске `ansible` должен запросить у вас пароль. Убедитесь что факты `some_fact` для каждого из хостов определены из верных `group_vars`.
