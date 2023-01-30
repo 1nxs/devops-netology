@@ -1,0 +1,87 @@
+---
+  - hosts: nodes
+    become: yes
+    become_user: root
+    remote_user: ubuntu
+
+    tasks:
+      - name: Create directory for ssh-keys
+        file: state=directory mode=0700 dest=/root/.ssh/
+
+      - name: Adding rsa-key in /root/.ssh/authorized_keys
+        copy: src=~/.ssh/id_rsa.pub dest=/root/.ssh/authorized_keys owner=root mode=0600
+        ignore_errors: yes
+
+      - name: Set correct tz
+        command: timedatectl set-timezone Europe/Moscow
+
+      - name: Checking DNS
+        command: host -t A google.com
+
+      - name: Install aptitude
+        apt:
+          name: aptitude
+          state: latest
+          update_cache: true
+
+      - name: Install required system packages
+        apt:
+          pkg:
+            - apt-transport-https
+            - ca-certificates
+            - git
+            - curl
+            - software-properties-common
+            - python3
+            - python3-pip
+            - virtualenv
+            - python3-setuptools
+          state: latest
+          update_cache: true
+
+      - name: Add Docker GPG apt Key
+        apt_key:
+          url: https://download.docker.com/linux/ubuntu/gpg
+          state: present
+
+      - name: Add Docker Repository
+        apt_repository:
+          repo: deb https://download.docker.com/linux/ubuntu focal stable
+          state: present
+
+      - name: Update apt and install docker-ce
+        apt:
+          name: docker-ce
+          state: latest
+          update_cache: true
+
+      - name: Install Docker Module for Python
+        pip:
+          name: docker
+
+      - name: Adding user(s) to group docker
+        user:
+          name: '{{ item }}'
+          groups: docker
+          append: yes
+        loop:
+          - vagrant
+
+      - name: Install Docker Compose
+        get_url:
+          url: "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-linux-x86_64"
+          dest: /usr/local/bin/docker-compose
+          mode: u+x,g+x,o+x
+
+      - name: Install Ansible
+        pip:
+          name: ansible
+
+      - name: Synchronization
+        copy:
+          src: stack/
+          dest: "/opt/stack/"
+          owner: root
+          group: root
+          mode: 0777
+        become: true
