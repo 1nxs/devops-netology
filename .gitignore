@@ -12,6 +12,7 @@
 /06-db-06-troobleshooting/vm/beta/
 /07-terraform-02-syntax/src/terraform/key.json
 /07-terraform-02-syntax/src/terraform/.terraform/
+/07-terraform-03-basic/worker/
 /07-terraform-03-basic/src/terraform/key.json
 /07-terraform-03-basic/src/terraform/.terraform/
 /07-terraform-03-basic/src/terraform/static.key
@@ -19,4 +20,8 @@
 /07-terraform-04-teamwork/vm/vagrant/.vagrant/
 /07-terraform-04-teamwork/vm/ansible/stack/terraform
 /07-terraform-04-teamwork/vm/ansible/stack/atlantis.var
+/07-terraform-02-syntax/src/terraform/.terraform.lock.hcl
+/07-terraform-03-basic/src/terraform/.terraform.lock.hcl
+/07-terraform-02-syntax/src/terraform/terraform.tfstate
+/07-terraform-02-syntax/src/terraform/terraform.tfstate.backup
 /08-ansible-01-base/src/vagrant/.vagrant/
