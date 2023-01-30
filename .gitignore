@@ -25,3 +25,4 @@
 /07-terraform-02-syntax/src/terraform/terraform.tfstate
 /07-terraform-02-syntax/src/terraform/terraform.tfstate.backup
 /08-ansible-01-base/src/vagrant/.vagrant/
+/08-ansible-02-playbook/src/vagrant/.vagrant/
