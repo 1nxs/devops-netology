@@ -1,4 +1,5 @@
 /.idea/
+/.vscode/
 /05-virt-04-docker-compose/worker/
 /05-virt-05-docker-swarm/worker/
 /06-db-02-sql/vm/vagrant/.vagrant/
