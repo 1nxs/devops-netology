@@ -77,6 +77,10 @@
         pip:
           name: ansible
 
+      - name: Install Ansible-lint
+        pip:
+          name: ansible-lint
+
       - name: Synchronization
         copy:
           src: stack/
