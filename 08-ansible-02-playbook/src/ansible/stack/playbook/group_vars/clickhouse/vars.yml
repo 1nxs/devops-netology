@@ -1,6 +1,14 @@
 ---
 clickhouse_version: "22.3.3.44"
-clickhouse_packages:
+main_package_path:
+      path: "https://packages.clickhouse.com/rpm/stable/"
+      version: "22.3.3.44"
+rescue_package_path:
+      path: "https://repo.yandex.ru/clickhouse/rpm/stable/x86_64/"
+      version: "22.2.2.1-2"
+clickhouse_packages_noarch:
   - clickhouse-client
   - clickhouse-server
+clickhouse_packages:
   - clickhouse-common-static
+

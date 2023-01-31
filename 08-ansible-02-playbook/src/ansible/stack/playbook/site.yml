@@ -6,26 +6,39 @@
       become: true
       ansible.builtin.service:
         name: clickhouse-server
+        enabled: true
         state: restarted
+      tags: clickhouse
   tasks:
     - block:
-        - name: Get clickhouse distrib
+        - name: Get clickhouse distrib noarch Get clickhouse distrib noarch  from {{ main_package_path.path }}
           ansible.builtin.get_url:
-            url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.noarch.rpm"
-            dest: "./{{ item }}-{{ clickhouse_version }}.rpm"
+            url: "{{ main_package_path.path }}{{ item }}-{{ main_package_path.version }}.noarch.rpm"
+            dest: "./{{ item }}-{{ main_package_path.version }}.rpm"
+          with_items: "{{ clickhouse_packages_noarch }}"
+        - name: Get clickhouse distrib from {{ main_package_path.path }}
+          ansible.builtin.get_url:
+            url: "{{ main_package_path.path }}{{ item }}-{{ main_package_path.version }}.x86_64.rpm"
+            dest: "./{{ item }}-{{ main_package_path.version }}.rpm"
           with_items: "{{ clickhouse_packages }}"
       rescue:
-        - name: Get clickhouse distrib
+        - name: Get clickhouse distrib noarch Get clickhouse distrib from {{ rescue_package_path.path }}
           ansible.builtin.get_url:
-            url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
-            dest: "./clickhouse-common-static-{{ clickhouse_version }}.rpm"
-    - name: Install clickhouse packages
-      become: true
-      ansible.builtin.yum:
-        name:
-          - clickhouse-common-static-{{ clickhouse_version }}.rpm
-          - clickhouse-client-{{ clickhouse_version }}.rpm
-          - clickhouse-server-{{ clickhouse_version }}.rpm
+            url: "{{ rescue_package_path.path }}{{ item }}-{{ rescue_package_path.version }}.noarch.rpm"
+            dest: "./{{ item }}-{{ rescue_package_path.version }}.rpm"
+          with_items: "{{ clickhouse_packages_noarch }}"
+        - name: Get clickhouse distrib from {{ rescue_package_path.path }}
+          ansible.builtin.get_url:
+            url: "{{ rescue_package_path.path }}{{ item }}-{{ rescue_package_path.version }}.x86_64.rpm"
+            dest: "./{{ item }}-{{ rescue_package_path.version }}.rpm"
+          with_items: "{{ clickhouse_packages }}"
+    - block:
+        - name: Install clickhouse packages
+          ansible.builtin.yum:
+            name:
+              - clickhouse-common-static-{{ clickhouse_version }}.rpm
+              - clickhouse-client-{{ clickhouse_version }}.rpm
+              - clickhouse-server-{{ clickhouse_version }}.rpm
       notify: Start clickhouse service
     - name: Create database
       ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
