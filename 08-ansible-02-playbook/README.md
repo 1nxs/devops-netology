@@ -40,6 +40,7 @@
    - Для начала разбираемся с `Clickhouse`
      - в репо [Clickhouse](https://packages.clickhouse.com/rpm/stable/) нет файлов из плейбуки, на репо яндекса тоже нет.
      + переделал логику - сейчас используются два репозитория, пакеты тоже скачиваются успешно
+     + исправлен старт и рестарт субд - на стоковой плейбуке крашилось
      + Запуск `ansible-lint`
      ```shell
      root@server82:/opt/stack/playbook# ansible-lint site.yml
