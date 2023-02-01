@@ -13,3 +13,5 @@ clickhouse_packages_noarch:
   - clickhouse-server
 clickhouse_packages:
   - clickhouse-common-static
+
+vector_verson: "0.27.0"
