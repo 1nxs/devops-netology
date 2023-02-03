@@ -1,6 +1,7 @@
 ---
 - name: Install Clickhouse
   hosts: clickhouse
+  debugger: never
   handlers:
     - name: Start clickhouse service
       become: true
@@ -59,6 +60,7 @@
 
 - name: Install Vector
   hosts: vector
+  debugger: never
   tasks:
     - name: Create directrory for vector "{{ vector_dir }}"
       file:
@@ -66,3 +68,8 @@
         mode: 0755
         state: directory
       tags: vector
+    - name: Get vector distrib
+      ansible.builtin.get_url:
+        url: "{{ vector_path.path }}{{ vector_version }}/vector_{{ vector_version }}1_amd64.deb"
+        dest: "/tmp/vector_{{ vector_version }}1_amd64.deb"
+      tags: install-vector

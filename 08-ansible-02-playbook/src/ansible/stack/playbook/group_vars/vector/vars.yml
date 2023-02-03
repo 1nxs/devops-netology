@@ -1,5 +1,7 @@
 ---
 vector_verson: "0.27.0"
-package_path:
-    path: "https://packages.timber.io/vector/0.27.0/vector_0.27.0-1_amd64.deb"
+vector_path:
+    path: "https://packages.clickhouse.com/rpm/stable/"
+    version: "0.27.0"
 vector_dir: "/opt/vector"
+
