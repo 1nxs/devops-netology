@@ -142,4 +142,3 @@ PLAY RECAP *********************************************************************
 centos7                    : ok=7    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
 </details>
-
