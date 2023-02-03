@@ -60,7 +60,6 @@
 
 - name: Install Vector
   hosts: vector
-  debugger: never
   tasks:
     - name: Create directrory for vector "{{ vector_dir }}"
       file:
@@ -68,8 +67,18 @@
         mode: 0755
         state: directory
       tags: vector
+
     - name: Get vector distrib
       ansible.builtin.get_url:
-        url: "{{ vector_path.path }}{{ vector_version }}/vector_{{ vector_version }}1_amd64.deb"
-        dest: "/tmp/vector_{{ vector_version }}1_amd64.deb"
-      tags: install-vector
+        url: "https://packages.timber.io/vector/0.27.0/vector-0.27.0-x86_64-unknown-linux-gnu.tar.gz"
+        dest: "/tmp/vector-0.27.0-x86_64-unknown-linux-gnu.tar.gz"
+
+    - name: Extract vector in the installation directory
+      become: true
+      ansible.builtin.unarchive:
+        copy: false
+        src: "/tmp/vector-0.27.0-x86_64-unknown-linux-gnu.tar.gz"
+        dest: "{{ vector_dir }}"
+        extra_opts: ['--strip-components=2']
+      tags:
+        - vector
