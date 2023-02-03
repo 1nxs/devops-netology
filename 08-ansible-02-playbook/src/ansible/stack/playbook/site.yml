@@ -66,18 +66,19 @@
         path: "{{ vector_dir }}"
         mode: 0755
         state: directory
-      tags: vector
+      tags:
+        - vector
 
-    - name: Get vector distrib
+    - name: Download Vector
       ansible.builtin.get_url:
-        url: "https://packages.timber.io/vector/0.27.0/vector-0.27.0-x86_64-unknown-linux-gnu.tar.gz"
-        dest: "/tmp/vector-0.27.0-x86_64-unknown-linux-gnu.tar.gz"
+        url: "{{ vector_distro.path }}{{ vector_version }}/{{ vector_distro.package }}"
+        dest: "/tmp/{{ vector_distro.package }}"
 
     - name: Extract vector in the installation directory
       become: true
       ansible.builtin.unarchive:
         copy: false
-        src: "/tmp/vector-0.27.0-x86_64-unknown-linux-gnu.tar.gz"
+        src: "/tmp/{{ vector_distro.package }}"
         dest: "{{ vector_dir }}"
         extra_opts: ['--strip-components=2']
       tags:
