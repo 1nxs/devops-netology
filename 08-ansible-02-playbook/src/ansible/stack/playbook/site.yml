@@ -44,7 +44,6 @@
       notify: Start clickhouse service
       tags:
         - clickhouse
-
     - block:
         - name: Start clickhouse service
           ansible.builtin.service:
@@ -78,7 +77,6 @@
         dest: "/tmp/{{ vector_distro.package }}"
       tags:
         - vector
-        - wipe_pkg
 
     - name: Extract vector in the installation directory
       become: true
