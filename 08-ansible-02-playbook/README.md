@@ -193,3 +193,4 @@ ubuntu                     : ok=4    changed=0    unreachable=0    failed=0    s
    - [README.md](src%2Fansible%2Fstack%2Fplaybook%2FREADME.md) - Описание
    - [site.yml](src%2Fansible%2Fstack%2Fplaybook%2Fsite.yml) - Playbook
    - [src](src) - Рабочая директория со всеми материалами по домашнему заданию
+5. установить тег `08-ansible-02-playbook`
