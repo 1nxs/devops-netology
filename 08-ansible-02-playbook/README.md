@@ -51,8 +51,8 @@
      Первое предупреждение появляется из-за установки `ansible` через `pip3` в дир. пользователя, a `python` живет как надо. \
      Второе предупреждение решилось `cp site.yml playbook.yml` для проведения повторного запуска.
 
-   - Vector - to be continued
-3. Логи запуска проверок и плейбуки
+   - Vector - added
+3. Логи выполнения всякого
  <details><summary>Clickhouse</summary>
 
 ```shell
@@ -142,3 +142,54 @@ PLAY RECAP *********************************************************************
 centos7                    : ok=7    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 ```
 </details>
+<details><summary>Vector</summary>
+
+```shell
+vagrant@server82:/opt/stack/playbook$ ansible-playbook -i inventory/prod.yml site.yml
+
+PLAY [Install Clickhouse] ******************************************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************************************
+ok: [centos7]
+
+TASK [Get clickhouse distrib noarch Get clickhouse distrib noarch  from https://packages.clickhouse.com/rpm/stable/] ***********************************************
+ok: [centos7] => (item=clickhouse-client)
+ok: [centos7] => (item=clickhouse-server)
+
+TASK [Get clickhouse distrib from https://packages.clickhouse.com/rpm/stable/] *************************************************************************************
+ok: [centos7] => (item=clickhouse-common-static)
+
+TASK [Install clickhouse packages] *********************************************************************************************************************************
+ok: [centos7]
+
+TASK [Start clickhouse service] ************************************************************************************************************************************
+ok: [centos7]
+
+TASK [Create database] *********************************************************************************************************************************************
+ok: [centos7]
+
+PLAY [Install Vector] **********************************************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************************************
+ok: [ubuntu]
+
+TASK [Create directrory for vector "/opt/vector"] ******************************************************************************************************************
+ok: [ubuntu]
+
+TASK [Download Vector] *********************************************************************************************************************************************
+ok: [ubuntu]
+
+TASK [Extract vector in the installation directory] ****************************************************************************************************************
+ok: [ubuntu]
+
+PLAY RECAP *********************************************************************************************************************************************************
+centos7                    : ok=7    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+ubuntu                     : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+```
+</details>
+
+4. Подготовьте README.md файл по своему playbook. <br>
+В нём должно быть описано: что делает playbook, какие у него есть параметры и теги.
+   - [README.md](src%2Fansible%2Fstack%2Fplaybook%2FREADME.md) - Описание
+   - [site.yml](src%2Fansible%2Fstack%2Fplaybook%2Fsite.yml) - Playbook
+   - [src](src) - Рабочая директория со всеми материалами по домашнему заданию

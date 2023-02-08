@@ -34,7 +34,6 @@
           with_items: "{{ clickhouse_packages }}"
       tags:
         - clickhouse
-        - wipe_pkg
     - block:
         - name: Install clickhouse packages
           ansible.builtin.yum:
@@ -51,12 +50,16 @@
           ansible.builtin.service:
             name: clickhouse-server
             state: restarted
+      tags:
+        - clickhouse
     - block:
         - name: Create database
           ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
           register: create_db
           failed_when: create_db.rc != 0 and create_db.rc !=82
           changed_when: create_db.rc == 0
+      tags:
+        - clickhouse
 
 - name: Install Vector
   hosts: vector
@@ -73,6 +76,9 @@
       ansible.builtin.get_url:
         url: "{{ vector_distro.path }}{{ vector_version }}/{{ vector_distro.package }}"
         dest: "/tmp/{{ vector_distro.package }}"
+      tags:
+        - vector
+        - wipe_pkg
 
     - name: Extract vector in the installation directory
       become: true
