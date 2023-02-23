@@ -1,0 +1,16 @@
+---
+  clickhouse:
+    hosts:
+      clickhouse-host:
+        ansible_host: 192.168.56.15
+        ansible_user: vagrant
+  vector:
+    hosts:
+      vector-host:
+        ansible_host: 192.168.56.16
+        ansible_user: vagrant
+  lighthouse:
+    hosts:
+      nginx-host:
+        ansible_host: 192.168.56.17
+        ansible_user: vagrant

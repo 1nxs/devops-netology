@@ -1,3 +1,7 @@
+DOMAIN = ".lab"
+HOST_PREFIX = "srv"
+INVENTORY_PATH = "../ansible/inventory"
+
 Vagrant.configure(2) do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: false
 #  config.ssh.insert_key = false
