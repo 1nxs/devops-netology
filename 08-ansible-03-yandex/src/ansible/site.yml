@@ -87,3 +87,10 @@
         extra_opts: ['--strip-components=2']
       tags:
         - vector
+
+- name: Install Nginx
+  hosts: lighthouse
+
+
+- name: Install Lighthouse
+  hosts: lighthouse

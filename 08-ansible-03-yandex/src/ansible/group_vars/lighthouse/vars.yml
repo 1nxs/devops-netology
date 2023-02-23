@@ -1,0 +1,6 @@
+---
+  lighthouse_version: "master"
+  lighthouse_repo: "https://github.com/VKCOM/lighthouse.git"
+  lighthouse_root: "/srv/www/"
+  lighthouse_dir: "lighthouse"
+
