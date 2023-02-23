@@ -1,0 +1,18 @@
+---
+- name: Provision clickhouse
+  hosts: all
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  tags:
+    - common
+  tasks:
+    - name: Create directory for ssh-keys
+      file: state=directory mode=0700 dest=/root/.ssh/
+
+    - name: Adding rsa-key in /root/.ssh/authorized_keys
+      copy: src=~/.ssh/id_rsa.pub dest=/root/.ssh/authorized_keys owner=root mode=0600
+      ignore_errors: yes
+
+    - name: Set correct tz
+      command: timedatectl set-timezone Europe/Moscow
