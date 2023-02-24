@@ -88,9 +88,45 @@
       tags:
         - vector
 
-- name: Install Nginx
-  hosts: lighthouse
-
-
 - name: Install Lighthouse
   hosts: lighthouse
+  handlers:
+    - name: Start nginx service
+      become: true
+      ansible.builtin.service:
+        name: nginx.service
+        enabled: true
+        state: restarted
+      tags: lighthouse
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+      tags: lighthouse
+
+    - name: install common packages
+      become: true
+      ansible.builtin.apt:
+        name:
+          - git
+          - curl
+        update_cache: yes
+      tags: lighthouse
+
+    - name: install nginx latest version
+      ansible.builtin.apt:
+        name:
+          - nginx
+        state: latest
+      tags: lighthouse
+
+    - name: Git clone lighthouse
+      become: true
+      become_user: nginx
+      git:
+        repo: "{{ lighthouse_repo }}"
+        version: "{{ lighthouse_version }}"
+        dest: "{{ lighthouse_root }}{{ lighthouse_dir }}"
+      tags: lighthouse
