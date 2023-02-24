@@ -91,7 +91,7 @@
 - name: Install Lighthouse
   hosts: lighthouse
   handlers:
-    - name: Start nginx service
+    - name: Reload nginx service
       become: true
       ansible.builtin.service:
         name: nginx.service
@@ -124,9 +124,18 @@
 
     - name: Git clone lighthouse
       become: true
-      become_user: nginx
+#      become_user: nginx
       git:
         repo: "{{ lighthouse_repo }}"
         version: "{{ lighthouse_version }}"
         dest: "{{ lighthouse_root }}{{ lighthouse_dir }}"
+      tags: lighthouse
+
+    - name: Provision ligthouse.conf
+      become: true
+      template:
+        src: templates/lighthouse.conf.j2
+        dest: /etc/nginx/conf.d/lighthouse.conf
+        mode: 0644
+      notify: Reload nginx service
       tags: lighthouse
