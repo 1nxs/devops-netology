@@ -1,11 +1,12 @@
 ---
-- name: Provision clickhouse
+- name: Provision keys
   hosts: all
   become: yes
   become_user: root
   remote_user: vagrant
   tags:
     - common
+
   tasks:
     - name: Create directory for ssh-keys
       file: state=directory mode=0700 dest=/root/.ssh/
