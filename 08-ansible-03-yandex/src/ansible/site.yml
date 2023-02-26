@@ -58,11 +58,20 @@
           become: true
           tags: clickhouse
 
-        - name: Start clickhouse service
-          ansible.builtin.service:
-            name: clickhouse-server
-            state: restarted
+        - name: Deploy users config clickhouse
+          ansible.builtin.template:
+            src: clickhouse.users.j2
+            dest: "{{ clickhouse_users_path }}"
+            mode: 0644
+            owner: "{{ ansible_user_id }}"
+            group: "{{ ansible_user_gid }}"
+          become: true
           tags: clickhouse
+
+        - name: Flush handlers
+          ansible.builtin.meta: flush_handlers
+          tags: clickhouse
+
     - block:
         - name: Create database
           ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
@@ -70,6 +79,12 @@
           failed_when: create_db.rc != 0 and create_db.rc !=82
           changed_when: create_db.rc == 0
           tags: clickhouse
+
+#        - name: Start clickhouse service
+#          ansible.builtin.service:
+#            name: clickhouse-server
+#            state: restarted
+#          tags: clickhouse
 
 - name: Install Vector
   hosts: vector
