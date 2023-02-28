@@ -26,3 +26,22 @@
 Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
 
 ---
+## Ответ
+
+0. Подготовка стека:
+   * Test
+      - Vagrant
+        - [vagrantfile](src%2Fvagrantfile)
+      - Ansible
+        - [provision.yml](src%2Fansible%2Fprovision.yml)
+   * Prod
+     - Три машины на YC - без использования Terraform
+
+1. Допишите playbook: нужно сделать ещё один play, который устанавливает и настраивает lighthouse.
+
+2. Подготовьте README.md файл по своему playbook. <br>
+В нём должно быть описано: что делает playbook, какие у него есть параметры и теги.
+   - [README.md](src/ansible/README.md) - Описание
+   - [site.yml](src/ansible/site.yml) - Playbook
+   - [src](src) - Рабочая директория со всеми материалами по домашнему заданию
+3. Установить тег `08-ansible-03-yandex`
