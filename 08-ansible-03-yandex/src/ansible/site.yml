@@ -81,18 +81,14 @@
           tags: clickhouse
 
         - name: Create table for logs
-          ansible.builtin.command: clickhouse-client -q
-                                'CREATE TABLE IF NOT EXISTS  logs.vector_internal_logs (
-                                    message String
-                                )
-                                ENGINE = MergeTree()
-                                ORDER BY tuple();'
+          command: clickhouse-client -q
+                  'CREATE TABLE IF NOT EXISTS  logs.vector_internal_logs (
+                      message String
+                  )
+                  ENGINE = MergeTree()
+                  ORDER BY tuple();'
           register: create_table
-#        - name: Start clickhouse service
-#          ansible.builtin.service:
-#            name: clickhouse-server
-#            state: restarted
-#          tags: clickhouse
+          tags: clickhouse
 
 - name: Install Vector
   hosts: vector
@@ -103,14 +99,6 @@
         name: vector
         state: restarted
   tasks:
-#    - name: Create directrory for vector "{{ vector_dir }}"
-#      file:
-#        path: "{{ vector_dir }}"
-#        mode: 0755
-#        state: directory
-#      tags:
-#        - vector
-
     - name: Download Vector
       ansible.builtin.get_url:
         url: "{{ vector_distro.path }}{{ vector_distro.version }}/{{ vector_distro.package }}"
@@ -121,6 +109,16 @@
       ansible.builtin.apt:
         deb: "/tmp/{{ vector_distro.package }}"
       notify: Start Vector service
+      tags: vector
+
+    - name: Creates directory
+      become: true
+      file:
+        path: /var/lib/vector/local_logs
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+        mode: 0644
       tags: vector
 
     - name: Deploy config Vector
@@ -134,16 +132,6 @@
       become: true
       notify: Start Vector service
       tags: vector
-
-#    - name: Extract vector in the installation directory
-#      become: true
-#      ansible.builtin.unarchive:
-#        copy: false
-#        src: "/tmp/{{ vector_distro.package }}"
-#        dest: "{{ vector_dir }}"
-#        extra_opts: ['--strip-components=2']
-#      tags:
-#        - vector
 
 - name: Install Lighthouse
   hosts: lighthouse

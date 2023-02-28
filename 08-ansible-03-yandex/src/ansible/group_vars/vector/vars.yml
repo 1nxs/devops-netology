@@ -14,3 +14,20 @@ vector_config:
       include:
         - /var/log/**/*.log
       read_from: beginning
+# Manual for sinks vector->clickhouse
+# https://vector.dev/docs/reference/configuration/sinks/clickhouse/
+  sinks:
+    local_to_clickhouse:
+      type: clickhouse
+      inputs:
+        - local_logs
+      database: logs
+      endpoint: http://{{ hostvars['clickhouse-host'].ansible_host }}:8123
+      table: vector_internal_logs
+      auth:
+        user: "{{ clickhouse_user }}"
+        password: "{{ clickhouse_password }}"
+        strategy: basic
+      compression: gzip
+      healthcheck: false
+      skip_unknown_fields: true
