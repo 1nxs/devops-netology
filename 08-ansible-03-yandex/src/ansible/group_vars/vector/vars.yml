@@ -5,4 +5,12 @@ vector_distro:
   version: "0.27.1"
   package: "vector_0.27.1-1_amd64.deb"
 vector_config_path: /etc/vector/vector.yaml
-# vector_dir: "/opt/vector"
+vector_config:
+  sources:
+    internal_logs:
+      type: internal_logs
+    local_logs:
+      type: file
+      include:
+        - /var/log/**/*.log
+      read_from: beginning
