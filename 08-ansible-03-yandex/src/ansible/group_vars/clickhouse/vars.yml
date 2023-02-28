@@ -16,7 +16,3 @@ clickhouse_packages:
 
 clickhouse_config_path: /etc/clickhouse-server/config.xml
 clickhouse_users_path: /etc/clickhouse-server/users.xml
-
-clickhouse_user: net83
-clickhouse_password: net83
-

@@ -80,6 +80,14 @@
           changed_when: create_db.rc == 0
           tags: clickhouse
 
+        - name: Create table for logs
+          ansible.builtin.command: clickhouse-client -q
+                                'CREATE TABLE IF NOT EXISTS  logs.vector_internal_logs (
+                                    message String
+                                )
+                                ENGINE = MergeTree()
+                                ORDER BY tuple();'
+          register: create_table
 #        - name: Start clickhouse service
 #          ansible.builtin.service:
 #            name: clickhouse-server
@@ -175,4 +183,10 @@
         dest: /etc/nginx/conf.d/lighthouse.conf
         mode: 0644
       notify: Reload nginx service
+      tags: lighthouse
+
+  post_tasks:
+    - name: Show connect URL lighthouse
+      debug:
+        msg: "http://{{ hostvars['nginx-host'].ansible_host }}/#http://{{ hostvars['clickhouse-host'].ansible_host }}:8123/?user={{ clickhouse_user }}"
       tags: lighthouse
