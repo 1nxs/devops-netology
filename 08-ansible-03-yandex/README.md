@@ -29,16 +29,19 @@
 ## Ответ
 
 0. Подготовка стека:
-   * Test
+   * Prod - `prod.yml`
       - Vagrant
-        - [vagrantfile](src%2Fvagrantfile)
+        - [vagrantfile](src/vagrantfile)
       - Ansible
-        - [provision.yml](src%2Fansible%2Fprovision.yml)
-   * Prod
+        - [Inventory](src/ansible/inventory/prod.yml) 
+        - [provision.yml](src/ansible/provision.yml)
+        
+   * Yandex Cloud - `yc.yml`
      - Три машины на YC - без использования Terraform
-
+     - Ansible
+       - [Inventory](src/ansible/inventory/yc.yml) 
 1. Допишите playbook: нужно сделать ещё один play, который устанавливает и настраивает lighthouse.
-
+   * в playbook [site.yml](src/ansible/site.yml) дописан еще один `play`
 2. Подготовьте README.md файл по своему playbook. <br>
 В нём должно быть описано: что делает playbook, какие у него есть параметры и теги.
    - [README.md](src/ansible/README.md) - Описание

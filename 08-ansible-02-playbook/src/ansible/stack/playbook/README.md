@@ -45,9 +45,10 @@ ansible-playbook -i inventory/prod.yml site.yml
 | `vector_dir`                 | каталог для установки `Vector`                                    |
 
 ### Playbook
-Cостоит из `2` play
+Cостоит из `3` play
 - `Install Clickhouse` - содержит handler и tasks, необходимые для установки `Clickhouse`
 - `Install Vector` - содержит tasks, необходимые для установки `Vector`
+- `Install Lighthouse` - содержит tasks для установки `Nginx` и веб-UI `Lighthouse`
 
 ```shell
 - name: Install Clickhouse # начало play с установкой Clickhouse
