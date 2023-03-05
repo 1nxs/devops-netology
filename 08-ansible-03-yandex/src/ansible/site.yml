@@ -47,7 +47,7 @@
               - clickhouse-server-{{ clickhouse_version }}.rpm
           notify: Start clickhouse service
           tags: clickhouse
-
+# Делаем из шаблона конфиг для сервиса
         - name: Deploy config clickhouse
           ansible.builtin.template:
             src: clickhouse.config.j2
@@ -57,7 +57,7 @@
             group: "{{ ansible_user_gid }}"
           become: true
           tags: clickhouse
-
+# Настраиваем пользователей
         - name: Deploy users config clickhouse
           ansible.builtin.template:
             src: clickhouse.users.j2
@@ -71,7 +71,7 @@
         - name: Flush handlers
           ansible.builtin.meta: flush_handlers
           tags: clickhouse
-
+# Создание БД для сервиса
     - block:
         - name: Create database
           ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
@@ -79,7 +79,7 @@
           failed_when: create_db.rc != 0 and create_db.rc !=82
           changed_when: create_db.rc == 0
           tags: clickhouse
-
+# Создаём таблицу для логов. Не смотря на IF NOT EXISTS не смог избавиться от статуса `changed`
         - name: Create table for logs
           command: clickhouse-client -q
                   'CREATE TABLE IF NOT EXISTS  logs.vector_internal_logs (
@@ -89,9 +89,11 @@
                   ORDER BY tuple();'
           register: create_table
           tags: clickhouse
-
+# Play для установки Vector
+# установку вектора заменил на deb пакет и добавил шаблон конфига
 - name: Install Vector
   hosts: vector
+# Вешаем handler для старта и настройки Vector
   handlers:
     - name: Start Vector service
       become: true
@@ -104,13 +106,13 @@
         url: "{{ vector_distro.path }}{{ vector_distro.version }}/{{ vector_distro.package }}"
         dest: "/tmp/{{ vector_distro.package }}"
       tags: vector
-
+# установка использует модуль ansible deb
     - name: Install Vector package
       ansible.builtin.apt:
         deb: "/tmp/{{ vector_distro.package }}"
       notify: Start Vector service
       tags: vector
-
+# Создание каталога для sources
     - name: Creates directory
       become: true
       file:
@@ -120,7 +122,7 @@
         group: "{{ ansible_user_gid }}"
         mode: 0644
       tags: vector
-
+# Делаем из шаблона конфиг для сервиса
     - name: Deploy config Vector
       ansible.builtin.template:
         src: vector.j2
@@ -143,10 +145,11 @@
         group: "{{ ansible_user_gid }}"
       notify: Start Vector service
       tags: vector
-
+# Play для установки Lighthouse
 - name: Install Lighthouse
   hosts: lighthouse
   handlers:
+# Вешаем handler для старта и настройки NGINX
     - name: Reload nginx service
       become: true
       ansible.builtin.service:
@@ -177,7 +180,7 @@
           - nginx
         state: latest
       tags: lighthouse
-
+# Используя модуль git забираем дистр из репозитория
     - name: Git clone lighthouse
       become: true
 #      become_user: nginx
@@ -186,7 +189,7 @@
         version: "{{ lighthouse_version }}"
         dest: "{{ lighthouse_root }}{{ lighthouse_dir }}"
       tags: lighthouse
-
+# Делаем из шаблона конфиг для сервиса
     - name: Provision ligthouse.conf
       become: true
       template:
@@ -195,7 +198,7 @@
         mode: 0644
       notify: Reload nginx service
       tags: lighthouse
-
+# Печатаем URL Lighthouse c указанием пользователя clickhouse
   post_tasks:
     - name: Show connect URL lighthouse
       debug:

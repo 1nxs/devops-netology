@@ -20,14 +20,7 @@
 10. Готовый playbook выложите в свой репозиторий, поставьте тег `08-ansible-03-yandex` на фиксирующий коммит, в ответ предоставьте ссылку на него.
 
 ---
-
-### Как оформить ДЗ?
-
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
-
----
 ## Ответ
-
 0. Подготовка стека:
    * Prod - `prod.yml`
       - Vagrant
@@ -41,7 +34,9 @@
      - Ansible
        - [Inventory](src/ansible/inventory/yc.yml) 
 1. Допишите playbook: нужно сделать ещё один play, который устанавливает и настраивает lighthouse.
-   * в playbook [site.yml](src/ansible/site.yml) дописан еще один `play`
+   * В playbook [site.yml](src/ansible/site.yml) дописан еще один `play`
+   * Дописаны [конфигурационные файлы](src/ansible/templates) для настройки сервисов 
+   * Созданы необходимые [group_vars](src/ansible/group_vars)
 2. Подготовьте README.md файл по своему playbook. <br>
 В нём должно быть описано: что делает playbook, какие у него есть параметры и теги.
    - [README.md](src/ansible/README.md) - Описание
