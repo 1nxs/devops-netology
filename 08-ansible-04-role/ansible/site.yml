@@ -1,0 +1,206 @@
+---
+- name: Install Clickhouse
+  hosts: clickhouse
+  debugger: never
+  handlers:
+    - name: Start clickhouse service
+      become: true
+      ansible.builtin.service:
+        name: clickhouse-server
+        state: restarted
+      tags: clickhouse
+  tasks:
+    - block:
+        - name: Get clickhouse distrib noarch Get clickhouse distrib noarch  from {{ main_package_path.path }}
+          ansible.builtin.get_url:
+            url: "{{ main_package_path.path }}{{ item }}-{{ main_package_path.version }}.noarch.rpm"
+            dest: "./{{ item }}-{{ main_package_path.version }}.rpm"
+          with_items: "{{ clickhouse_packages_noarch }}"
+          tags: clickhouse
+
+        - name: Get clickhouse distrib from {{ main_package_path.path }}
+          ansible.builtin.get_url:
+            url: "{{ main_package_path.path }}{{ item }}-{{ main_package_path.version }}.x86_64.rpm"
+            dest: "./{{ item }}-{{ main_package_path.version }}.rpm"
+          with_items: "{{ clickhouse_packages }}"
+          tags: clickhouse
+      rescue:
+        - name: Get clickhouse distrib noarch Get clickhouse distrib from {{ rescue_package_path.path }}
+          ansible.builtin.get_url:
+            url: "{{ rescue_package_path.path }}{{ item }}-{{ rescue_package_path.version }}.noarch.rpm"
+            dest: "./{{ item }}-{{ rescue_package_path.version }}.rpm"
+          with_items: "{{ clickhouse_packages_noarch }}"
+          tags: clickhouse
+
+        - name: Get clickhouse distrib from {{ rescue_package_path.path }}
+          ansible.builtin.get_url:
+            url: "{{ rescue_package_path.path }}{{ item }}-{{ rescue_package_path.version }}.x86_64.rpm"
+            dest: "./{{ item }}-{{ rescue_package_path.version }}.rpm"
+          with_items: "{{ clickhouse_packages }}"
+          tags: clickhouse
+    - block:
+        - name: Install clickhouse packages
+          ansible.builtin.yum:
+            name:
+              - clickhouse-common-static-{{ clickhouse_version }}.rpm
+              - clickhouse-client-{{ clickhouse_version }}.rpm
+              - clickhouse-server-{{ clickhouse_version }}.rpm
+          notify: Start clickhouse service
+          tags: clickhouse
+# Делаем из шаблона конфиг для сервиса
+        - name: Deploy config clickhouse
+          ansible.builtin.template:
+            src: clickhouse.config.j2
+            dest: "{{ clickhouse_config_path }}"
+            mode: 0644
+            owner: "{{ ansible_user_id }}"
+            group: "{{ ansible_user_gid }}"
+          become: true
+          tags: clickhouse
+# Настраиваем пользователей
+        - name: Deploy users config clickhouse
+          ansible.builtin.template:
+            src: clickhouse.users.j2
+            dest: "{{ clickhouse_users_path }}"
+            mode: 0644
+            owner: "{{ ansible_user_id }}"
+            group: "{{ ansible_user_gid }}"
+          become: true
+          tags: clickhouse
+
+        - name: Flush handlers
+          ansible.builtin.meta: flush_handlers
+          tags: clickhouse
+# Создание БД для сервиса
+    - block:
+        - name: Create database
+          ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
+          register: create_db
+          failed_when: create_db.rc != 0 and create_db.rc !=82
+          changed_when: create_db.rc == 0
+          tags: clickhouse
+# Создаём таблицу для логов. Не смотря на IF NOT EXISTS не смог избавиться от статуса `changed`
+        - name: Create table for logs
+          command: clickhouse-client -q
+                  'CREATE TABLE IF NOT EXISTS  logs.vector_internal_logs (
+                      message String
+                  )
+                  ENGINE = MergeTree()
+                  ORDER BY tuple();'
+          register: create_table
+          tags: clickhouse
+# Play для установки Vector
+# установку вектора заменил на deb пакет и добавил шаблон конфига
+- name: Install Vector
+  hosts: vector
+# Вешаем handler для старта и настройки Vector
+  handlers:
+    - name: Start Vector service
+      become: true
+      ansible.builtin.systemd:
+        name: vector
+        state: restarted
+  tasks:
+    - name: Download Vector
+      ansible.builtin.get_url:
+        url: "{{ vector_distro.path }}{{ vector_distro.version }}/{{ vector_distro.package }}"
+        dest: "/tmp/{{ vector_distro.package }}"
+      tags: vector
+# установка использует модуль ansible deb
+    - name: Install Vector package
+      ansible.builtin.apt:
+        deb: "/tmp/{{ vector_distro.package }}"
+      notify: Start Vector service
+      tags: vector
+# Создание каталога для sources
+    - name: Creates directory
+      become: true
+      file:
+        path: /var/lib/vector/local_logs
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+        mode: 0644
+      tags: vector
+# Делаем из шаблона конфиг для сервиса
+    - name: Deploy config Vector
+      ansible.builtin.template:
+        src: vector.j2
+        dest: "{{ vector_config_path }}"
+        mode: 0644
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+        validate: vector validate --no-environment --config-yaml %s
+      become: true
+      notify: Start Vector service
+      tags: vector
+
+    - name: Create systemd unit Vector
+      become: true
+      template:
+        src: vector.service.j2
+        dest: /etc/systemd/system/vector.service
+        mode: 0644
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+      notify: Start Vector service
+      tags: vector
+# Play для установки Lighthouse
+- name: Install Lighthouse
+  hosts: lighthouse
+  handlers:
+# Вешаем handler для старта и настройки NGINX
+    - name: Reload nginx service
+      become: true
+      ansible.builtin.service:
+        name: nginx.service
+        enabled: true
+        state: restarted
+      tags: lighthouse
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+      tags: lighthouse
+
+    - name: install common packages
+      become: true
+      ansible.builtin.apt:
+        name:
+          - git
+          - curl
+        update_cache: yes
+      tags: lighthouse
+
+    - name: install nginx latest version
+      ansible.builtin.apt:
+        name:
+          - nginx
+        state: latest
+      tags: lighthouse
+# Используя модуль git забираем дистр из репозитория
+    - name: Git clone lighthouse
+      become: true
+#      become_user: nginx
+      git:
+        repo: "{{ lighthouse_repo }}"
+        version: "{{ lighthouse_version }}"
+        dest: "{{ lighthouse_root }}{{ lighthouse_dir }}"
+      tags: lighthouse
+# Делаем из шаблона конфиг для сервиса
+    - name: Provision ligthouse.conf
+      become: true
+      template:
+        src: templates/lighthouse.conf.j2
+        dest: /etc/nginx/conf.d/lighthouse.conf
+        mode: 0644
+      notify: Reload nginx service
+      tags: lighthouse
+# Печатаем URL Lighthouse c указанием пользователя clickhouse
+  post_tasks:
+    - name: Show connect URL lighthouse
+      debug:
+        msg: "http://{{ hostvars['nginx-host'].ansible_host }}/#http://{{ hostvars['clickhouse-host'].ansible_host }}:8123/?user={{ clickhouse_user }}"
+      tags: lighthouse

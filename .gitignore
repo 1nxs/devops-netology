@@ -29,3 +29,4 @@
 /08-ansible-02-playbook/src/vagrant/.vagrant/
 /08-ansible-03-yandex/src/.vagrant/
 /08-ansible-03-yandex/beta/
+/08-ansible-04-role/beta/
