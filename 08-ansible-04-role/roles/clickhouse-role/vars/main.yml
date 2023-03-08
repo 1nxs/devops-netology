@@ -1,2 +1,19 @@
 ---
 # vars file for clickhouse-role
+clickhouse_version: "22.3.3.44"
+main_package_path:
+    path: "https://packages.clickhouse.com/rpm/stable/"
+    version: "22.3.3.44"
+
+rescue_package_path:
+    path: "https://repo.yandex.ru/clickhouse/rpm/lts/x86_64/"
+    version: "21.8.9.13-2"
+
+clickhouse_packages_noarch:
+  - clickhouse-client
+  - clickhouse-server
+clickhouse_packages:
+  - clickhouse-common-static
+
+clickhouse_config_path: /etc/clickhouse-server/config.xml
+clickhouse_users_path: /etc/clickhouse-server/users.xml
