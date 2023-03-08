@@ -73,4 +73,6 @@ Starting galaxy role install process
 ❯ ansible-galaxy init vector-role
 - Role clickhouse-role was created successfully
 ```
-настроил путь для ролей - [ansible.cfg](./ansible.cfg)
+- настроил путь для ролей - [ansible.cfg](./ansible.cfg)
+- подготовил роль Clickhouse
+- 
