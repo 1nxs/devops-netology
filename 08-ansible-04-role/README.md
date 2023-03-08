@@ -75,4 +75,4 @@ Starting galaxy role install process
 ```
 - настроил путь для ролей - [ansible.cfg](./ansible.cfg)
 - подготовил роль Clickhouse
-- 
+- подготовил роль Vector
