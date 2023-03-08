@@ -19,7 +19,7 @@
        name: clickhouse 
    ```
 
-2. При помощи `ansible-galaxy` скачать себе эту роль.
+
 3. Создать новый каталог с ролью при помощи `ansible-galaxy role init vector-role`.
 4. На основе tasks из старого playbook заполните новую role. Разнесите переменные между `vars` и `default`. 
 5. Перенести нужные шаблоны конфигов в `templates`.
@@ -31,9 +31,46 @@
 11. В ответ приведите ссылки на оба репозитория с roles и одну ссылку на репозиторий с playbook.
 
 ---
+### Ответ
 
-### Как оформить ДЗ?
+Блок 1. 
+1. Создать в старой версии playbook файл `requirements.yml` и заполнить его следующим содержимым:
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
+   <details><summary>yaml</summary>
+   
+   ```yaml
+   ---
+     - src: git@github.com:AlexeySetevoi/ansible-clickhouse.git
+       scm: git
+       version: "1.11.0"
+       name: clickhouse 
+   ```
+</details>
 
----
+2. При помощи `ansible-galaxy` скачать себе эту роль.
+
+ - В своём файле поменял на текущую версию релиза
+ - загрузил роль к себе
+```shell
+❯ ansible-galaxy install -r requirements.yml -p roles
+Starting galaxy role install process
+- extracting clickhouse to /home/inxss/pro/devops-netology/08-ansible-04-role/roles/clickhouse
+- clickhouse (1.13) was installed successfully
+```
+
+Блок 2.
+3. Создать новый каталог с ролью при помощи `ansible-galaxy role init vector-role`.
+4. На основе tasks из старого playbook заполните новую role. Разнесите переменные между `vars` и `default`. 
+5. Перенести нужные шаблоны конфигов в `templates`.
+6. Описать в `README.md` обе роли и их параметры.
+7. Повторите шаги 3-6 для lighthouse. Помните, что одна роль должна настраивать один продукт.
+
+```shell
+❯ ansible-galaxy init clickhouse-role
+- Role clickhouse-role was created successfully
+❯ ansible-galaxy init vector-role
+- Role clickhouse-role was created successfully
+❯ ansible-galaxy init vector-role
+- Role clickhouse-role was created successfully
+```
+настроил путь для ролей - [ansible.cfg](./ansible.cfg)
