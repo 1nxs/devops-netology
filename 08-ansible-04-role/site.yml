@@ -23,7 +23,7 @@
         enabled: true
         state: restarted
       tags: lighthouse
-  tasks:
+  pre_tasks:
     - name: Update and upgrade apt packages
       apt:
         upgrade: yes
@@ -46,24 +46,8 @@
           - nginx
         state: latest
       tags: lighthouse
-# Используя модуль git забираем дистр из репозитория
-    - name: Git clone lighthouse
-      become: true
-#      become_user: nginx
-      git:
-        repo: "{{ lighthouse_repo }}"
-        version: "{{ lighthouse_version }}"
-        dest: "{{ lighthouse_root }}{{ lighthouse_dir }}"
-      tags: lighthouse
-# Делаем из шаблона конфиг для сервиса
-    - name: Provision ligthouse.conf
-      become: true
-      template:
-        src: templates/lighthouse.conf.j2
-        dest: /etc/nginx/conf.d/lighthouse.conf
-        mode: 0644
-      notify: Reload nginx service
-      tags: lighthouse
+  roles:
+    - role: lighthouse-role
 # Печатаем URL Lighthouse c указанием пользователя clickhouse
   post_tasks:
     - name: Show connect URL lighthouse
