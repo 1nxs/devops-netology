@@ -1,2 +1,4 @@
 ---
 # defaults file for lighthouse-role
+clickhouse_user: net83
+clickhouse_password: net83
