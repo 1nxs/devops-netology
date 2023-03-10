@@ -101,10 +101,10 @@ Starting galaxy role install process
 - lighthouse-role (1.0.0) was installed successfully
 ```
 ---
-| ссылка                                                     | описание                        |
-|------------------------------------------------------------|---------------------------------|
-| [playbook](./site.yml)                                     | Переработанный на роли плейбук  |
-| [about.md](./about.md)                                     | Подправленное описание плейбука |
-| [clickhouse-role](https://github.com/1nxs/clickhouse-role) | ссылка на репозиторий роли      |
-| [vector-role](https://github.com/1nxs/vector-role)         | ссылка на репозиторий роли      |
-| [lighthouse-role](https://github.com/1nxs/lighthouse-role) | ссылка на репозиторий роли      |
+| ссылка                                                     | описание                                   |
+|------------------------------------------------------------|--------------------------------------------|
+| [playbook](./site.yml)                                     | Переработанный на роли плейбук             |
+| [about.md](./about.md)                                     | Подправленное описание плейбука            |
+| [clickhouse-role](https://github.com/1nxs/clickhouse-role) | ссылка на репозиторий роли                 |
+| [vector-role](https://github.com/1nxs/vector-role)         | ссылка на репозиторий роли                 |
+| [lighthouse-role](https://github.com/1nxs/lighthouse-role) | ссылка на репозиторий роли                 |

@@ -2,12 +2,12 @@
   - name: clickhouse-role
     src: git@github.com:1nxs/clickhouse-role.git
     scm: git
-    version: "1.0.0"
+    version: "1.0.1"
   - name: vector-role
     src: git@github.com:1nxs/vector-role.git
     scm: git
-    version: "1.0.0"
+    version: "1.0.1"
   - name: lighthouse-role
     src: git@github.com:1nxs/lighthouse-role.git
     scm: git
-    version: "1.0.0"
+    version: "1.0.1"

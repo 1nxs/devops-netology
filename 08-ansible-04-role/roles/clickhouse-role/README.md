@@ -20,6 +20,14 @@ Role Variables
 - [./defaults/main.yml](./defaults/main.yml) - предназначен для установки реквизитов подключения
 - [./vars/main.yml](./vars/main.yml) - содержит переменные необходимые для установки пакетов и конфигурационных файлов
 
+| Переменная                   | Назначение                                                        |
+|:-----------------------------|:------------------------------------------------------------------|
+| `clickhouse_version`         | версия `Clickhouse`                                               |
+| `main_package_path.path`     | основной URL адрес для скачивания пакетов `Clickhouse`            |
+| `rescue_package_path.path`   | URL адрес пакетов `Clickhouse`, используется при сбое таски       |
+| `clickhouse_packages_noarch` | пакеты для установки `Clickhouse`, без зависимости от архитектуры |
+| `clickhouse_packages`        | `RPM` пакеты для установки `Clickhouse`                           |
+
 Dependencies
 ------------
 Нет зависимостей
