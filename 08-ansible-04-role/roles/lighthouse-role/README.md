@@ -7,8 +7,9 @@ Lighthouse role
 
 Requirements
 ------------
- - curl, git
- - nginx
+- Хост на Ubuntu или Debian
+- curl, git
+- nginx
 
 
 Role Variables

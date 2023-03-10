@@ -6,7 +6,7 @@ Vector role
 
 Requirements
 ------------
-
+- Хост на Ubuntu или Debian
 
 Role Variables
 --------------

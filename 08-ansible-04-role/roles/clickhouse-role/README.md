@@ -13,6 +13,7 @@ Clickhouse role
 
 Requirements
 ------------
+- Хост на CentOS версии 7 или 8
 
 Role Variables
 --------------
