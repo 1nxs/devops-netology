@@ -1,4 +1,0 @@
----
-# defaults file for vector-role
-clickhouse_user: net83
-clickhouse_password: net83
