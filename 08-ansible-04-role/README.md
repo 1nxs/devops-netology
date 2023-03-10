@@ -84,4 +84,16 @@ Starting galaxy role install process
 10. Выложите playbook в репозиторий.
 
 - создал репозитории
-- 
+- проставил tag "1.0.0"
+- переработал Playbook, оставив таски (пре\пост) для nginx, остальное убрав в роли
+- переработал `requirements.yml` и привёз роли с git
+```shell
+❯ ansible-galaxy install -r requirements.yml -p roles --force
+Starting galaxy role install process
+- extracting clickhouse-role to /home/inxss/pro/devops-netology/08-ansible-04-role/roles/clickhouse-role
+- clickhouse-role (1.0.0) was installed successfully
+- extracting vector-role to /home/inxss/pro/devops-netology/08-ansible-04-role/roles/vector-role
+- vector-role (1.0.0) was installed successfully
+- extracting lighthouse-role to /home/inxss/pro/devops-netology/08-ansible-04-role/roles/lighthouse-role
+- lighthouse-role (1.0.0) was installed successfully
+```

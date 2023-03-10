@@ -1,0 +1,77 @@
+---
+# tasks file for clickhouse-role
+- block:
+    - name: Get clickhouse distrib noarch Get clickhouse distrib noarch  from {{ main_package_path.path }}
+      ansible.builtin.get_url:
+        url: "{{ main_package_path.path }}{{ item }}-{{ main_package_path.version }}.noarch.rpm"
+        dest: "./{{ item }}-{{ main_package_path.version }}.rpm"
+      with_items: "{{ clickhouse_packages_noarch }}"
+
+    - name: Get clickhouse distrib from {{ main_package_path.path }}
+      ansible.builtin.get_url:
+        url: "{{ main_package_path.path }}{{ item }}-{{ main_package_path.version }}.x86_64.rpm"
+        dest: "./{{ item }}-{{ main_package_path.version }}.rpm"
+      with_items: "{{ clickhouse_packages }}"
+
+  rescue:
+    - name: Get clickhouse distrib noarch Get clickhouse distrib from {{ rescue_package_path.path }}
+      ansible.builtin.get_url:
+        url: "{{ rescue_package_path.path }}{{ item }}-{{ rescue_package_path.version }}.noarch.rpm"
+        dest: "./{{ item }}-{{ rescue_package_path.version }}.rpm"
+      with_items: "{{ clickhouse_packages_noarch }}"
+
+    - name: Get clickhouse distrib from {{ rescue_package_path.path }}
+      ansible.builtin.get_url:
+        url: "{{ rescue_package_path.path }}{{ item }}-{{ rescue_package_path.version }}.x86_64.rpm"
+        dest: "./{{ item }}-{{ rescue_package_path.version }}.rpm"
+      with_items: "{{ clickhouse_packages }}"
+
+- block:
+    - name: Install clickhouse packages
+      ansible.builtin.yum:
+        name:
+          - clickhouse-common-static-{{ clickhouse_version }}.rpm
+          - clickhouse-client-{{ clickhouse_version }}.rpm
+          - clickhouse-server-{{ clickhouse_version }}.rpm
+      notify: Start clickhouse service
+
+# Делаем из шаблона конфиг для сервиса
+    - name: Deploy config clickhouse
+      ansible.builtin.template:
+        src: clickhouse.config.j2
+        dest: "{{ clickhouse_config_path }}"
+        mode: 0644
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+      become: true
+
+# Настраиваем пользователей
+    - name: Deploy users config clickhouse
+      ansible.builtin.template:
+        src: clickhouse.users.j2
+        dest: "{{ clickhouse_users_path }}"
+        mode: 0644
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
+      become: true
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+# Создание БД для сервиса
+- block:
+    - name: Create database
+      ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
+      register: create_db
+      failed_when: create_db.rc != 0 and create_db.rc !=82
+      changed_when: create_db.rc == 0
+
+# Создаём таблицу для логов.
+    - name: Create table for logs
+      command: clickhouse-client -q
+              'CREATE TABLE IF NOT EXISTS  logs.vector_internal_logs (
+                  message String
+              )
+              ENGINE = MergeTree()
+              ORDER BY tuple();'
+      register: create_table

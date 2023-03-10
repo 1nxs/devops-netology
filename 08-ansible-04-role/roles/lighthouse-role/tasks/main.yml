@@ -1,0 +1,18 @@
+---
+# tasks file for lighthouse-role
+- name: Git clone lighthouse
+  become: true
+#      become_user: nginx
+  git:
+    repo: "{{ lighthouse_repo }}"
+    version: "{{ lighthouse_version }}"
+    dest: "{{ lighthouse_root }}{{ lighthouse_dir }}"
+
+# Делаем из шаблона конфиг для сервиса
+- name: Provision ligthouse.conf
+  become: true
+  template:
+    src: templates/lighthouse.conf.j2
+    dest: /etc/nginx/conf.d/lighthouse.conf
+    mode: 0644
+  notify: Reload nginx service

@@ -1,0 +1,33 @@
+---
+# vars file for vector-role
+vector_distro:
+  path: "https://packages.timber.io/vector/"
+  version: "0.27.1"
+  package: "vector_0.27.1-1_amd64.deb"
+vector_config_path: /etc/vector/vector.yaml
+vector_config:
+  sources:
+    internal_logs:
+      type: internal_logs
+    local_logs:
+      type: file
+      include:
+        - /var/log/**/*.log
+      read_from: beginning
+# Manual for sinks vector->clickhouse
+# https://vector.dev/docs/reference/configuration/sinks/clickhouse/
+  sinks:
+    local_to_clickhouse:
+      type: clickhouse
+      inputs:
+        - local_logs
+      database: logs
+      endpoint: http://{{ hostvars['clickhouse-host'].ansible_host }}:8123
+      table: vector_internal_logs
+      auth:
+        user: "{{ clickhouse_user }}"
+        password: "{{ clickhouse_password }}"
+        strategy: basic
+      compression: gzip
+      healthcheck: false
+      skip_unknown_fields: true
