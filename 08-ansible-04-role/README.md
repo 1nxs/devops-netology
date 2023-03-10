@@ -34,6 +34,7 @@
 ### Ответ
 
 Блок 1. 
+
 1. Создать в старой версии playbook файл `requirements.yml` и заполнить его следующим содержимым:
 
    <details><summary>yaml</summary>
@@ -59,6 +60,7 @@ Starting galaxy role install process
 ```
 
 Блок 2.
+
 3. Создать новый каталог с ролью при помощи `ansible-galaxy role init vector-role`.
 4. На основе tasks из старого playbook заполните новую role. Разнесите переменные между `vars` и `default`. 
 5. Перенести нужные шаблоны конфигов в `templates`.
@@ -79,6 +81,7 @@ Starting galaxy role install process
 - заполнил readme и meta
 
 Блок 3.
+
 8. Выложите все roles в репозитории. Проставьте тэги, используя семантическую нумерацию Добавьте roles в `requirements.yml` в playbook.
 9. Переработайте playbook на использование roles. Не забудьте про зависимости lighthouse и возможности совмещения `roles` с `tasks`.
 10. Выложите playbook в репозиторий.
@@ -97,3 +100,11 @@ Starting galaxy role install process
 - extracting lighthouse-role to /home/inxss/pro/devops-netology/08-ansible-04-role/roles/lighthouse-role
 - lighthouse-role (1.0.0) was installed successfully
 ```
+---
+| ссылка                                                     | описание                        |
+|------------------------------------------------------------|---------------------------------|
+| [playbook](./site.yml)                                     | Переработанный на роли плейбук  |
+| [about.md](./about.md)                                     | Подправленное описание плейбука |
+| [clickhouse-role](https://github.com/1nxs/clickhouse-role) | ссылка на репозиторий роли      |
+| [vector-role](https://github.com/1nxs/vector-role)         | ссылка на репозиторий роли      |
+| [lighthouse-role](https://github.com/1nxs/lighthouse-role) | ссылка на репозиторий роли      |
