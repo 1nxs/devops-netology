@@ -1,27 +1,38 @@
-Role Name
+Lighthouse role
 =========
+Роль для установки lighthouse
 
-A brief description of the role goes here.
+- Скачивание Lighthouse из репозитория
+- Конфигурирование Lighthouse
 
 Requirements
 ------------
+ - curl, git
+ - nginx
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
 Role Variables
 --------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- [./defaults/main.yml](./defaults/main.yml) - предназначен для установки реквизитов подключения
+- [./vars/main.yml](./vars/main.yml) - содержит переменные необходимые для установки пакетов и конфигурационных файлов
 
 Dependencies
 ------------
+Необходима роль [clickhouse-role](../clickhouse-role)
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+В inventory должен быть хост `nginx-host` \
+```yaml
+---
+  lighthouse:
+    hosts:
+      nginx-host:
+        ansible_host: IPv4 Address
+```
+[lighthouse.conf.j2](./templates/lighthouse.conf.j2) - используется при создании конфигурации сервиса
+
 
 Example Playbook
 ----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
 ```yaml
 hosts: lighthouse
@@ -31,10 +42,10 @@ roles:
 
 License
 -------
-
-BSD
+MIT
 
 Author Information
 ------------------
+- author: Pavel Yakushin
+- company: Netology workshop
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
