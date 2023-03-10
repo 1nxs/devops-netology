@@ -20,7 +20,7 @@ Dependencies
 ------------
 Необходима роль [clickhouse-role](../clickhouse-role)
 
-В inventory должен быть хост `nginx-host` \
+В inventory должен быть хост `nginx-host`
 ```yaml
 ---
   lighthouse:
@@ -28,7 +28,7 @@ Dependencies
       nginx-host:
         ansible_host: IPv4 Address
 ```
-[lighthouse.conf.j2](./templates/lighthouse.conf.j2) - используется при создании конфигурации сервиса
+[lighthouse.conf.j2](./templates/lighthouse.conf.j2) > `server_name` - используется при создании конфигурации сервиса
 
 
 Example Playbook

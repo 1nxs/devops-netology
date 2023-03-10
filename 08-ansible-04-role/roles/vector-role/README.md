@@ -1,28 +1,35 @@
 Vector role
 =========
-
+Роль для установки Vector
 - Установка vector и создание system unit
 - Установка конфигурации сервиса на передачу данных в clickhouse
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
 Role Variables
 --------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+- [./defaults/main.yml](./defaults/main.yml) - предназначен для установки реквизитов подключения
+- [./vars/main.yml](./vars/main.yml) - содержит переменные необходимые для установки пакетов и конфигурационных файлов
 
 Dependencies
 ------------
 
-Для корректной работы необходима роль Clickhouse
+Необходима роль [clickhouse-role](../clickhouse-role)
+
+В inventory должен быть хост `clickhouse-host`
+```yaml
+---
+  clickhouse:
+    hosts:
+      clickhouse-host:
+        ansible_host: IPv4 Address
+```
+[main.yml](vars%2Fmain.yml) > `endpoint:` - используется при создании конфигурации сервиса
 
 Example Playbook
 ----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
 ```yaml
 hosts: vector
@@ -32,10 +39,9 @@ roles:
 
 License
 -------
-
 MIT
 
 Author Information
 ------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+- author: Pavel Yakushin
+- company: Netology workshop
