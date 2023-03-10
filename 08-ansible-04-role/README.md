@@ -76,3 +76,9 @@ Starting galaxy role install process
 - настроил путь для ролей - [ansible.cfg](./ansible.cfg)
 - подготовил роль Clickhouse
 - подготовил роль Vector
+- заполнил readme и meta
+
+Блок 3.
+8. Выложите все roles в репозитории. Проставьте тэги, используя семантическую нумерацию Добавьте roles в `requirements.yml` в playbook.
+9. Переработайте playbook на использование roles. Не забудьте про зависимости lighthouse и возможности совмещения `roles` с `tasks`.
+10. Выложите playbook в репозиторий.
