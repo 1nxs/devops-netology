@@ -84,3 +84,4 @@ Starting galaxy role install process
 10. Выложите playbook в репозиторий.
 
 - создал репозитории
+- 
